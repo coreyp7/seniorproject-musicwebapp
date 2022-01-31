@@ -1,5 +1,5 @@
 # Project Members:
 Corey Pierce <br />
 Nicholas Kaegi <br />
-Chad Andreniuk
-Isabella Scaravaglione
+Chad Andreniuk <br />
+Isabella Scaravaglione <br />
