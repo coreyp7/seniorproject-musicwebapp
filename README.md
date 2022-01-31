@@ -1,3 +1,3 @@
 # Project Members:
-Corey Pierce \n
+Corey Pierce <br />
 Nicholas Kaegi
