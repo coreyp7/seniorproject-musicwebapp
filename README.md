@@ -1,1 +1,2 @@
-# seniorproject-musicwebapp :)
+# Project Members:
+Corey Pierce
