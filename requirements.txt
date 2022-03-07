@@ -1,0 +1,6 @@
+numpy
+spotipy
+Django
+django-contrib-comments
+django-comments-xtd
+django-friendship
