@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'django_comments_xtd',
     'django_comments',
+    'django-friendship'
 ]
 
 #SITE_ID = 1
