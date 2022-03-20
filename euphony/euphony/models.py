@@ -12,7 +12,7 @@ class Song(models.Model):
 class Album(models.Model):
     name = models.TextField()
     artist = models.TextField()
-    songs = mode;s.ManyToManyField(Song)
+    songs = models.ManyToManyField(Song)
     year = models.IntegerField()
     duration_ms = models.FloatField()
     id = models.TextField(primary_key=True)
