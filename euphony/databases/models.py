@@ -78,3 +78,14 @@ class Playlist_rating(models.Model):
         models.TextField()
     )  # date that the rating was given. Helpful for getting most recent feed
 
+#Section dedicated towards UserGroups
+class UserGroup(models.Model):
+    name = models.TextField(max_length=200)
+    description = models.TextField(max_length=1000)
+    ''' Members clashed with owner, decided to throw out owner
+    owner = models.OneToOneField(
+        User,
+        on_delete=models.CASCADE,
+    )
+    '''
+    members = models.ManyToManyField(User)
