@@ -74,3 +74,11 @@ class Playlist_rating(models.Model):
         models.TextField()
     )  # date that the rating was given. Helpful for getting most recent feed
 
+class UserToken(models.Model):
+
+    user = models.OneToOneField(
+        User,
+        on_delete=models.CASCADE,
+        primary_key=True,
+    )
+    token = models.TextField()

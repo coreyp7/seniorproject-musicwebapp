@@ -1,5 +1,5 @@
 import spotipy
-from models import UserToken
+from .models import UserToken
 import json
 
 
