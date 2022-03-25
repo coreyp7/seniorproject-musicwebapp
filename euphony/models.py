@@ -74,6 +74,8 @@ class Playlist_rating(models.Model):
         models.TextField()
     )  # date that the rating was given. Helpful for getting most recent feed
 
+# User relevant tables
+
 class UserToken(models.Model):
 
     user = models.OneToOneField(
@@ -82,3 +84,9 @@ class UserToken(models.Model):
         primary_key=True,
     )
     token = models.TextField()
+
+class User_Setting_Ext(models.Model):
+	user = models.OneToOneField(User, on_delete=models.CASCADE)
+	dark_mode = models.BooleanField(default=False) #Color mode: dark/white toggle
+	explicit = models.BooleanField(default=False) #Explicit content toggle
+	
