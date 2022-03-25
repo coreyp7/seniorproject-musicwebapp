@@ -1,12 +1,12 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth.models import User
-
+from django.views.decorators.http import require_POST, require_GET
 
 import spotipy
-
-from .cashe_handler import DatabaseTokenHandler
 from numpy.random import default_rng
 
+from .cashe_handler import DatabaseTokenHandler
+from .forms import SongForm
 
 def home(request):
     return render(request, "home.html", {})
@@ -38,3 +38,19 @@ def link_account(request):
 
     return redirect("/")
 
+@require_GET
+def search_song(request):
+    form = SongForm()
+    return render(request, "search_song.html", {"form": form})
+
+@require_POST
+def search_song_results(request):
+    form = SongForm(request.POST)
+
+    if form.is_valid():
+        # find song list from spotipy and return the list in the form of a parameter in our render
+        pass
+    else:
+        print("unsuccessful :(")
+
+    return render(request, "search_song.html", {"form_info": form})
