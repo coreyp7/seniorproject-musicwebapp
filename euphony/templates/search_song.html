@@ -6,7 +6,7 @@
 
 <h1> Search for a Song (ala Spotify) </h1>
 
-<form method='post' action="search_song_results.html">
+<form method='post' action="search_song_results">
     {% csrf_token %}
     <br>
     <div>
@@ -17,5 +17,17 @@
     <button class="btn btn-primary btn-lg" type="submit">Submit</button>
 
 </form>
+
+{% if none %}
+<div>
+    No song could be found. :(
+</div>
+{% endif %}
+
+{% if songs %}
+<div>
+    Songs exists. !
+</div>
+{% endif %}
 
 {% endblock %}
