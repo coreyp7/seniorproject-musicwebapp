@@ -4,11 +4,15 @@ from django.views.decorators.http import require_POST, require_GET
 
 import spotipy
 from spotipy.oauth2 import SpotifyClientCredentials, SpotifyOAuth
-from numpy.random import default_rng
+from numpy.random import default_rng, shuffle
 import json
 
 from .cashe_handler import DatabaseTokenHandler
+from .spotify_queries import *
+
 from .forms import SongForm
+
+from .models import Song
 
 scope = "user-library-read"
 #sp = spotipy.Spotify(auth_manager=SpotifyOAuth(scope=scope))
@@ -16,9 +20,6 @@ sp = spotipy.Spotify(client_credentials_manager=SpotifyClientCredentials())
 
 def home(request):
     return render(request, "home.html", {})
-
-
-scope = "user-library-read"
 
 
 def link_account(request):
@@ -44,13 +45,25 @@ def link_account(request):
 
     return redirect("/")
 
+def dash(request):
+
+    id_list = []
+
+    if str(request.user) != 'AnonymousUser' and ( user := User.objects.get(pk=int(request.user.id))):
+
+        temp_client = gen_client(user, scope)
+        id_list = gen_recomendations(temp_client)
+        id_list = get_song_id_list(temp_client, id_list)
+        shuffle(id_list)# todo actually sort the ids by rank at some point
+    return render(request, 'dash.html', {'recommendations' : id_list[:50]})
+
 # Search song page that is blank, what is initially shown to user.
 @require_GET
 def search_song(request):
     form = SongForm()
     return render(request, "search_song.html", {"form": form})
 
-# Search song page that is displaying any results that the user requested 
+# Search song page that is displaying any results that the user requested
 # on the search_song page.
 @require_POST
 def search_song_results(request):
