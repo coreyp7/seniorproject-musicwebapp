@@ -62,22 +62,54 @@ def search_song_results(request):
         songs_json = sp.search(track_query) # json with song information
         #songs = json.load(songs_json)
         #tracks = songs_json["tracks"]
-        print(json.dumps(songs_json, indent=4, sort_keys=True))
+        #print(json.dumps(songs_json, indent=4, sort_keys=True))
 
         # Now we need to just take the information we need in the json and create a new dictionary.
         # The things we need are:
-        # I THINK ALL OF THESE ARE IN "items".
+        # EVERYTHING LISTED IS IN "tracks":"items". An array of json objects.
         # "id" -> the spotify specific id for this song
         # "name" -> the name of the song
-        # "track_number" -> the placement of this song in its album
+        # "track_number" -> (NOTE) The placement of this song in its album
         # "href" -> not sure, seems useful
-        # "explicit" -> true/false
-        # "artists":"name" -> artist name
+        # "explicit" -> true/false for track
+        # "album":"id" -> track's album id
+        # "artists":"name" -> artist name on track
+        # "album":"artists" -> list of artists
         # "album":"name" -> album name
         # "album":"release_date" -> album release date
-        # "album":"id" -> album id
         # There is also a "href" in every track object that is a link to the query.
         # Whatever that means.
+
+        # JUST FOR NOW
+        songs_json = songs_json["tracks"]
+        songs_json = songs_json["items"]
+        songs_json = songs_json[0]
+
+        track_id = songs_json["id"]
+        track_name = songs_json["name"]
+        track_number = songs_json["track_number"] # track's placement in album
+        track_explicit = songs_json["explicit"] # track's explicitity
+        album_json = songs_json["album"] # album json object
+        album_id = album_json["id"] # track's album id
+        album_name = album_json["name"] # track's album name
+        album_release_date = album_json["release_date"] # track's release date
+        album_artists = album_json["artists"]
+
+        track_info = {
+            "id" : track_id,
+            "track_name" : track_name,
+            "track_number" : track_number,
+            "track_explicit" : track_explicit,
+            "album_id" : album_id
+        }
+        album_info = {
+            "id" : album_id,
+            "name" : album_name,
+            "release_date" : album_release_date,
+            "artists" : album_artists
+        }
+        print(f"Track info: {track_info}")
+        print(f"Album info: {album_info}")
         pass
     else:
         print("unsuccessful :(")
