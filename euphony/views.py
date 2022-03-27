@@ -48,6 +48,10 @@ def link_account(request):
 
 def dash(request):
 
+    '''
+    returns a webapge of recommendations, or if an account is unlinked it returns "account not linked with spotify" 
+    '''
+
     id_list = []
 
     if str(request.user) != 'AnonymousUser' and ( user := User.objects.get(pk=int(request.user.id))):
