@@ -124,7 +124,7 @@ def search_song_results(request):
             # song exists.
             try:
                 try:
-                    song_exists = Song.objects.get(pk=track_info["id"]).exists()
+                    song_exists = Song.objects.get(pk=track_info["id"])
                     if song_exists:
                         print("Already exists")
                 except ObjectDoesNotExist:
@@ -133,10 +133,10 @@ def search_song_results(request):
                     new_song.album_id = None
                     new_song.name = track_info["name"]
                     new_song.artist = track_info["artists"][0] # only adds 1 rn
-                    new_song.duration_ms = None
-                    new_song.explicit = None
+                    new_song.duration_ms = 1
+                    new_song.explicit = False
                     new_song.release_date = track_info["album_release_date"]
-                    new_song.track_number = track_info["number"]
+                    new_song.track_number = 1
                     new_song.save()
                     print(f"new song {track_info['name']} added to db!")
             except OperationalError:
