@@ -15,12 +15,13 @@ class Album(models.Model):
 
 class Song(models.Model):
     id = models.TextField(primary_key=True)  # Spotify ID of song
-    album_id = models.ForeignKey(Album, on_delete=models.CASCADE)
+    album_id = models.ForeignKey(Album, on_delete=models.CASCADE, null=True)
     name = models.TextField()
-    artist = models.TextField()
+    artist = models.TextField() # make this a list
     duration_ms = models.FloatField()
     explicit = models.FloatField()
     release_date = models.TextField()
+    track_number = models.IntegerField()
 
 
 class Playlist(models.Model):
