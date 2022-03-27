@@ -10,6 +10,19 @@ import json
 from .cashe_handler import DatabaseTokenHandler
 from .forms import SongForm
 
+from re import A
+from django.shortcuts import render, redirect
+from django.http import Http404, JsonResponse
+from .models import *
+from .forms import *
+from django.views.decorators.http import require_POST, require_GET
+from django.contrib.auth.forms import UserCreationForm
+from django.contrib import messages
+from django.contrib.auth import authenticate, login, logout
+import random
+import requests
+
+
 scope = "user-library-read"
 #sp = spotipy.Spotify(auth_manager=SpotifyOAuth(scope=scope))
 sp = spotipy.Spotify(client_credentials_manager=SpotifyClientCredentials())
@@ -83,3 +96,48 @@ def search_song_results(request):
         print("unsuccessful :(")
 
     return render(request, "search_song.html", {"form_info": form, "songs": songs_json})
+
+def registerPage(request):
+    form = CreateUserForm()
+
+    if request.method == "POST":
+        form = CreateUserForm(request.POST)
+        if form.is_valid():
+            form.save()
+            user = form.cleaned_data.get('username')
+            messages.success(request, 'Account was created for ' + user)
+
+            return redirect('login')
+
+
+    context = {'form': form}
+    return render(request, 'register.html', context)
+
+def loginPage(request):
+    if request.method == 'POST':
+        username = request.POST.get('username')
+        password = request.POST.get('password')
+
+        user = authenticate(request, username=username, password=password)
+
+        if user is not None:
+            login(request, user)
+            return redirect('home')
+        else:
+            messages.info(request, "Username OR Password is incorrect")
+
+    context = {}
+    return render(request, 'login.html', context)
+
+def logoutUser(request):
+    logout(request)
+    return redirect('login')
+
+def topChart(request):
+
+    form = SearchForm()
+    return render(request, 'topcharts.html')
+
+def topChart_post(request):
+    context  = {}
+    return render(request, 'topcharts.html', context)
