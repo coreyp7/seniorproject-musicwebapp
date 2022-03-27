@@ -110,8 +110,9 @@ def search_song_results(request):
         }
         print(f"Track info: {track_info}")
         print(f"Album info: {album_info}")
-        pass
+        return render(request, "search_song.html", 
+        {"form_info": form, "songs": track_info})
     else:
         print("unsuccessful :(")
 
-    return render(request, "search_song.html", {"form_info": form, "songs": songs_json})
+    return render(request, "search_song.html", {"form_info": form, "songs": None})
