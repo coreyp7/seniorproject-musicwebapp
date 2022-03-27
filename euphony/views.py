@@ -10,6 +10,9 @@ import json
 from .cashe_handler import DatabaseTokenHandler
 from .forms import SongForm
 
+from django.contrib import messages
+from .forms import EditUserForm
+
 scope = "user-library-read"
 #sp = spotipy.Spotify(auth_manager=SpotifyOAuth(scope=scope))
 sp = spotipy.Spotify(client_credentials_manager=SpotifyClientCredentials())
@@ -83,3 +86,23 @@ def search_song_results(request):
         print("unsuccessful :(")
 
     return render(request, "search_song.html", {"form_info": form, "songs": songs_json})
+
+def settings_general(request):
+    return render(request, 'settings_general.html')
+
+def settings_security(request):
+    return render(request, 'settings_security.html')
+
+def settings_account(request):
+      if request.method == 'POST':
+        form = EditUserForm(request.POST, instance=request.user)
+        if form.is_valid:
+          form.save()
+          messages.success(request, ('Settings has been Saved!'))
+          return render(request, 'settings_account.html')
+      else:
+        form = EditUserForm(instance=request.user)
+        args = {
+          'form': form,
+          }
+        return render(request, 'settings_account.html', args)
