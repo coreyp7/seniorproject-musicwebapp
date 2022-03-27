@@ -1,6 +1,7 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth.models import User
 from django.views.decorators.http import require_POST, require_GET
+from django.http import HttpResponse
 
 import spotipy
 from spotipy.oauth2 import SpotifyClientCredentials, SpotifyOAuth
@@ -12,7 +13,7 @@ from .spotify_queries import *
 
 from .forms import SongForm
 
-from .models import Song
+from .models import Song, UserToken
 
 scope = "user-library-read"
 #sp = spotipy.Spotify(auth_manager=SpotifyOAuth(scope=scope))
@@ -52,9 +53,13 @@ def dash(request):
     if str(request.user) != 'AnonymousUser' and ( user := User.objects.get(pk=int(request.user.id))):
 
         temp_client = gen_client(user, scope)
-        id_list = gen_recomendations(temp_client)
-        id_list = get_song_id_list(temp_client, id_list)
-        shuffle(id_list)# todo actually sort the ids by rank at some point
+        if temp_client != None:
+            id_list = gen_recomendations(temp_client)
+            id_list = get_song_id_list(temp_client, id_list)
+            shuffle(id_list)# todo actually sort the ids by rank at some point
+        else:
+            return HttpResponse("account not linked with spotify")
+
     return render(request, 'dash.html', {'recommendations' : id_list[:50]})
 
 # Search song page that is blank, what is initially shown to user.

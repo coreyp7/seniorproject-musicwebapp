@@ -11,11 +11,13 @@ def gen_client(user, scope):
     '''
 
     cache_handler = DatabaseTokenHandler(user)
-    auth_manager = spotipy.oauth2.SpotifyOAuth(scope=scope,
-    cache_handler=cache_handler)
-    temp_client = spotipy.Spotify(auth_manager=auth_manager)
-
-    return temp_client
+    if cache_handler.get_cached_token() != "":
+        auth_manager = spotipy.oauth2.SpotifyOAuth(scope=scope,
+        cache_handler=cache_handler)
+        temp_client = spotipy.Spotify(auth_manager=auth_manager)
+        return temp_client
+    else:
+        return None
 
 def get_saved_tracks(client):
     '''
