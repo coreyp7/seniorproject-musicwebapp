@@ -29,7 +29,14 @@
     Songs exists. !
 </div>
 
-<h1>{{ songs["track_name"] }}</h1>
+<!-- For each key/value pair in this track's dictionary.-->
+{% for key, value in songs.items %}
+{% if key == "id" %}
+<li style="color: green;">key: {{key}} value: {{value}}</li>
+{% else %}
+<li>key: {{key}} value: {{value}}</li>
+{% endif %}
+{% endfor %}
 
 {% endif %}
 
