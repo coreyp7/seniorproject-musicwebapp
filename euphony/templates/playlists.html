@@ -1,0 +1,42 @@
+{% extends 'base.html' %}
+
+<title>{% block title %} Playlists {% endblock %}</title>
+
+{% block content %}
+<body style="background-color: white;"></body>
+<br>
+{% if messages %}
+    {% for message in messages %}
+    <div class="alert alert-secondary alert-dismissable" role="alert">
+        <span type="button" class="close float-end" data-bs-dismiss="alert">
+            <sup>X</sup>
+        </span>
+        {{ message }}
+    </div>
+    {% endfor%}
+{% endif %}
+<body>
+<h1 style="color:black" class="display-6"><strong>Playlists</strong> 
+    <button type="submit" class="btn btn-secondary "><a href="{% url 'create_playlist' %}" style="color: white;">+ Create new playlist...</a></button>
+</h1>
+</body>
+<br>
+    <table style="background-color: whitesmoke;" class="table">
+        <thead>
+            <tr>
+                <th scope="col">#</th>
+                <th scope="col">Playlist Name</th>
+                <th scope="col">Delete Playlist</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for instance in playlists %}
+            <tr>
+                <th scope="row">{{forloop.counter}}</th>
+                <td><a href="{% url 'addsongs_view' %}">{{ instance.name }}</a></td>
+                <td><a href="{% url 'delete_playlist' instance.id %}">Delete</a></td>       
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+{% endblock %}

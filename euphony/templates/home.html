@@ -3,10 +3,16 @@
 {% block title %}Euphony{% endblock %}
 
 {% block content %}
-<h3>This will be our temporary home page. Link your stuff here if you want to
+<br>
+<h1 style="margin-left: -70px;">Euphony home page</h1>
+<br>
+<h3 style="margin-right: 25px;">This will be our temporary home page. Link your stuff here if you want to
     easily access it.
 </h3>
 
 <a href="{% url 'search_song' %}">Search Song Page</a>
+
+<br>
+<a href="{% url 'playlists' %}">Playlists</a>
 
 {% endblock %}

@@ -28,7 +28,7 @@ class Playlist(models.Model):
     id = models.IntegerField(primary_key=True)
     name = models.TextField(max_length=200)
     songs = models.ManyToManyField(Song)
-    user_id = models.ForeignKey(User, on_delete=models.CASCADE)
+    user_id = models.ForeignKey(User, on_delete=models.CASCADE, blank=True, null=True)
 
 
 # Section dedicated towards each rating table for songs/albums/playlists.

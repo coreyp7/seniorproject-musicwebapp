@@ -4,6 +4,10 @@ from django.views.decorators.http import require_POST, require_GET
 from django.http import HttpResponse
 from django.db.utils import OperationalError
 from django.core.exceptions import ObjectDoesNotExist # for checking if row exists
+from euphony.models import Playlist
+from .forms import PlaylistForm
+from django.contrib import messages
+
 
 import spotipy
 from spotipy.oauth2 import SpotifyClientCredentials, SpotifyOAuth
@@ -48,6 +52,7 @@ def link_account(request):
             return redirect(auth_url)
 
     return redirect("/")
+
 
 def dash(request):
 
@@ -173,3 +178,32 @@ def search_song_results(request):
         print("unsuccessful :(")
 
     return render(request, "search_song.html", {"form_info": form, "songs": None})
+
+# Playlist Page functions 
+def allplaylists_view(request):
+    playlists=Playlist.objects.all()
+    return render(request,'playlists.html',{'playlists': playlists})
+
+def create_playlist(request):
+    submitted = False
+    if request.method == "POST":
+        form = PlaylistForm(request.POST)
+        if form.is_valid():
+            form.save()
+            messages.success(request, ('New Playlist Created!'))
+            return redirect('playlists')
+    else:
+        form = PlaylistForm
+        if 'submitted' in request.GET:
+            submitted = True
+        return render(request,'createplaylist.html',{'form': form, 'submitted': submitted})
+
+def delete_playlist(request, list_id):
+    item = Playlist.objects.get(pk=list_id)
+    item.delete()
+    messages.success(request, ('Playlist Has Been Deleted!'))
+    return redirect('playlists')
+
+def addsongs_view(request):
+    return render(request, "addsongs.html", {})
+
