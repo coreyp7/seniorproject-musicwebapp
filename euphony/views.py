@@ -1,6 +1,8 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth.models import User
 from django.views.decorators.http import require_POST, require_GET
+from django.db.utils import OperationalError
+from django.core.exceptions import ObjectDoesNotExist # for checking if row exists
 
 import spotipy
 from spotipy.oauth2 import SpotifyClientCredentials, SpotifyOAuth
@@ -9,6 +11,7 @@ import json
 
 from .cashe_handler import DatabaseTokenHandler
 from .forms import SongForm
+from .models import *
 
 scope = "user-library-read"
 #sp = spotipy.Spotify(auth_manager=SpotifyOAuth(scope=scope))
@@ -89,24 +92,57 @@ def search_song_results(request):
             track_name = json_obj["name"]
             track_number = json_obj["track_number"] # track's placement in album
             track_explicit = json_obj["explicit"] # track's explicitity
+            track_artists = json_obj["artists"]
+            track_artists_list = [] # list of track's artists formatted how we want
+            for artist_obj in track_artists:
+                artist_name = artist_obj["name"]
+                track_artists_list.append(artist_name)
             # album stuff
             album_json = json_obj["album"] # album json object
             album_id = album_json["id"] # track's album id
             album_name = album_json["name"] # track's album name
             album_release_date = album_json["release_date"] # track's release date
             album_artists = album_json["artists"]
+            album_artists_list = [] # list of track's artists formatted how we want
+            for artist_obj in album_artists:
+                artist_name = artist_obj["name"]
+                album_artists_list.append(artist_name)
+            #artist stuff
 
             track_info = {
                 "id" : track_id,
                 "name" : track_name,
                 "number" : track_number,
                 "explicit" : track_explicit,
+                "artists" : track_artists_list,
                 "album_id" : album_id,
                 "album_name" : album_name,
                 "album_release_date" : album_release_date,
-                "album_artists" : album_artists
+                "album_artists" : album_artists_list,
             }
-            print(f"Track info: {track_info}")
+            # Now that track_info has been created, let's check if this
+            # song exists.
+            try:
+                try:
+                    song_exists = Song.objects.get(pk=track_info["id"]).exists()
+                    if song_exists:
+                        print("Already exists")
+                except ObjectDoesNotExist:
+                    new_song = Song()
+                    new_song.id = track_info["id"]
+                    new_song.album_id = None
+                    new_song.name = track_info["name"]
+                    new_song.artist = track_info["artists"][0] # only adds 1 rn
+                    new_song.duration_ms = None
+                    new_song.explicit = None
+                    new_song.release_date = track_info["album_release_date"]
+                    new_song.track_number = track_info["number"]
+                    new_song.save()
+                    print(f"new song {track_info['name']} added to db!")
+            except OperationalError:
+                print("Song table doesn't exist.")
+            
+            #print(f"Track info: {json.dumps(track_info, indent=4)}")
             final_songs_list.append(track_info)
 
         return render(request, "search_song.html", 
