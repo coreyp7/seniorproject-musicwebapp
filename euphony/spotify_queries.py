@@ -8,6 +8,7 @@ def gen_client(user, scope):
     '''
     takes in a user object, and a scope string
     returns a client object that can access that users spotify account
+    if a user hasn't linked a spotify account this function returns None
     '''
 
     cache_handler = DatabaseTokenHandler(user)
