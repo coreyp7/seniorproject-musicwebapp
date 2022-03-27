@@ -1,0 +1,22 @@
+{% extends 'profile.html' %}
+
+{% block content %}
+        {% if searched %}
+            <h1 style="color:white;">You Searched For: {{ searched }}</h1>
+            <br/>
+            <div style="color:white;">
+            {% for user in user_names %}
+                {% load friendshiptags %}
+                Username: {{ user }} <br>
+                User ID: {{ user.id }}<br>
+                Friends: {% friends user %}<br>
+            <br/>
+            <br/>
+            {% endfor %}
+
+        {% else %}
+            <h1 style="color:white;">Hey! You Forgot To Search For A User... </h1>
+        {% endif %}
+            </div>
+
+{% endblock %}
