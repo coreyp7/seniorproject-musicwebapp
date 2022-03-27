@@ -80,38 +80,37 @@ def search_song_results(request):
         # There is also a "href" in every track object that is a link to the query.
         # Whatever that means.
 
-        # JUST FOR NOW
+        final_songs_list = [] # list of dictionaries
+
         songs_json = songs_json["tracks"]
-        songs_json = songs_json["items"]
-        songs_json = songs_json[0]
+        for json_obj in songs_json["items"]:
+            # track stuff
+            track_id = json_obj["id"]
+            track_name = json_obj["name"]
+            track_number = json_obj["track_number"] # track's placement in album
+            track_explicit = json_obj["explicit"] # track's explicitity
+            # album stuff
+            album_json = json_obj["album"] # album json object
+            album_id = album_json["id"] # track's album id
+            album_name = album_json["name"] # track's album name
+            album_release_date = album_json["release_date"] # track's release date
+            album_artists = album_json["artists"]
 
-        track_id = songs_json["id"]
-        track_name = songs_json["name"]
-        track_number = songs_json["track_number"] # track's placement in album
-        track_explicit = songs_json["explicit"] # track's explicitity
-        album_json = songs_json["album"] # album json object
-        album_id = album_json["id"] # track's album id
-        album_name = album_json["name"] # track's album name
-        album_release_date = album_json["release_date"] # track's release date
-        album_artists = album_json["artists"]
+            track_info = {
+                "id" : track_id,
+                "name" : track_name,
+                "number" : track_number,
+                "explicit" : track_explicit,
+                "album_id" : album_id,
+                "album_name" : album_name,
+                "album_release_date" : album_release_date,
+                "album_artists" : album_artists
+            }
+            print(f"Track info: {track_info}")
+            final_songs_list.append(track_info)
 
-        track_info = {
-            "id" : track_id,
-            "track_name" : track_name,
-            "track_number" : track_number,
-            "track_explicit" : track_explicit,
-            "album_id" : album_id
-        }
-        album_info = {
-            "id" : album_id,
-            "name" : album_name,
-            "release_date" : album_release_date,
-            "artists" : album_artists
-        }
-        print(f"Track info: {track_info}")
-        print(f"Album info: {album_info}")
         return render(request, "search_song.html", 
-        {"form_info": form, "songs": track_info})
+        {"form_info": form, "songs": final_songs_list})
     else:
         print("unsuccessful :(")
 

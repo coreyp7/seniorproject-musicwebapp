@@ -4,7 +4,9 @@
 
 {% block content %}
 
-<h1> Search for a Song (ala Spotify) </h1>
+
+{% if not songs %}
+<h1> Search for a Song </h1>
 
 <form method='post' action="search_song_results">
     {% csrf_token %}
@@ -17,6 +19,7 @@
     <button class="btn btn-primary btn-lg" type="submit">Submit</button>
 
 </form>
+{% endif %}
 
 {% if none %}
 <div>
@@ -25,17 +28,18 @@
 {% endif %}
 
 {% if songs %}
-<div>
-    Songs exists. !
-</div>
+<h1> Search Results </h1>
 
 <!-- For each key/value pair in this track's dictionary.-->
-{% for key, value in songs.items %}
-{% if key == "id" %}
-<li style="color: green;">key: {{key}} value: {{value}}</li>
-{% else %}
-<li>key: {{key}} value: {{value}}</li>
-{% endif %}
+{% for song in songs %}
+id: {{song.id}}
+<br>
+Song: {{song.name}}
+<br>
+Album id: {{song.album_id}}
+<br>
+Album: {{song.album_name}}
+<br><br>
 {% endfor %}
 
 {% endif %}
