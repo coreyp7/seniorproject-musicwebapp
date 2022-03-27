@@ -207,3 +207,7 @@ def delete_playlist(request, list_id):
 def addsongs_view(request):
     return render(request, "addsongs.html", {})
 
+#Displays Album - and hopefully the tracks of the album uhh
+def album_info (request, id):
+    id = Album.objects.get(pk=id)
+    return render(request, "album_info.html", {"form": form})
