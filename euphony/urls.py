@@ -9,6 +9,7 @@ urlpatterns = [
     path("link_account", views.link_account, name="link_account"),
     path("search_song", views.search_song, name="search_song"),
     path("playlists", views.allplaylists_view, name="playlists" ),
+    path('settings_general/', views.settings_general, name='settings_general'),
     # Bottom section are pages which we redirect the user to.
     # Extensions of the pages above. (hope that makes sense)
     path("search_song_results", views.search_song_results, name="search_song_results"),
@@ -19,4 +20,6 @@ urlpatterns = [
     path('album_info/<id>', views.album_info, name='album_info'),
     path('songinfo/<music_id>', views.songinfo, name='songinfo'),
     path('comments/', include('django_comments_xtd.urls')),
+    path('settings_account/', views.settings_account, name='settings_account'),
+    path('settings_security/', views.settings_security, name='settings_security'),
 ]

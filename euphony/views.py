@@ -22,6 +22,9 @@ from .models import *
 
 from .models import Song, UserToken
 
+from django.contrib import messages
+from .forms import EditUserForm
+
 scope = "user-library-read"
 #sp = spotipy.Spotify(auth_manager=SpotifyOAuth(scope=scope))
 sp = spotipy.Spotify(client_credentials_manager=SpotifyClientCredentials())
@@ -215,3 +218,24 @@ def album_info (request, id):
 def songinfo(request, music_id):
     songid = Song.objects.get(pk=music_id)
     return render(request, 'songinfo.html', {'songid': songid})
+
+def settings_general(request):
+    return render(request, 'settings_general.html')
+
+def settings_security(request):
+    return render(request, 'settings_security.html')
+
+def settings_account(request):
+      if request.method == 'POST':
+        form = EditUserForm(request.POST, instance=request.user)
+        if form.is_valid:
+          form.save()
+          messages.success(request, ('Settings has been Saved!'))
+          return render(request, 'settings_account.html')
+      else:
+        form = EditUserForm(instance=request.user)
+        args = {
+          'form': form,
+          }
+        return render(request, 'settings_account.html', args)
+
