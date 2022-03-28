@@ -34,7 +34,7 @@
 {% for song in songs %}
 id: {{song.id}}
 <br>
-Song: {{song.name}}
+<a href="{% url 'songinfo' song.id%}">Song: {{song.name}}</a>
 <br>
 Album id: {{song.album_id}}
 <br>

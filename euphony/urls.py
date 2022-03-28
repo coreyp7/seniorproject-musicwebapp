@@ -1,5 +1,5 @@
 from unicodedata import name
-from django.urls import path
+from django.urls import include, path
 from . import views  # get views.py from current directory
 
 urlpatterns = [
@@ -16,5 +16,7 @@ urlpatterns = [
     path("create_playlist", views.create_playlist, name="create_playlist"),
     path('delete_playlist/<list_id>', views.delete_playlist, name='delete_playlist'),
     path('addsongs_view', views.addsongs_view, name='addsongs_view'),
-    path('album_info', views.album_info, name='album_info'),
+    path('album_info/<id>', views.album_info, name='album_info'),
+    path('songinfo/<music_id>', views.songinfo, name='songinfo'),
+    path('comments/', include('django_comments_xtd.urls')),
 ]

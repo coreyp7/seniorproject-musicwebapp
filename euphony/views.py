@@ -209,5 +209,9 @@ def addsongs_view(request):
 
 #Displays Album - and hopefully the tracks of the album uhh
 def album_info (request, id):
-    id = Album.objects.get(pk=id)
-    return render(request, "album_info.html", {"form": form})
+    id = '2r6OAV3WsYtXuXjvJ1lIDi'
+    return render(request, "album_info.html", {"id": id})
+
+def songinfo(request, music_id):
+    songid = Song.objects.get(pk=music_id)
+    return render(request, 'songinfo.html', {'songid': songid})

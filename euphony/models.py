@@ -2,6 +2,11 @@ from django.db import models
 
 # Create your models here.
 from django.contrib.auth.models import User
+from django.urls import reverse
+import re
+
+from django_comments_xtd.forms import XtdCommentForm
+from django_comments_xtd.models import TmpXtdComment
 
 
 class Album(models.Model):
@@ -22,6 +27,10 @@ class Song(models.Model):
     explicit = models.FloatField()
     release_date = models.TextField()
     track_number = models.IntegerField()
+    allow_comments = models.BooleanField('allow comments', default=True)
+    
+    def get_absolute_url(self):
+        return reverse('songinfo', args=[str(self.id)])
 
 
 class Playlist(models.Model):
