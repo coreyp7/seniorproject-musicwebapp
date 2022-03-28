@@ -22,4 +22,6 @@ urlpatterns = [
     path('comments/', include('django_comments_xtd.urls')),
     path('settings_account/', views.settings_account, name='settings_account'),
     path('settings_security/', views.settings_security, name='settings_security'),
+    path('profile/', views.profile, name='profile'),
+    path('search_user/', views.search_user, name='search_users'),
 ]
