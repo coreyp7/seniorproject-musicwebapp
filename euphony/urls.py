@@ -13,7 +13,6 @@ urlpatterns = [
     # Bottom section are pages which we redirect the user to.
     # Extensions of the pages above. (hope that makes sense)
     path("search_song_results", views.search_song_results, name="search_song_results"),
-    #path("account_link", views.link_account, name="link_account"),
     path("create_playlist", views.create_playlist, name="create_playlist"),
     path('delete_playlist/<list_id>', views.delete_playlist, name='delete_playlist'),
     path('addsongs_view', views.addsongs_view, name='addsongs_view'),
@@ -24,4 +23,9 @@ urlpatterns = [
     path('settings_security/', views.settings_security, name='settings_security'),
     path('profile/', views.profile, name='profile'),
     path('search_user/', views.search_user, name='search_users'),
+    path('topchart/', views.topChart, name="top"),
+
+    path('register/', views.registerPage, name="register"),
+    path('login/', views.loginPage, name="login"),
+    path('logout/', views.logoutUser, name="logout"),
 ]

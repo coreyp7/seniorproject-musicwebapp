@@ -8,7 +8,7 @@ from euphony.models import Playlist
 from .forms import PlaylistForm
 from django.contrib import messages
 from friendship.models import Friend, Follow, Block
-
+from django.contrib.auth import authenticate, login, logout
 
 import spotipy
 from spotipy.oauth2 import SpotifyClientCredentials, SpotifyOAuth
@@ -18,7 +18,7 @@ import json
 from .cashe_handler import DatabaseTokenHandler
 from .spotify_queries import *
 
-from .forms import SongForm
+from .forms import SongForm, CreateUserForm
 from .models import *
 
 from .models import Song, UserToken
@@ -304,3 +304,47 @@ def my_view(request):
     # Remove request.user blocks other_user relationship
     block_remove = Block.objects.remove_block(request.user, other_user)
 
+# Register Page and Login/Logout relevant functions.
+def registerPage(request):
+    form = CreateUserForm()
+
+    if request.method == "POST":
+        form = CreateUserForm(request.POST)
+        if form.is_valid():
+            form.save()
+            user = form.cleaned_data.get('username')
+            messages.success(request, 'Account was created for ' + user)
+
+            return redirect('login')
+
+
+    context = {'form': form}
+    return render(request, 'register.html', context)
+
+def loginPage(request):
+    if request.method == 'POST':
+        username = request.POST.get('username')
+        password = request.POST.get('password')
+
+        user = authenticate(request, username=username, password=password)
+
+        if user is not None:
+            login(request, user)
+            return redirect('home')
+        else:
+            messages.info(request, "Username OR Password is incorrect")
+
+    context = {}
+    return render(request, 'login.html', context)
+
+def logoutUser(request):
+    logout(request)
+    return redirect('login')
+
+def topChart(request):
+    #form = SearchForm() No search form exists, so commenting out.
+    return render(request, 'topcharts.html')
+
+def topChart_post(request):
+    context  = {}
+    return render(request, 'topcharts.html', context)
