@@ -1,0 +1,139 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+
+
+
+<!DOCTYPE html>
+<html>
+<head>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+
+  <script>
+    $('#SpaceAccommodation').change(function () {
+    var selectedText = $(this).find("option:selected").text();
+    
+    $(".test").text(selectedText);
+    });
+  </script>
+  
+
+  <style type="text/css">
+    
+    .dropdown-menu {
+    max-height: 280px;
+    overflow-y: auto;
+}
+
+
+  </style>
+
+  
+</head>
+<body>
+
+<div class="container">
+  <h2>Top Charts Daily</h2>      
+                                
+  <div class="dropdown">
+    <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown">Select Country
+   </button>
+    <ul class="dropdown-menu dropdown-toggle">
+      <li><a href="#">Global</a></li>
+      <li><a href="#">Argentina</a></li>
+      <li><a href="#">Australia</a></li>
+      <li><a href="#">Austria</a></li>
+      <li><a href="#">Belarus</a></li>
+      <li><a href="#">Belgium</a></li>
+      <li><a href="#">Bolivia</a></li>
+      <li><a href="#">Brazil</a></li>
+      <li><a href="#">Bulgaria</a></li>
+      <li><a href="#">Canada</a></li>
+      <li><a href="#">Chili</a></li>
+      <li><a href="#">Colombia</a></li>
+      <li><a href="#">Costa Rica</a></li>
+      <li><a href="#">Czech Republic</a></li>
+      <li><a href="#">Denmark</a></li>
+      <li><a href="#">Dominican Republic</a></li>
+      <li><a href="#">Ecuador</a></li>
+      <li><a href="#">Egypt</a></li>
+      <li><a href="#">El Salvador</a></li>
+      <li><a href="#">Estonia</a></li>
+      <li><a href="#">Finland</a></li>
+      <li><a href="#">France</a></li>
+      <li><a href="#">Germany</a></li>
+      <li><a href="#">Greece</a></li>
+      <li><a href="#">Guatemala</a></li>
+      <li><a href="#">Honduras</a></li>
+      <li><a href="#">Hong Kong</a></li>
+      <li><a href="#">Hungary</a></li>
+      <li><a href="#">Iceland</a></li>
+      <li><a href="#">India</a></li>
+      <li><a href="#">Indonesia</a></li>
+      <li><a href="#">Ireland</a></li>
+      <li><a href="#">Israel</a></li>
+      <li><a href="#">Italy</a></li>
+      <li><a href="#">Japan</a></li>
+      <li><a href="#">Kazakhstan</a></li>
+      <li><a href="#">Latvia</a></li>
+      <li><a href="#">Lithuania</a></li>
+      <li><a href="#">Luxembourg</a></li>
+      <li><a href="#">Malaysia</a></li>
+      <li><a href="#">Mexico</a></li>
+      <li><a href="#">Morocco</a></li>
+      <li><a href="#">Netherlands</a></li>
+      <li><a href="#">New Zealand</a></li>
+      <li><a href="#">Nicaragua</a></li>
+      <li><a href="#">Nigeria</a></li>
+      <li><a href="#">Norway</a></li>
+      <li><a href="#">Panama</a></li>
+      <li><a href="#">Paraguay</a></li>
+      <li><a href="#">Peru</a></li>
+      <li><a href="#">Philippines</a></li>
+      <li><a href="#">Poland</a></li>
+      <li><a href="#">Portugal</a></li>
+      <li><a href="#">Romania</a></li>
+      <li><a href="#">Russia</a></li>
+      <li><a href="#">Saudi Arabia</a></li>
+      <li><a href="#">Singapore</a></li>
+      <li><a href="#">Slovakia</a></li>
+      <li><a href="#">South Africa</a></li>
+      <li><a href="#">South Korea</a></li>
+      <li><a href="#">Spain</a></li>
+      <li><a href="#">Sweden</a></li>
+      <li><a href="#">Switzerland</a></li>
+      <li><a href="#">Taiwan</a></li>
+      <li><a href="#">Thailand</a></li>
+      <li><a href="#">Turkey</a></li>
+      <li><a href="#">Ukraine</a></li>
+      <li><a href="#">UAE</a></li>
+      <li><a href="#">United Kingdom</a></li>
+      <li><a href="#">USA</a></li>
+      <li><a href="#">Uruguay</a></li>
+      <li><a href="#">Vietnam</a></li>
+    </ul>
+  </div>
+</div>
+
+<br>
+
+
+
+
+
+
+
+</body>
+</html>
+
+{% endblock %}
+
+
+
+
+
+
