@@ -1,0 +1,43 @@
+{% extends 'base.html' %}
+
+{% block title %}Search song{% endblock %}
+
+{% block content %}
+
+
+{% if not albums %}
+<h1> Search for a Album </h1>
+
+<form method='post' action="search_album_results">
+    {% csrf_token %}
+    <br>
+    <div>
+        Search: {{ form.song_name }}
+    </div>
+    <br>
+
+    <button class="btn btn-primary btn-lg" type="submit">Submit</button>
+
+</form>
+{% endif %}
+
+{% if albums %}
+<h1> Search Results </h1>
+
+<!-- For each key/value pair in this track's dictionary.-->
+{% for album in albums %}
+id: {{album.id}}
+<br>
+Album: {{album.name}}
+<br>
+Artist(s): {{album.artists}}
+<br><br>
+{% endfor %}
+
+{% endif %}
+
+{% if albums_empty %}
+No albums were found. :(
+{% endif %}
+
+{% endblock %}

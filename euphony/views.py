@@ -79,6 +79,58 @@ def dash(request):
 
     return render(request, 'dash.html', {'recommendations' : id_list[:50]})
 
+@require_GET
+def search_album(request):
+    form = SongForm()
+    return render(request, "search_album.html", {"form": form, "albums": None})
+
+@require_POST
+def search_album_results(request):
+    form = SongForm(request.POST)
+
+    if form.is_valid():
+        album_query = form.cleaned_data["song_name"]
+        albums_json = sp.search(album_query, type="album", limit=10) # json with song information
+        #print(json.dumps(albums_json, indent=4, sort_keys=True))
+        # Fields we want:
+        # artists (get "name" from each item in artists list)
+        # album_type
+        # id
+        # name
+        # release date
+        # total_tracks
+        albums_json = albums_json["albums"]
+        all_albums = []
+        for json_obj in albums_json["items"]:
+            album_id = json_obj["id"]
+            album_name = json_obj["name"]
+            album_release_date = json_obj["release_date"]
+            album_type = json_obj["album_type"]
+            album_total_tracks = json_obj["total_tracks"]
+            album_artists = json_obj["artists"]
+            album_artists_list = []
+            for artist_obj in album_artists:
+                artist_name = artist_obj["name"]
+                album_artists_list.append(artist_name)
+
+            album_info = {
+                "id" : album_id,
+                "name" : album_name,
+                "release_date" : album_release_date,
+                "type" : album_type,
+                "total_tracks" : album_total_tracks,
+                "artists" : album_artists_list
+            }
+            all_albums.append(album_info)
+            print(json.dumps(album_info, indent=4, sort_keys=True))
+        if len(all_albums) == 0:
+            return render(request, "search_album.html", {"form": form, "albums_empty": True})
+        return render(request, "search_album.html", {"form": form, "albums": all_albums})
+    else:
+        print("Invalid form in search_album_results")
+    return render(request, "search_album.html", {"form": form, "albums": None})
+
+
 # Search song page that is blank, what is initially shown to user.
 @require_GET
 def search_song(request):
@@ -98,22 +150,6 @@ def search_song_results(request):
         #songs = json.load(songs_json)
         #tracks = songs_json["tracks"]
         #print(json.dumps(songs_json, indent=4, sort_keys=True))
-
-        # Now we need to just take the information we need in the json and create a new dictionary.
-        # The things we need are:
-        # EVERYTHING LISTED IS IN "tracks":"items". An array of json objects.
-        # "id" -> the spotify specific id for this song
-        # "name" -> the name of the song
-        # "track_number" -> (NOTE) The placement of this song in its album
-        # "href" -> not sure, seems useful
-        # "explicit" -> true/false for track
-        # "album":"id" -> track's album id
-        # "artists":"name" -> artist name on track
-        # "album":"artists" -> list of artists
-        # "album":"name" -> album name
-        # "album":"release_date" -> album release date
-        # There is also a "href" in every track object that is a link to the query.
-        # Whatever that means.
 
         final_songs_list = [] # list of dictionaries
 
