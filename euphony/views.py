@@ -113,7 +113,7 @@ def add_albums_songs(album_json, album_model_obj):
             "id" : track_id,
             "name" : track_name,
             "number" : track_number,
-            "disc" : 1,
+            "disc" : json_obj["disc_number"],
             "explicit" : track_explicit,
             "artists" : track_artists_list,
             "album_artists" : album_artists_list,
@@ -129,9 +129,10 @@ def add_albums_songs(album_json, album_model_obj):
             track_number=json_obj["track_number"],
             disc=track_info["disc"],
             album_id=album_model_obj,
-            duration_ms=0,
-            explicit=0
-            )
+            duration_ms=json_obj["duration_ms"],
+            explicit=json_obj["explicit"]
+        )
+        print(object)
 
 @require_GET
 def search_album(request):
