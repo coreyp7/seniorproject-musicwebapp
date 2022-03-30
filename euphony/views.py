@@ -79,6 +79,60 @@ def dash(request):
 
     return render(request, 'dash.html', {'recommendations' : id_list[:50]})
 
+def add_albums_songs(album_json, album_model_obj):
+    # - make functions for collecting all ids of an album (given an album id). 
+    # So, if a user looks up either 
+    # 1. a song that doesn't exist or 
+    # 2. an album that doesn't exist: 
+    # then create the album and all of the songs in said album. 
+    # NOTE: Create the album row first, because each of the songs 
+    # need a reference to that specific album model instance.
+    album_tracks = sp.album_tracks(album_json["id"])
+    print(json.dumps(album_tracks, indent=4))
+    album_tracks = album_tracks["items"]
+
+    for json_obj in album_tracks:
+        # track stuff
+        track_id = json_obj["id"]
+        track_name = json_obj["name"]
+        track_number = json_obj["track_number"] # track's placement in album
+        track_explicit = json_obj["explicit"] # track's explicitity
+        track_artists = json_obj["artists"]
+        track_artists_list = [] # list of track's artists formatted how we want
+        for artist_obj in track_artists:
+            artist_name = artist_obj["name"]
+            track_artists_list.append(artist_name)
+
+        #artist stuff
+        album_artists_list = [] # list of track's artists formatted how we want
+        for artist_obj in track_artists:
+            artist_name = artist_obj["name"]
+            album_artists_list.append(artist_name)
+
+        track_info = {
+            "id" : track_id,
+            "name" : track_name,
+            "number" : track_number,
+            "disc" : 1,
+            "explicit" : track_explicit,
+            "artists" : track_artists_list,
+            "album_artists" : album_artists_list,
+            "release_date" : album_json["release_date"]
+        }
+        print(json.dumps(track_info, indent=4))
+
+        object, created = Song.objects.get_or_create(
+            id=track_info["id"],
+            name=track_info["name"],
+            artist=track_info["artists"][0],
+            release_date=track_info["release_date"],
+            track_number=json_obj["track_number"],
+            disc=track_info["disc"],
+            album_id=album_model_obj,
+            duration_ms=0,
+            explicit=0
+            )
+
 @require_GET
 def search_album(request):
     form = SongForm()
@@ -90,9 +144,9 @@ def search_album_results(request):
 
     if form.is_valid():
         album_query = form.cleaned_data["song_name"]
-        albums_json = sp.search(album_query, type="album", limit=10) # json with song information
+        albums_json = sp.search(album_query, type="album", limit=1) # json with song information
         
-        print(json.dumps(albums_json, indent=4, sort_keys=True))
+        #print(json.dumps(albums_json, indent=4, sort_keys=True))
         # Fields we want:
         # artists (get "name" from each item in artists list)
         # album_type
@@ -134,6 +188,10 @@ def search_album_results(request):
             total_tracks=album_info["total_tracks"],
             cover=album_info["cover"]
             )
+
+            if created:
+                # query all of the songs in the album, since it wasn't added before.
+                add_albums_songs(album_info, object)
 
             all_albums.append(album_info)
             print(json.dumps(album_info, indent=4, sort_keys=True))

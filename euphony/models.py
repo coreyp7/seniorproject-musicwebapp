@@ -17,8 +17,6 @@ class Album(models.Model):
     cover = models.URLField(max_length=200) # link to cover of album
     total_tracks = models.IntegerField()
 
-
-
 class Song(models.Model):
     id = models.TextField(primary_key=True)  # Spotify ID of song
     album_id = models.ForeignKey(Album, on_delete=models.CASCADE, null=True)
@@ -28,6 +26,7 @@ class Song(models.Model):
     explicit = models.FloatField()
     release_date = models.TextField()
     track_number = models.IntegerField()
+    disc = models.IntegerField()
     allow_comments = models.BooleanField('allow comments', default=True)
     
     def get_absolute_url(self):
