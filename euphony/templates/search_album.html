@@ -28,7 +28,7 @@
 {% for album in albums %}
 id: {{album.id}}
 <br>
-Album: {{album.name}}
+<a href="{% url 'album_info' album.id %}">Album: {{album.name}}</a>
 <br>
 Artist(s): {{album.artists}}
 <br>

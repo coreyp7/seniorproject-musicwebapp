@@ -278,7 +278,37 @@ def addsongs_view(request):
 
 #Displays Album - and hopefully the tracks of the album uhh
 def album_info (request, id):
-    id = '2r6OAV3WsYtXuXjvJ1lIDi'
+    # id = '2r6OAV3WsYtXuXjvJ1lIDi' test value
+    album = sp.album(f"spotify:album:"+id)
+
+    album_artists_list = []
+    for artist_obj in album["artists"]:
+        artist_name = artist_obj["name"]
+        album_artists_list.append(artist_name)
+    
+    # Get the album info of this song's album.
+    album_info = {
+        "id" : album["id"],
+        "name" : album["name"],
+        "release_date" : album["release_date"],
+        "type" : album["type"],
+        "total_tracks" : album["total_tracks"],
+        "artists" : album_artists_list,
+        "cover" : album["images"][1]["url"]
+    }
+
+    # Now check if this album already exists.
+    object, created = Album.objects.get_or_create(
+        id=album_info["id"],
+        name=album_info["name"],
+        artist=album_info["artists"][0], #TEMPORARY
+        release_date=album_info["release_date"],
+        total_tracks=album_info["total_tracks"],
+        cover=album_info["cover"]
+        )
+    if created:
+        add_albums_songs(album_info, object)
+
     return render(request, "album_info.html", {"id": id})
 
 """ 
@@ -326,7 +356,7 @@ def songinfo(request, music_id):
     object, created = Album.objects.get_or_create(
         id=album_info["id"],
         name=album_info["name"],
-        artist=album_info["artists"][0],
+        artist=album_info["artists"][0], #TEMPORARY
         release_date=album_info["release_date"],
         total_tracks=album_info["total_tracks"],
         cover=album_info["cover"]
