@@ -147,7 +147,7 @@ def search_album_results(request):
 
     if form.is_valid():
         album_query = form.cleaned_data["song_name"]
-        albums_json = sp.search(album_query, type="album", limit=1) # json with song information
+        albums_json = sp.search(album_query, type="album", limit=10) # json with song information
         
         albums_json = albums_json["albums"]
         all_albums = []
