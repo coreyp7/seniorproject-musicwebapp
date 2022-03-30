@@ -277,7 +277,7 @@ def addsongs_view(request):
     return render(request, "addsongs.html", {})
 
 #Displays Album - and hopefully the tracks of the album uhh
-def album_info (request, id):
+def album_info(request, id):
     # id = '2r6OAV3WsYtXuXjvJ1lIDi' test value
     album = sp.album(f"spotify:album:"+id)
 
@@ -309,7 +309,13 @@ def album_info (request, id):
     if created:
         add_albums_songs(album_info, object)
 
-    return render(request, "album_info.html", {"id": id})
+    album_tracks = []
+    all_our_songs = Song.objects.filter(album_id=object)
+
+    for song in all_our_songs:
+        album_tracks.insert(song.track_number * song.disc, song.name)
+
+    return render(request, "album_info.html", {"id": id, "songs": all_our_songs})
 
 """ 
 Saving this for album_info page.
@@ -365,7 +371,10 @@ def songinfo(request, music_id):
         add_albums_songs(album_info, object)
 
     songid = Song.objects.get(pk=music_id)
-    return render(request, 'songinfo.html', {'songid': songid})
+    return render(request, 'songinfo.html', {'songid': songid, 
+    "album": {
+        "name": album_info["name"], 
+        "id": album_info["id"]}})
 
 def settings_general(request):
     return render(request, 'settings_general.html')

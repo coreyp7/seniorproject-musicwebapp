@@ -15,4 +15,13 @@
   </div>
 </div>
 
+<div>
+  {% if songs %}
+  {%for song in songs %}
+  <a href="{% url 'songinfo' song.id %}">{{song.name}}</a>
+  <br>
+  {% endfor %}
+  {% endif %}
+</div>
+
 {% endblock %}
