@@ -11,11 +11,12 @@ from django_comments_xtd.models import TmpXtdComment
 
 class Album(models.Model):
     artist = models.TextField()  # Just artist name, not an ID or anything
-    duration = models.FloatField()  # Length of album
-    explicit = models.FloatField()
     id = models.TextField(primary_key=True)  # Spotify ID of album
     name = models.TextField()
     release_date = models.TextField()
+    cover = models.URLField(max_length=200) # link to cover of album
+    total_tracks = models.IntegerField()
+
 
 
 class Song(models.Model):

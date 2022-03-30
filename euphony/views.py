@@ -91,7 +91,8 @@ def search_album_results(request):
     if form.is_valid():
         album_query = form.cleaned_data["song_name"]
         albums_json = sp.search(album_query, type="album", limit=10) # json with song information
-        #print(json.dumps(albums_json, indent=4, sort_keys=True))
+        
+        print(json.dumps(albums_json, indent=4, sort_keys=True))
         # Fields we want:
         # artists (get "name" from each item in artists list)
         # album_type
@@ -108,6 +109,8 @@ def search_album_results(request):
             album_type = json_obj["album_type"]
             album_total_tracks = json_obj["total_tracks"]
             album_artists = json_obj["artists"]
+            album_cover_art = json_obj["images"][1]["url"]
+            # cover is hardcoded rn but seems consistent from spotify
             album_artists_list = []
             for artist_obj in album_artists:
                 artist_name = artist_obj["name"]
@@ -119,8 +122,19 @@ def search_album_results(request):
                 "release_date" : album_release_date,
                 "type" : album_type,
                 "total_tracks" : album_total_tracks,
-                "artists" : album_artists_list
+                "artists" : album_artists_list,
+                "cover" : album_cover_art
             }
+
+            object, created = Album.objects.get_or_create(
+            id=album_info["id"],
+            name=album_info["name"],
+            artist=album_info["artists"][0],
+            release_date=album_info["release_date"],
+            total_tracks=album_info["total_tracks"],
+            cover=album_info["cover"]
+            )
+
             all_albums.append(album_info)
             print(json.dumps(album_info, indent=4, sort_keys=True))
         if len(all_albums) == 0:
