@@ -1,11 +1,12 @@
 {% extends 'base.html' %}
 
-<title>{% block title %} Playlists {% endblock %}</title>
+<title>{% block title %} {{playlist.name}} {% endblock %}</title>
 
 {% block content %}
 <body style="background-color: white;"></body>
+<h1>{{playlist.name}}</h1>
 <br>
-<button type="submit" style="float: right;" class="btn btn-secondary">+</button>
+<button type="submit" style="float: right;" class="btn btn-secondary"><a href="{% url 'playlist_song' playlist.id %}" style="color: white;">+</a></button>
 <br>
 <table style="background-color: whitesmoke;" class="table">
     <br>
@@ -16,10 +17,12 @@
         </tr>
     </thead>
     <tbody>
-        {% for instance in playlists %}
+        {% for song in listsong %}
         <tr>
+        {% for s in song %}
             <th scope="row">{{forloop.counter}}</th>
-            <td>{{ instance.song }}</td>   
+            <td>{{ s.song }}</td>   
+        {% endfor %}
         </tr>
         {% endfor %}
     </tbody>

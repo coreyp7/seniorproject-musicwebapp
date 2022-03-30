@@ -33,7 +33,7 @@
             {% for instance in playlists %}
             <tr>
                 <th scope="row">{{forloop.counter}}</th>
-                <td><a href="{% url 'addsongs_view' %}">{{ instance.name }}</a></td>
+                <td><a href="{% url 'addsongs_view' instance.id %}">{{ instance.name }}</a></td>
                 <td><a href="{% url 'delete_playlist' instance.id %}">Delete</a></td>       
             </tr>
             {% endfor %}
