@@ -80,6 +80,7 @@ def dash(request):
     return render(request, 'dash.html', {'recommendations' : id_list[:50]})
 
 def add_albums_songs(album_json, album_model_obj):
+    # given an album_json and album_model_obj it adds all 
     # - make functions for collecting all ids of an album (given an album id). 
     # So, if a user looks up either 
     # 1. a song that doesn't exist or 
@@ -219,69 +220,54 @@ def search_song_results(request):
     if form.is_valid():
         # find song list from spotipy and return the list in the form of a parameter in our render
         track_query = "track:"+form.cleaned_data["song_name"]
-        songs_json = sp.search(track_query) # json with song information
+        songs_json = sp.search(track_query, limit=10) # json with song information
         #songs = json.load(songs_json)
         #tracks = songs_json["tracks"]
         #print(json.dumps(songs_json, indent=4, sort_keys=True))
 
-        final_songs_list = [] # list of dictionaries
+        final_songs_list = [] # list of song dictionaries
 
         songs_json = songs_json["tracks"]
         for json_obj in songs_json["items"]:
-            # track stuff
-            track_id = json_obj["id"]
-            track_name = json_obj["name"]
-            track_number = json_obj["track_number"] # track's placement in album
-            track_explicit = json_obj["explicit"] # track's explicitity
-            track_artists = json_obj["artists"]
-            track_artists_list = [] # list of track's artists formatted how we want
-            for artist_obj in track_artists:
-                artist_name = artist_obj["name"]
-                track_artists_list.append(artist_name)
-            # album stuff
             album_json = json_obj["album"] # album json object
             album_id = album_json["id"] # track's album id
-            album_name = album_json["name"] # track's album name
-            album_release_date = album_json["release_date"] # track's release date
-            album_artists = album_json["artists"]
-            album_artists_list = [] # list of track's artists formatted how we want
-            for artist_obj in album_artists:
+            album_artists_list = []
+            for artist_obj in album_json["artists"]:
                 artist_name = artist_obj["name"]
                 album_artists_list.append(artist_name)
-            #artist stuff
-
             track_info = {
-                "id" : track_id,
-                "name" : track_name,
-                "number" : track_number,
-                "explicit" : track_explicit,
-                "artists" : track_artists_list,
+                "id" : json_obj["id"],
+                "name" : json_obj["name"],
+                "number" : json_obj["track_number"],
+                "explicit" : json_obj["explicit"],
+                "artists" : json_obj["artists"][0]["name"], #TEMPORARY
                 "album_id" : album_id,
-                "album_name" : album_name,
-                "album_release_date" : album_release_date,
+                "album_name" : album_json["name"],
+                "album_release_date" : album_json["release_date"],
                 "album_artists" : album_artists_list,
             }
-            # Now that track_info has been created, let's check if this
-            # song exists.
-            try:
-                try:
-                    song_exists = Song.objects.get(pk=track_info["id"])
-                    if song_exists:
-                        print("Already exists")
-                except ObjectDoesNotExist:
-                    new_song = Song()
-                    new_song.id = track_info["id"]
-                    new_song.album_id = None #TEMPORARY
-                    new_song.name = track_info["name"]
-                    new_song.artist = track_info["artists"][0] #TEMPORARY
-                    new_song.duration_ms = 1 #TEMPORARY
-                    new_song.explicit = False #TEMPORARY
-                    new_song.release_date = track_info["album_release_date"]
-                    new_song.track_number = 1 #TEMPORARY
-                    new_song.save()
-                    print(f"new song {track_info['name']} added to db!")
-            except OperationalError:
-                print("Song table doesn't exist.")
+            # get album id of this song
+
+            album_info = {
+                "id" : album_id,
+                "name" : album_json["name"],
+                "release_date" : album_json["release_date"],
+                "type" : album_json["type"],
+                "total_tracks" : album_json["total_tracks"],
+                "artists" : album_artists_list,
+                "cover" : album_json["images"][1]["url"]
+            }
+            # Now check if this album already exists.
+            object, created = Album.objects.get_or_create(
+                id=album_info["id"],
+                name=album_info["name"],
+                artist=album_info["artists"][0],
+                release_date=album_info["release_date"],
+                total_tracks=album_info["total_tracks"],
+                cover=album_info["cover"]
+                )
+            if created:
+                add_albums_songs(album_info, object)
             
             #print(f"Track info: {json.dumps(track_info, indent=4)}")
             final_songs_list.append(track_info)
