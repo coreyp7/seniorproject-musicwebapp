@@ -21,7 +21,7 @@ from .spotify_queries import *
 from .forms import SongForm, CreateUserForm
 from .models import *
 
-from .models import Song, UserToken
+from .models import Song, UserToken, Song_rating
 
 from django.contrib import messages
 from .forms import EditUserForm
@@ -57,12 +57,31 @@ def link_account(request):
 
     return redirect("/")
 
+def get_song_rating_numbers(song_list):
 
+    '''
+    takes in a list of song ids, and returns a list containing the number of votes for each song
+    '''
+    ratings_list = []
+
+    for song in song_list:
+        rating_list = Song_rating.objects.filter(song_id=song)
+
+        rating = 0
+        for item in list(rating_list):
+            if(item.rating_type):
+                rating += 1
+            else:
+                rating += -1
+
+        ratings_list.append(rating)
+
+    return ratings_list
 
 def dash(request):
 
     '''
-    returns a webapge of recommendations, or if an account is unlinked it returns "account not linked with spotify" 
+    returns a webapge of recommendations, or if an account is unlinked it returns "account not linked with spotify"
     '''
 
     id_list = []
@@ -71,13 +90,14 @@ def dash(request):
 
         temp_client = gen_client(user, scope)
         if temp_client != None:
-            id_list = gen_recomendations(temp_client)
-            id_list = get_song_id_list(temp_client, id_list)
-            shuffle(id_list)# todo actually sort the ids by rank at some point
+            album_list = gen_recomendations(temp_client)
+            song_list = get_song_list(temp_client, album_list)
+            posts = [{ "song" : item[0] , "ratings" : item[1]} for item in zip(song_list, get_song_rating_numbers(song_list)) ]
+            posts.sort(key = lambda item : item['ratings'] )# todo actually sort the ids by rank at some point
         else:
             return HttpResponse("account not linked with spotify")
 
-    return render(request, 'dash.html', {'recommendations' : id_list[:50]})
+    return render(request, 'dash.html', {'recommendations' : posts[:50]})
 
 # Function for adding all of the songs of a specified album to our db.
 # album_json is a specific dictionary found in search methods.
@@ -143,7 +163,7 @@ def search_album_results(request):
     if form.is_valid():
         album_query = form.cleaned_data["song_name"]
         albums_json = sp.search(album_query, type="album", limit=10) # json with song information
-        
+
         albums_json = albums_json["albums"]
         all_albums = []
         for json_obj in albums_json["items"]:
@@ -223,14 +243,14 @@ def search_song_results(request):
             #print(f"Track info: {json.dumps(track_info, indent=4)}")
             final_songs_list.append(track_info)
 
-        return render(request, "search_song.html", 
+        return render(request, "search_song.html",
         {"form_info": form, "songs": final_songs_list})
     else:
         print("unsuccessful :(")
 
     return render(request, "search_song.html", {"form_info": form, "songs": None})
 
-# Playlist Page functions 
+# Playlist Page functions
 def allplaylists_view(request):
     playlists=Playlist.objects.all()
     return render(request,'playlists.html',{'playlists': playlists})
@@ -269,7 +289,7 @@ def album_info(request, id):
     for artist_obj in album["artists"]:
         artist_name = artist_obj["name"]
         album_artists_list.append(artist_name)
-    
+
     album_info = {
         "id" : album["id"],
         "name" : album["name"],
@@ -314,7 +334,7 @@ def songinfo(request, music_id):
     for artist_obj in track["artists"]:
         artist_name = artist_obj["name"]
         album_artists_list.append(artist_name)
-    
+
     # Get the album info of this song's album.
     album_info = {
         "id" : track["album"]["id"],
@@ -339,9 +359,9 @@ def songinfo(request, music_id):
         add_albums_songs(album_info, object)
 
     songid = Song.objects.get(pk=music_id)
-    return render(request, 'songinfo.html', {'songid': songid, 
+    return render(request, 'songinfo.html', {'songid': songid,
     "album": {
-        "name": album_info["name"], 
+        "name": album_info["name"],
         "id": album_info["id"]}})
 
 def settings_general(request):
