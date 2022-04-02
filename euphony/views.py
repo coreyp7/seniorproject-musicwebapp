@@ -276,10 +276,10 @@ def add_song(request, list_id, song_id):
     playlist.save()
     songs = playlist.songs.all()
     all_songs = list(songs)
-    n = 3   
+    n = 1   
     list_songs = [all_songs[i:i+n] for i in range(0, len(all_songs), n)]
     listsong = list(list_songs)
-    return render(request, 'addsongs.html', {'playlist': playlist, 'listsong': listsong })
+    return render(request, 'addsongs.html', {'playlist': playlist, 'listsong': listsong})
 
 # Playlist Page functions 
 def allplaylists_view(request):

@@ -25,6 +25,6 @@ urlpatterns = [
     path('profile/', views.profile, name='profile'),
     path('search_user/', views.search_user, name='search_users'),
     path('playlist_song/<list_id>',views.playlist_song,name='playlist_song'),
-    path('playlist_song_results/<list_id>',views.playlist_song_results,name='playlist_song_results'),
-    path('add_song/<list_id>/<song_id>',views.add_song,name='add_song'),
+    path('playlist_song/playlist_song_results/<list_id>',views.playlist_song_results,name='playlist_song_results'),
+    path('playlist_song/playlist_song_results/add_song/<list_id>/<song_id>',views.add_song,name='add_song'),
 ]
