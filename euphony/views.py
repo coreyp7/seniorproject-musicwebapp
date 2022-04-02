@@ -94,14 +94,47 @@ def dash(request):
             album_list = gen_recomendations(temp_client)
             song_list = get_song_list(temp_client, album_list)
             posts = [{ "song" : item[0] , "ratings" : item[1]} for item in zip(song_list, get_song_rating_numbers(song_list)) ]
-            posts.sort(key = lambda item : item['ratings'] )# todo actually sort the ids by rank at some point
+            shuffle(posts)
+            posts = posts[:50]
+            posts.sort(key = lambda item : item['ratings'], reverse=True )
         else:
             return HttpResponse("account not linked with spotify")
 
-    return render(request, 'dash.html', {'recommendations' : posts[:50]})
+    return render(request, 'dash.html', {'recommendations' : posts})
+
 
 def proccess_vote(request):
-    print("test", request)
+
+    if str(request.user) != 'AnonymousUser' and ( user := User.objects.get(pk=int(request.user.id))):
+        song = Song.objects.get(id=request.POST['song'])
+        rating = list(Song_rating.objects.filter(user_id=user, song_id=song))
+        new_vote = (int(request.POST['vote']) == 1)
+        if len(rating) == 0:
+            vote = Song_rating.objects.create(song_id=song, user_id=user, rating_type=new_vote)
+            print('new', vote.id, vote.song_id ,vote.rating_type)
+            if(new_vote):
+                return HttpResponse('1')
+            else:
+                return HttpResponse('-1')
+        else:
+            vote = rating[0]
+            old_vote = vote.rating_type
+            print('not new',vote.id, vote.song_id ,vote.rating_type)
+            if(old_vote == new_vote):
+                vote.delete()
+                if(old_vote):
+                    return HttpResponse(-1)
+                else:
+                    return HttpResponse(1)
+            else:
+                vote.rating_type=new_vote
+                vote.save()
+                if(new_vote):
+                    return HttpResponse(1)
+                else:
+                    return HttpResponse(-1)
+
+    return HttpResponse('not logged in')
 
 
 # Function for adding all of the songs of a specified album to our db.

@@ -6,25 +6,22 @@
 
 <script type="text/javascript">
 
- var thing = 1;
-
-  function ajaxCall(song_id) {
+  function vote(song_id, up_or_down) {
     $.ajax({
-
         // Our sample url to make request
-        url: '{ url proccess_vote}',
-
+        url: '{% url "vote" %}',
         // Type of Request
-        type: "GET",
-
+        type: "POST",
+        data : { 'vote' : up_or_down, 'song' : song_id ,'csrfmiddlewaretoken' : "{{ csrf_token }}" },
         // Function to call when to
         // request is ok
         success: function(data) {
-            var x = JSON.stringify(data);
-            console.log(x);
-            return x
+            var x = data;
+            if(!(x === 'not logged in')){
+              ratings = document.getElementById(song_id + "-rating");
+              ratings.innerHTML =  parseInt(ratings.innerHTML) + parseInt(x);
+            }
         },
-
         // Error handling
         error: function (error) {
             console.log(`Error ${error}`);
@@ -44,8 +41,8 @@
     </iframe>
     <p id="{{item.song.id}}-rating">
     <p/>
-    <button class="btn btn-primary">Upvote</button>
-    <button class="btn btn-primary">Downvote</button>
+    <button class="btn btn-primary", onclick="vote('{{item.song.id}}', 1)">Upvote</button>
+    <button class="btn btn-primary", onclick="vote('{{item.song.id}}', 0)">Downvote</button>
     <a href="#" class="btn btn-primary">Comments</a>
 
     <script type="text/javascript">
