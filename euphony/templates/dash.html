@@ -4,6 +4,36 @@
 
 {% block content %}
 
+<script type="text/javascript">
+
+ var thing = 1;
+
+  function ajaxCall(song_id) {
+    $.ajax({
+
+        // Our sample url to make request
+        url: '{ url proccess_vote}',
+
+        // Type of Request
+        type: "GET",
+
+        // Function to call when to
+        // request is ok
+        success: function(data) {
+            var x = JSON.stringify(data);
+            console.log(x);
+            return x
+        },
+
+        // Error handling
+        error: function (error) {
+            console.log(`Error ${error}`);
+        }
+    });
+  }
+
+</script>
+
 
 {% for item in recommendations %}
 <div class="card" style="width: 40rem;">
@@ -12,10 +42,18 @@
      frameBorder="0" allowfullscreen=""
      allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture">
     </iframe>
-    {{item.ratings}}
-    <a href="#" class="btn btn-primary">Upvote</a>
-    <a href="#" class="btn btn-primary">Downvote</a>
+    <p id="{{item.song.id}}-rating">
+    <p/>
+    <button class="btn btn-primary">Upvote</button>
+    <button class="btn btn-primary">Downvote</button>
     <a href="#" class="btn btn-primary">Comments</a>
+
+    <script type="text/javascript">
+
+     var ratings = {{item.ratings}};
+     document.getElementById("{{item.song.id}}-rating").innerHTML = ratings.toString();
+
+    </script>
   </div>
 </div>
 

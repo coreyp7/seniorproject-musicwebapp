@@ -85,6 +85,7 @@ def dash(request):
     '''
 
     id_list = []
+    posts = []
 
     if str(request.user) != 'AnonymousUser' and ( user := User.objects.get(pk=int(request.user.id))):
 
@@ -98,6 +99,10 @@ def dash(request):
             return HttpResponse("account not linked with spotify")
 
     return render(request, 'dash.html', {'recommendations' : posts[:50]})
+
+def proccess_vote(request):
+    print("test", request)
+
 
 # Function for adding all of the songs of a specified album to our db.
 # album_json is a specific dictionary found in search methods.

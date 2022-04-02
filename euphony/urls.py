@@ -26,7 +26,7 @@ urlpatterns = [
     path('profile/', views.profile, name='profile'),
     path('search_user/', views.search_user, name='search_users'),
     path('topchart/', views.topChart, name="top"),
-
+    path('proccess_vote/', views.proccess_vote, name="vote"),
     path('register/', views.registerPage, name="register"),
     path('login/', views.loginPage, name="login"),
     path('logout/', views.logoutUser, name="logout"),
