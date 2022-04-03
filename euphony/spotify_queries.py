@@ -1,6 +1,7 @@
 import spotipy
 from .cashe_handler import DatabaseTokenHandler
 from numpy.random import default_rng
+from .models import Song, Album
 
 rng = default_rng()
 
@@ -38,37 +39,52 @@ def insert_songs(album_id, song_id):
     pass
 
 
-def get_song_id_list(client, album_id_list):
+def get_song_list(client, album_list):
     '''
-    upon getting a list of albums get the songs in the albums from spotify
+    upon getting a list of albums get the song objects in the albums from spotify
     '''
 
-    id_list = []
+    songs_list = []
 
-    for id in album_id_list:
-        for track in client.album_tracks(id)['items']:
-            #print(track)
-            id_list.append(track['id'])
+    for album in album_list:
+        for track in client.album_tracks(album.id)['items']:
 
-    return id_list
+
+            object, created = Song.objects.get_or_create(id=track['id'],
+                                                               album_id=album,
+                                                               name=track['name'],
+                                                               artist=track['artists'][0],
+                                                               duration_ms=track['duration_ms'],
+                                                               explicit = track['explicit'],
+                                                               release_date = album.release_date,
+                                                               track_number = track['track_number'],
+                                                               disc = track['disc_number'],
+                                                               allow_comments=True)
+
+            songs_list.append(object)
+
+    return songs_list
 
 def gen_recomendations(client):
     '''
-    returns a list of recommended playlists
+    returns a list of recommended playlists, also puts the albums into database objects
     '''
+
     seed_tracks = get_saved_tracks(client)
-    id_list = []
+    album_list = []
 
     for item in client.recommendations(seed_genres=[], seed_tracks=seed_tracks)['tracks']:
+        object, created = Album.objects.get_or_create(
+                                                    id=item['album']["id"],
+                                                    defaults = {
+                                                    "name"  : item["name"],
+                                                    "artist" : item["artists"][0], #TEMPORARY
+                                                    "release_date" : item['album']["release_date"],
+                                                    "total_tracks" : item['album']["total_tracks"],
+                                                    "cover" : item["album"]["images"][1]["url"]
+                                                    }
+                                                    )
 
-        '''
-        album.objects.get_or_create(id=item['album']['id'],
-                                     album_type=item['album']['album_type'],
-                                     name=item['album']['name'],
-                                     release_date=item['album']['release_date'],
-                                     total_tracks=int(item['album']['total_tracks']))
+        album_list.append(object)
 
-        '''
-        id_list.append(item['album']['id'])
-
-    return id_list
+    return album_list

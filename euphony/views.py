@@ -21,7 +21,7 @@ from .spotify_queries import *
 from .forms import SongForm, CreateUserForm
 from .models import *
 
-from .models import Song, UserToken
+from .models import Song, UserToken, Song_rating
 
 from django.contrib import messages
 from .forms import EditUserForm
@@ -57,27 +57,85 @@ def link_account(request):
 
     return redirect("/")
 
+def get_song_rating_numbers(song_list):
 
+    '''
+    takes in a list of song ids, and returns a list containing the number of votes for each song
+    '''
+    ratings_list = []
+
+    for song in song_list:
+        rating_list = Song_rating.objects.filter(song_id=song)
+
+        rating = 0
+        for item in list(rating_list):
+            if(item.rating_type):
+                rating += 1
+            else:
+                rating += -1
+
+        ratings_list.append(rating)
+
+    return ratings_list
 
 def dash(request):
 
     '''
-    returns a webapge of recommendations, or if an account is unlinked it returns "account not linked with spotify" 
+    returns a webapge of recommendations, or if an account is unlinked it returns "account not linked with spotify"
     '''
 
     id_list = []
+    posts = []
 
     if str(request.user) != 'AnonymousUser' and ( user := User.objects.get(pk=int(request.user.id))):
 
         temp_client = gen_client(user, scope)
         if temp_client != None:
-            id_list = gen_recomendations(temp_client)
-            id_list = get_song_id_list(temp_client, id_list)
-            shuffle(id_list)# todo actually sort the ids by rank at some point
+            album_list = gen_recomendations(temp_client)
+            song_list = get_song_list(temp_client, album_list)
+            posts = [{ "song" : item[0] , "ratings" : item[1]} for item in zip(song_list, get_song_rating_numbers(song_list)) ]
+            shuffle(posts)
+            posts = posts[:50]
+            posts.sort(key = lambda item : item['ratings'], reverse=True )
         else:
             return HttpResponse("account not linked with spotify")
 
-    return render(request, 'dash.html', {'recommendations' : id_list[:50]})
+    return render(request, 'dash.html', {'recommendations' : posts})
+
+
+def proccess_vote(request):
+
+    if str(request.user) != 'AnonymousUser' and ( user := User.objects.get(pk=int(request.user.id))):
+        song = Song.objects.get(id=request.POST['song'])
+        rating = list(Song_rating.objects.filter(user_id=user, song_id=song))
+        new_vote = (int(request.POST['vote']) == 1)
+        if len(rating) == 0:
+            vote = Song_rating.objects.create(song_id=song, user_id=user, rating_type=new_vote)
+            print('new', vote.id, vote.song_id ,vote.rating_type)
+            if(new_vote):
+                return HttpResponse('1')
+            else:
+                return HttpResponse('-1')
+        else:
+            vote = rating[0]
+            old_vote = vote.rating_type
+            print('not new',vote.id, vote.song_id ,vote.rating_type)
+            if(old_vote == new_vote):
+                vote.delete()
+                if(old_vote):
+                    return HttpResponse(-1)
+                else:
+                    return HttpResponse(1)
+            else:
+                vote.rating_type=new_vote
+                vote.save()
+                if(new_vote):
+                    return HttpResponse(1)
+                else:
+                    return HttpResponse(-1)
+
+    return HttpResponse('not logged in')
+
 
 # Function for adding all of the songs of a specified album to our db.
 # album_json is a specific dictionary found in search methods.
@@ -143,7 +201,7 @@ def search_album_results(request):
     if form.is_valid():
         album_query = form.cleaned_data["song_name"]
         albums_json = sp.search(album_query, type="album", limit=10) # json with song information
-        
+
         albums_json = albums_json["albums"]
         all_albums = []
         for json_obj in albums_json["items"]:
@@ -223,14 +281,14 @@ def search_song_results(request):
             #print(f"Track info: {json.dumps(track_info, indent=4)}")
             final_songs_list.append(track_info)
 
-        return render(request, "search_song.html", 
+        return render(request, "search_song.html",
         {"form_info": form, "songs": final_songs_list})
     else:
         print("unsuccessful :(")
 
     return render(request, "search_song.html", {"form_info": form, "songs": None})
 
-# Playlist Page functions 
+# Playlist Page functions
 def allplaylists_view(request):
     playlists=Playlist.objects.all()
     return render(request,'playlists.html',{'playlists': playlists})
@@ -269,7 +327,7 @@ def album_info(request, id):
     for artist_obj in album["artists"]:
         artist_name = artist_obj["name"]
         album_artists_list.append(artist_name)
-    
+
     album_info = {
         "id" : album["id"],
         "name" : album["name"],
@@ -314,7 +372,7 @@ def songinfo(request, music_id):
     for artist_obj in track["artists"]:
         artist_name = artist_obj["name"]
         album_artists_list.append(artist_name)
-    
+
     # Get the album info of this song's album.
     album_info = {
         "id" : track["album"]["id"],
@@ -339,9 +397,9 @@ def songinfo(request, music_id):
         add_albums_songs(album_info, object)
 
     songid = Song.objects.get(pk=music_id)
-    return render(request, 'songinfo.html', {'songid': songid, 
+    return render(request, 'songinfo.html', {'songid': songid,
     "album": {
-        "name": album_info["name"], 
+        "name": album_info["name"],
         "id": album_info["id"]}})
 
 def settings_general(request):
@@ -468,6 +526,21 @@ def topChart(request):
     #form = SearchForm() No search form exists, so commenting out.
     return render(request, 'topcharts.html')
 
-def topChart_post(request):
-    context  = {}
-    return render(request, 'topcharts.html', context)
+
+def topChart(request):
+    return render(request, 'topcharts.html')
+
+def topChart_Global(request):
+    return render(request, 'GlobalTopChart.html')
+
+def topChart_Canada(request):
+    return render(request, 'CanadaTopChart.html')
+
+def topChart_Japan(request):
+    return render(request, 'JapanTopChart.html')
+
+def topChart_Mexico(request):
+    return render(request, 'MexicoTopChart.html')
+
+def topChart_USA(request):
+    return render(request, 'USATopChart.html')
