@@ -92,6 +92,6 @@ class UserToken(models.Model):
     token = models.TextField()
 
 class User_Setting_Ext(models.Model):
-    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='userExt')
     dark_mode = models.BooleanField(default=False) #Color mode: dark/white toggle
     explicit = models.BooleanField(default=False) #Explicit content toggle

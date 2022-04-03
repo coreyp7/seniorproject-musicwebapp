@@ -26,6 +26,9 @@ from .models import Song, UserToken, Song_rating
 from django.contrib import messages
 from .forms import EditUserForm
 
+from django.contrib.auth.forms import PasswordChangeForm
+from django.contrib.auth import update_session_auth_hash
+
 scope = "user-library-read"
 #sp = spotipy.Spotify(auth_manager=SpotifyOAuth(scope=scope))
 sp = spotipy.Spotify(client_credentials_manager=SpotifyClientCredentials())
@@ -408,6 +411,23 @@ def settings_general(request):
 def settings_security(request):
     return render(request, 'settings_security.html')
 
+def settings_reset_password(request):
+    if request.method == 'POST':
+        form = PasswordChangeForm(data=request.POST, user=request.user)
+
+        if form.is_valid():
+            form.save()
+            update_session_auth_hash(request, form.user)
+            return redirect(reverse('settings_account'))
+        else:
+            messages.success(request, ('One or More Requirements Not Fulfiled!'))
+            return redirect(reverse('settings_reset_password'))
+    else:
+        form = PasswordChangeForm(user=request.user)
+
+        args = {'form': form}
+        return render(request, 'settings_reset_password.html', args)
+
 def settings_account(request):
       if request.method == 'POST':
         form = EditUserForm(request.POST, instance=request.user)
@@ -526,7 +546,6 @@ def topChart(request):
     #form = SearchForm() No search form exists, so commenting out.
     return render(request, 'topcharts.html')
 
-<<<<<<< HEAD
 
 def topChart(request):
     return render(request, 'topcharts.html')
