@@ -1,9 +1,13 @@
 {% load static %}
 {% include 'base.html' %}
+
 {% block title %}Euphony{% endblock %}
 
 {% block content %}
-<h3>This will be our temporary home page. Link your stuff here if you want to
+<br>
+<h1 style="margin-left: -70px;">Euphony home page</h1>
+<br>
+<h3 style="margin-right: 25px;">This will be our temporary home page. Link your stuff here if you want to
     easily access it.
 </h3>
 
@@ -23,9 +27,10 @@
 <br>
 <a href="{% url 'logout' %}">Logout page (instant logout, redirects to login page)</a>
 <br>
+<a href="{% url 'register' %}">Register Page</a>
+<br>
 <a href="{% url 'search_album' %}">Search Album Page</a>
 {% endblock %}
-
 
 <script type="text/javascript">
   if("{{ user.userExt.dark_mode }}" == "True") {

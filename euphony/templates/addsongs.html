@@ -1,0 +1,27 @@
+{% extends 'base.html' %}
+
+<title>{% block title %} Playlists {% endblock %}</title>
+
+{% block content %}
+<body style="background-color: white;"></body>
+<br>
+<button type="submit" style="float: right;" class="btn btn-secondary">+</button>
+<br>
+<table style="background-color: whitesmoke;" class="table">
+    <br>
+    <thead>
+        <tr>
+            <th scope="col">#</th>
+            <th scope="col">Song</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for instance in playlists %}
+        <tr>
+            <th scope="row">{{forloop.counter}}</th>
+            <td>{{ instance.song }}</td>   
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endblock %}

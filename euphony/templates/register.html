@@ -43,7 +43,7 @@ z<!DOCTYPE html>
 
       .login_btn {
         width: 100%;
-        background: #EF6024 !important;
+        background: #CC94F2 !important;
         color: white !important;
       }
 
@@ -57,7 +57,7 @@ z<!DOCTYPE html>
       }
 
       .input-group-text {
-        background: #F0941F !important;
+        background: #B65CF2 !important;
         color: white !important;
         border: 0 !important;
         border-radius: 0.25rem 0 0 0.25rem !important;
@@ -83,7 +83,7 @@ z<!DOCTYPE html>
           <div class="d-flex justify-content-center form_container">
 
             <form method="POST" action="">
-            	{% csrf_token %}
+              {% csrf_token %}
               <div class="input-group mb-3">
                 <div class="input-group-append">
                   <span class="input-group-text"><i class="fas fa-user"></i></span>
@@ -119,7 +119,7 @@ z<!DOCTYPE html>
 
           <div class="mt-4">
             <div class="d-flex justify-content-center links">
-              Already have an account? <a href="{% url 'recommender:login' %}" class="ml-2">Login</a>
+              Already have an account? <a href="{% url 'login' %}" class="ml-2">Login</a>
             </div>
           </div>
         </div>
@@ -127,8 +127,8 @@ z<!DOCTYPE html>
     </div>
     <script>
       /* Because i didnt set placeholder values in forms.py they will be set here using vanilla Javascript
-		//We start indexing at one because CSRF_token is considered and input field 
-		 */
+    //We start indexing at one because CSRF_token is considered and input field 
+     */
 
       //Query All input fields
       var form_fields = document.getElementsByTagName('input')
@@ -146,4 +146,3 @@ z<!DOCTYPE html>
   </body>
 
 </html>
-

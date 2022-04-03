@@ -1,0 +1,65 @@
+{% extends 'base.html' %}
+
+{% block title %} Top Charts {% endblock %}
+
+{% block content %}
+
+
+
+
+<!DOCTYPE html>
+<html>
+<head>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+
+  <script>
+    $('#SpaceAccommodation').change(function () {
+    var selectedText = $(this).find("option:selected").text();
+    
+    $(".test").text(selectedText);
+    });
+  </script>
+  
+
+  <style type="text/css">
+    
+    .dropdown-menu {
+    max-height: 280px;
+    overflow-y: auto;
+}
+
+
+  </style>
+
+  
+</head>
+<body>
+
+<div class="container">
+  <h2>Top Charts Daily</h2>  
+
+                                
+  <div class="dropdown">
+    <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown">Select Country
+   </button>
+    <ul class="dropdown-menu dropdown-toggle">
+      <li><a href="Global">Global</a></li>
+      <li><a href="Canada">Canada</a></li>
+      <li><a href="Japan">Japan</a></li>
+      <li><a href="Mexico">Mexico</a></li>
+      <li><a href="USA">USA</a></li>
+    </ul>
+  </div>
+</div>
+
+<br>
+
+<iframe style="border-radius:12px" src="https://open.spotify.com/embed/playlist/37i9dQZEVXbLRQDuF5jeBp?utm_source=generator" width="100%" height="380" frameBorder="0" allowfullscreen="" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"></iframe>
+
+</body>
+</html>
+
+{% endblock %}
