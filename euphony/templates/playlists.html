@@ -1,5 +1,4 @@
-{% load static %}
-{% include 'base.html' %}
+{% extends 'base.html' %}
 
 <title>{% block title %} Playlists {% endblock %}</title>
 
@@ -37,17 +36,10 @@
         {% for instance in playlists %}
         <tr>
             <th scope="row">{{forloop.counter}}</th>
-            <td><a href="{% url 'addsongs_view' %}">{{ instance.name }}</a></td>
+            <td><a href="{% url 'addsongs_view' instance.id %}">{{ instance.name }}</a></td>
             <td><a href="{% url 'delete_playlist' instance.id %}">Delete</a></td>
         </tr>
         {% endfor %}
     </tbody>
 </table>
 {% endblock %}
-
-
-<script type="text/javascript">
-    if ("{{ user.userExt.dark_mode }}" == "True") {
-        document.write('<link rel="stylesheet" type="text/css" href="{% static 'css / dark_mode.css' %}">');
-    }
-</script>

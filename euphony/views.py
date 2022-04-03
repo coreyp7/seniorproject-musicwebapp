@@ -292,6 +292,104 @@ def search_song_results(request):
     return render(request, "search_song.html", {"form_info": form, "songs": None})
 
 # Playlist Page functions
+@require_GET
+def playlist_song(request, list_id):
+    form = SongForm()
+    playlist = Playlist.objects.get(pk=list_id)
+    return render(request, "addsongs_playlist.html", {"form": form, 'playlist': playlist})
+
+@require_POST
+def playlist_song_results(request, list_id):
+    form = SongForm(request.POST)
+
+    if form.is_valid():
+        # find song list from spotipy and return the list in the form of a parameter in our render
+        track_query = "track:"+form.cleaned_data["song_name"]
+        songs_json = sp.search(track_query) # json with song information
+
+        final_songs_list = [] # list of dictionaries
+
+        songs_json = songs_json["tracks"]
+        for json_obj in songs_json["items"]:
+            # track stuff
+            track_id = json_obj["id"]
+            track_name = json_obj["name"]
+            track_number = json_obj["track_number"] # track's placement in album
+            track_explicit = json_obj["explicit"] # track's explicitity
+            track_artists = json_obj["artists"]
+            track_artists_list = [] # list of track's artists formatted how we want
+            for artist_obj in track_artists:
+                artist_name = artist_obj["name"]
+                track_artists_list.append(artist_name)
+            # album stuff
+            album_json = json_obj["album"] # album json object
+            album_id = album_json["id"] # track's album id
+            album_name = album_json["name"] # track's album name
+            album_release_date = album_json["release_date"] # track's release date
+            album_artists = album_json["artists"]
+            album_artists_list = [] # list of track's artists formatted how we want
+            for artist_obj in album_artists:
+                artist_name = artist_obj["name"]
+                album_artists_list.append(artist_name)
+            #artist stuff
+
+            track_info = {
+                "id" : track_id,
+                "name" : track_name,
+                "number" : track_number,
+                "explicit" : track_explicit,
+                "artists" : track_artists_list,
+                "album_id" : album_id,
+                "album_name" : album_name,
+                "album_release_date" : album_release_date,
+                "album_artists" : album_artists_list,
+            }
+            # Now that track_info has been created, let's check if this
+            # song exists.
+            playlist = Playlist.objects.get(pk=list_id)
+            try:
+                try:
+                    song_exists = Song.objects.get(pk=track_info["id"])
+                    if song_exists:
+                        print("Already exists")
+                except ObjectDoesNotExist:
+                    new_song = Song()
+                    new_song.id = track_info["id"]
+                    new_song.album_id = None #TEMPORARY
+                    new_song.name = track_info["name"]
+                    new_song.artist = track_info["artists"][0] #TEMPORARY
+                    new_song.duration_ms = 1 #TEMPORARY
+                    new_song.explicit = False #TEMPORARY
+                    new_song.release_date = track_info["album_release_date"]
+                    new_song.track_number = 1 #TEMPORARY
+                    new_song.save()
+                    print(f"new song {track_info['name']} added to db!")
+            except OperationalError:
+                print("Song table doesn't exist.")
+            
+            #print(f"Track info: {json.dumps(track_info, indent=4)}")
+            final_songs_list.append(track_info)
+
+        return render(request, "addsongs_playlist.html", 
+        {"form_info": form, "songs": final_songs_list, 'playlist': playlist})
+    else:
+        print("unsuccessful :(")
+
+    return render(request, "addsongs_playlist.html", {"form_info": form, "songs": None, 'playlist': playlist})
+
+def add_song(request, list_id, song_id):
+    playlist = Playlist.objects.get(pk=list_id)
+    song = Song.objects.get(pk=song_id)
+    playlist.songs.add(song)
+    playlist.save()
+    songs = playlist.songs.all()
+    all_songs = list(songs)
+    n = 1   
+    list_songs = [all_songs[i:i+n] for i in range(0, len(all_songs), n)]
+    listsong = list(list_songs)
+    return render(request, 'addsongs.html', {'playlist': playlist, 'listsong': listsong})
+
+# Playlist Page functions 
 def allplaylists_view(request):
     playlists=Playlist.objects.all()
     return render(request,'playlists.html',{'playlists': playlists})
@@ -316,8 +414,9 @@ def delete_playlist(request, list_id):
     messages.success(request, ('Playlist Has Been Deleted!'))
     return redirect('playlists')
 
-def addsongs_view(request):
-    return render(request, "addsongs.html", {})
+def addsongs_view(request, list_id):
+    playlist = Playlist.objects.get(pk=list_id)
+    return render(request, "addsongs.html", {'playlist': playlist})
 
 #Displays Album - and hopefully the tracks of the album uhh
 def album_info(request, id):
