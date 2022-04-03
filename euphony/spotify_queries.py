@@ -88,3 +88,5 @@ def gen_recomendations(client):
         album_list.append(object)
 
     return album_list
+
+

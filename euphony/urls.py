@@ -26,12 +26,14 @@ urlpatterns = [
     path('profile/', views.profile, name='profile'),
     path('search_user/', views.search_user, name='search_users'),
     path('topchart/', views.topChart, name="top"),
+
     path('topchart/Global', views.topChart_Global, name="Global"),
     path('topchart/Canada', views.topChart_Canada, name="Canada"),
     path('topchart/Japan', views.topChart_Japan, name="Japan"),
     path('topchart/Mexico', views.topChart_Mexico, name="Mexico"),
     path('topchart/USA', views.topChart_USA, name="USA"),
 
+    path('proccess_vote/', views.proccess_vote, name="vote"),
 
     path('register/', views.registerPage, name="register"),
     path('login/', views.loginPage, name="login"),

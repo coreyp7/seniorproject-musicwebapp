@@ -526,6 +526,7 @@ def topChart(request):
     #form = SearchForm() No search form exists, so commenting out.
     return render(request, 'topcharts.html')
 
+<<<<<<< HEAD
 
 def topChart(request):
     return render(request, 'topcharts.html')
@@ -544,3 +545,4 @@ def topChart_Mexico(request):
 
 def topChart_USA(request):
     return render(request, 'USATopChart.html')
+
