@@ -39,4 +39,12 @@ urlpatterns = [
     path('register/', views.registerPage, name="register"),
     path('login/', views.loginPage, name="login"),
     path('logout/', views.logoutUser, name="logout"),
+
+    path('user_group_all/', views.user_group_all, name="user_group_all"),
+    path('user_group_create/', views.user_group_create, name="user_group_create"),
+    path('user_group_delete/<user_group_id>', views.user_group_delete, name="user_group_delete"),
+    path('user_group_join/<user_group_id>', views.user_group_join, name="user_group_join"),
+    path('user_group_leave/<user_group_id>', views.user_group_leave, name="user_group_leave"),
+    path('user_group_page/<user_group_id>', views.user_group_page, name="user_group_page"),
+
 ]

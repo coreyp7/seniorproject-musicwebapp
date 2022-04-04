@@ -95,3 +95,19 @@ class User_Setting_Ext(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='userExt')
     dark_mode = models.BooleanField(default=False) #Color mode: dark/white toggle
     explicit = models.BooleanField(default=False) #Explicit content toggle
+
+#Section dedicated towards UserGroups
+class UserGroup(models.Model):
+    name = models.TextField(max_length=200)
+    ''' Wanted to designate owner of group but
+        members clashed with owner when making table
+        Decided to throw out owner
+    owner = models.OneToOneField(
+        User,
+        on_delete=models.CASCADE,
+    )
+    '''
+    members = models.ManyToManyField(User)
+    membership = models.BooleanField(default=False)
+    def __str__(self):
+        return self.name + ' | ' + str(self.membership)

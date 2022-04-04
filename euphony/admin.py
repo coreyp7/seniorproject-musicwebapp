@@ -26,4 +26,4 @@ admin.site.register(Album_rating)
 admin.site.register(Playlist_rating)
 admin.site.register(UserToken)
 admin.site.register(User_Setting_Ext)
-
+admin.site.register(UserGroup)

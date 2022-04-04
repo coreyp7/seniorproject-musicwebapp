@@ -18,7 +18,7 @@ import json
 from .cashe_handler import DatabaseTokenHandler
 from .spotify_queries import *
 
-from .forms import SongForm, CreateUserForm
+from .forms import SongForm, CreateUserForm, UserGroupForm
 from .models import *
 
 from .models import Song, UserToken, Song_rating
@@ -564,4 +564,44 @@ def topChart_Mexico(request):
 
 def topChart_USA(request):
     return render(request, 'USATopChart.html')
+
+def user_group_all(request)
+    all_groups = UserGroup.objects.all
+    return render(request,'user_groups_all.html',{'all_groups' : all_groups})
+
+def user_group_join(request, user_group_id):
+	user_group = UserGroup.objects.get(pk=user_group_id)
+	user_group.membership = True
+	user_group.save()
+	return redirect('user_groups_all')
+
+def user_group_leave(request, user_group_id):
+	user_group = UserGroup.objects.get(pk=user_group_id)
+	user_group.membership = False
+	user_group.save()
+	return redirect('user_groups_all')
+
+def user_group_delete(request, user_group_id):
+	user_group = UserGroup.objects.get(pk=user_group_id)
+	user_group.delete()
+	messages.success(request, ('Group Has Been Deleted'))
+	return redirect('user_groups_all')
+
+def user_group_create(request)
+    submitted = False
+    if request.method == "POST":
+        form = PlaylistForm(request.POST)
+        if form.is_valid():
+            form.save()
+            messages.success(request, ('New Group Created'))
+            return redirect('user_groups_all')
+    else:
+        form = PlaylistForm
+        if 'submitted' in request.GET:
+            submitted = True
+        return render(request,'user_groups_create.html',{'form': form, 'submitted': submitted})
+
+def user_group_page(request, user_group_id)
+    user_group = UserGroup.objects.get(pk=user_group_id)
+    return render(request,'user_groups_page.html',{'user_group': user_group})
 
