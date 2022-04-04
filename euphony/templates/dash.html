@@ -43,7 +43,7 @@
     <p/>
     <button class="btn btn-primary", onclick="vote('{{item.song.id}}', 1)">Upvote</button>
     <button class="btn btn-primary", onclick="vote('{{item.song.id}}', 0)">Downvote</button>
-    <a href="#" class="btn btn-primary">Comments</a>
+    <a href="{% url 'songinfo' item.song.id  %}" class="btn btn-primary">Comments</a>
 
     <script type="text/javascript">
 
