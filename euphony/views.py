@@ -565,7 +565,7 @@ def topChart_Mexico(request):
 def topChart_USA(request):
     return render(request, 'USATopChart.html')
 
-def user_group_all(request)
+def user_group_all(request):
     all_groups = UserGroup.objects.all
     return render(request,'user_groups_all.html',{'all_groups' : all_groups})
 
@@ -587,7 +587,7 @@ def user_group_delete(request, user_group_id):
 	messages.success(request, ('Group Has Been Deleted'))
 	return redirect('user_groups_all')
 
-def user_group_create(request)
+def user_group_create(request):
     submitted = False
     if request.method == "POST":
         form = PlaylistForm(request.POST)
@@ -601,7 +601,7 @@ def user_group_create(request)
             submitted = True
         return render(request,'user_groups_create.html',{'form': form, 'submitted': submitted})
 
-def user_group_page(request, user_group_id)
+def user_group_page(request, user_group_id):
     user_group = UserGroup.objects.get(pk=user_group_id)
     return render(request,'user_groups_page.html',{'user_group': user_group})
 

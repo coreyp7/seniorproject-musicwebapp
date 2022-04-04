@@ -13,13 +13,13 @@
 		{% for things in all_groups %}
 			{% if things.membership %}
 				<tr class="table-secondary"> 
-					<td><a href= "{% url 'user_groups_page' things.id %}">{{ things.item }}</a></td>
+					<td><a href= "{% url 'user_group_page' things.id %}">{{ things.item }}</a></td>
 					<td><center><a href= "{% url 'user_group_leave' things.id %}">Leave</a></center></td>
                     <td><center><a href= "{% url 'user_group_delete' things.id %}">Delete</a></center></td>
 				</tr>
 			{% else %}
 				<tr> 
-					<td><a href= "{% url 'user_groups_page' things.id %}">{{ things.item }}</a></td>
+					<td><a href= "{% url 'user_group_page' things.id %}">{{ things.item }}</a></td>
 					<td><center><a href= "{% url 'user_group_join' things.id %}">Join</a></center></td>
                     <td><center><a href= "{% url 'user_group_delete' things.id %}">Delete</a></center></td>
 				</tr>

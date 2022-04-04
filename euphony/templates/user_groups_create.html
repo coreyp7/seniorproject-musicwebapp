@@ -8,7 +8,7 @@
     {% if user_group %}
 	<form class="d-flex" method= "POST">
         {%  csrf_token %}
-    <input class="form-control me-2" type="search" placeholder="{{ item.item }}" value="{{ item.item }}" aria-label="Search" name="item">
+    <input class="form-control me-2" type="search" placeholder="Group Name" aria-label="Search" name="item">
     <input type = "hidden" value="{{ item.membership }}" name="membership">
 
     <button type="submit" class="btn btn-secondary "><a href="{% url 'user_group_create' %}"> Create Group </a></button>
