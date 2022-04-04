@@ -180,14 +180,16 @@ def add_albums_songs(album_json, album_model_obj):
 
         object, created = Song.objects.get_or_create(
             id=track_info["id"],
-            name=track_info["name"],
-            artist=track_info["artists"][0],
-            release_date=track_info["release_date"],
-            track_number=json_obj["track_number"],
-            disc=track_info["disc"],
-            album_id=album_model_obj,
-            duration_ms=json_obj["duration_ms"],
-            explicit=json_obj["explicit"]
+            defaults = {
+            "name" : track_info["name"],
+            "artist" : track_info["artists"][0],
+            "release_date" : track_info["release_date"],
+            "track_number" : json_obj["track_number"],
+            "disc" : track_info["disc"],
+            "album_id" : album_model_obj,
+            "duration_ms" : json_obj["duration_ms"],
+            "explicit" : json_obj["explicit"]
+            }
         )
         if created:
             print(f""+str(object)+" : "+track_info["name"]+" has been added." )
@@ -332,14 +334,14 @@ def playlist_song_results(request, list_id):
             }
             #print(f"Track info: {json.dumps(track_info, indent=4)}")
             final_songs_list.append(track_info)
-        
+
         playlist = Playlist.objects.get(pk=list_id)
         return render(request, "addsongs_playlist.html", {"form_info": form,
         "songs": final_songs_list, 'playlist': playlist})
     else:
         print("unsuccessful :(")
 
-    return render(request, "addsongs_playlist.html", 
+    return render(request, "addsongs_playlist.html",
     {"form_info": form, "songs": final_songs_list, 'playlist': playlist})
 
 
@@ -381,12 +383,12 @@ def add_song(request, list_id, song_id):
     playlist.save()
     songs = playlist.songs.all()
     all_songs = list(songs)
-    n = 1   
+    n = 1
     list_songs = [all_songs[i:i+n] for i in range(0, len(all_songs), n)]
     listsong = list(list_songs)
     return render(request, 'addsongs.html', {'playlist': playlist, 'listsong': listsong})
 
-# Playlist Page functions 
+# Playlist Page functions
 def allplaylists_view(request):
     playlists=Playlist.objects.all()
     return render(request,'playlists.html',{'playlists': playlists})
@@ -440,11 +442,13 @@ def album_info(request, id):
     # Now check if this album already exists.
     object, created = Album.objects.get_or_create(
         id=album_info["id"],
-        name=album_info["name"],
-        artist=album_info["artists"][0], #TEMPORARY
-        release_date=album_info["release_date"],
-        total_tracks=album_info["total_tracks"],
-        cover=album_info["cover"]
+        defaults = {
+        "name" : album_info["name"],
+        "artist" : album_info["artists"][0], #TEMPORARY
+        "release_date" : album_info["release_date"],
+        "total_tracks" : album_info["total_tracks"],
+        "cover" : album_info["cover"]
+        }
         )
     if created:
         add_albums_songs(album_info, object)
@@ -486,11 +490,13 @@ def songinfo(request, music_id):
     # Now check if this album already exists.
     object, created = Album.objects.get_or_create(
         id=album_info["id"],
-        name=album_info["name"],
-        artist=album_info["artists"][0], #TEMPORARY
-        release_date=album_info["release_date"],
-        total_tracks=album_info["total_tracks"],
-        cover=album_info["cover"]
+        defaults = {
+        "name" : album_info["name"],
+        "artist" : album_info["artists"][0], #TEMPORARY
+        "release_date" : album_info["release_date"],
+        "total_tracks" : album_info["total_tracks"],
+        "cover" : album_info["cover"]
+        }
         )
     if created: # if it was new, add all of its songs to our db
         add_albums_songs(album_info, object)
@@ -660,4 +666,3 @@ def topChart_Mexico(request):
 
 def topChart_USA(request):
     return render(request, 'USATopChart.html')
-
