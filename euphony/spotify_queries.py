@@ -3,6 +3,7 @@ from spotipy.oauth2 import SpotifyClientCredentials, SpotifyOAuth
 from .cashe_handler import DatabaseTokenHandler
 from numpy.random import default_rng
 from .models import Song, Album
+import json
 
 sp = spotipy.Spotify(client_credentials_manager=SpotifyClientCredentials())
 
@@ -111,6 +112,7 @@ album_json = {
 def add_albums_songs(album_json, album_model_obj):
     album_tracks = sp.album_tracks(album_json["id"])
     #print(json.dumps(album_tracks, indent=4))
+    #print(json.dumps(album_json))
     album_tracks = album_tracks["items"]
 
     for json_obj in album_tracks:

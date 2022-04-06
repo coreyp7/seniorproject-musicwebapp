@@ -179,7 +179,9 @@ def search_album_results(request):
                 "cover" : album_cover_art
             }
 
-            all_albums.append(album_info)
+            # If it is a compilation, we just flat out ignore it and don't show it.
+            if album_info["type"] != 'compilation':
+                all_albums.append(album_info)
             #print(json.dumps(album_info, indent=4, sort_keys=True))
         if len(all_albums) == 0:
             return render(request, "search_album.html", {"form": form, "albums_empty": True})
@@ -228,8 +230,10 @@ def search_song_results(request):
                 "album_name" : album_json["name"],
                 "album_release_date" : album_json["release_date"],
             }
-            #print(f"Track info: {json.dumps(track_info, indent=4)}")
-            final_songs_list.append(track_info)
+
+            # If it is in a compilation, we just flat out ignore it and don't show it.
+            if album_json["album_type"] != 'compilation':
+                final_songs_list.append(track_info)
 
         return render(request, "search_song.html",
         {"form_info": form, "songs": final_songs_list})
