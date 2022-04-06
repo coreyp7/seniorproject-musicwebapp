@@ -24,7 +24,11 @@
 <div>
   {% if songs %}
   {%for song in songs %}
-  <a href="{% url 'songinfo' song.id %}">{{forloop.counter}}. {{song.name}} - {{song.duration}}</a>
+  {% if song.explicit %}
+  <a href="{% url 'songinfo' song.id %}">{{forloop.counter}}. {{song.name}} | {{song.duration}} <b>(Explicit)</b> </a>
+  {% else %}
+  <a href="{% url 'songinfo' song.id %}">{{forloop.counter}}. {{song.name}} | {{song.duration}}</a>
+  {% endif %}
   <br>
   {% endfor %}
   {% endif %}
