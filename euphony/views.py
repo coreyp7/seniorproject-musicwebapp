@@ -190,6 +190,56 @@ def search_album_results(request):
         print("Invalid form in search_album_results")
     return render(request, "search_album.html", {"form": form, "albums": None})
 
+@require_GET
+def search(request):
+    form = SongForm()
+    return render(request, "search.html", {"form": form})
+
+def search_results(request):
+    form = SongForm(request.POST)
+
+    if form.is_valid():
+        #SONG STUFF FIRST
+
+        # find song list from spotipy and return the list in the form of a parameter in our render
+        track_query = "track:"+form.cleaned_data["song_name"]
+        songs_json = sp.search(track_query, limit=10) # json with song information
+
+        final_songs_list = []
+
+        songs_json = songs_json["tracks"]
+        for json_obj in songs_json["items"]:
+            album_json = json_obj["album"] # album json object
+            album_id = album_json["id"] # track's album id
+
+            album_artists = []
+            for artist_obj in json_obj["artists"]:
+                album_artists.append(artist_obj['name'])
+            album_artists_str = ", ".join(album_artists)
+
+            track_info = {
+                "id" : json_obj["id"],
+                "name" : json_obj["name"],
+                "number" : json_obj["track_number"],
+                "explicit" : json_obj["explicit"],
+                "artists" : album_artists_str, 
+                "album_id" : album_id,
+                "album_name" : album_json["name"],
+                "album_release_date" : album_json["release_date"],
+                "album_cover" : album_json["images"][1]["url"]
+                # IN "album_cover", change to 0 for bigger pic, 2 for smaller pic
+            }
+
+            # If it is in a compilation, we just flat out ignore it and don't show it.
+            if album_json["album_type"] != 'compilation':
+                final_songs_list.append(track_info)
+
+        return render(request, "search.html",
+        {"form_info": form, "songs": final_songs_list})
+    else:
+        print("unsuccessful :(")
+
+    return render(request, "search.html", {"form_info": form, "songs": None})
 
 # Search song page that is blank, what is initially shown to user.
 @require_GET
@@ -229,6 +279,8 @@ def search_song_results(request):
                 "album_id" : album_id,
                 "album_name" : album_json["name"],
                 "album_release_date" : album_json["release_date"],
+                "album_cover" : album_json["images"][1]["url"]
+                # IN "album_cover", change to 0 for bigger pic, 2 for smaller pic
             }
 
             # If it is in a compilation, we just flat out ignore it and don't show it.
