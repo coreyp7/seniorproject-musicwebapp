@@ -152,5 +152,37 @@ def add_albums_songs(album_json, album_model_obj):
         if created:
             print(f""+str(object)+" : "+track_info["name"]+" has been added." )
 
+# Currently only used in album_info function in views.py.
+# Converts ms runtime of album to formatted string of runtime.
+# Putting here since it might be helpful later.
+def convertMillis(millis):
 
+    seconds=(millis/1000)%60
+    minutes=(millis/(1000*60))%60
+    hours=(millis/(1000*60*60))%24
+    
+    hours = str.split(str(hours), '.')[0]
+    minutes = str.split(str(minutes), '.')[0]
+    seconds = str.split(str(seconds), '.')[0]
+    
+    if int(seconds)<10:
+        seconds = f"0{seconds}"
+
+    """
+    if int(minutes)<10:
+        minutes = f"0{minutes}"
+    """
+
+    final_string = ""
+
+    if int(hours) == 0 and int(minutes) == 0:
+        final_string = f"0:{seconds}"
+    elif int(hours) == 0:
+        final_string = f"{minutes}:{seconds}"
+    else:
+        if int(minutes)<10:
+            minutes = f"0{minutes}"
+        final_string = f"{hours}:{minutes}:{seconds}"
+
+    return final_string
 

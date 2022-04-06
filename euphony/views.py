@@ -404,16 +404,13 @@ def album_info(request, id):
     song_counter = 1
     for song in all_our_songs:
         # Create dictionaries for the album_info.html to easily display, handle the logic here.
-        seconds, minutes, hours = convertMillis(song.duration_ms)
-        minutes = str.split(str(minutes), '.')[0]
-        seconds = str.split(str(seconds), '.')[0]
 
         new_song = {
             "id" : song.id,
             "album_id" : song.album_id,
             "name" : song.name,
             "artists" : song.artists,
-            "duration" : f"{minutes}:{seconds}",
+            "duration" : convertMillis(song.duration_ms),
             "explicit" : song.explicit,
             "release_date" : song.release_date,
             "track_number" : song.track_number,
@@ -425,11 +422,6 @@ def album_info(request, id):
     return render(request, "album_info.html", {"id": id, "songs": album_tracks,
     "album": album_info})
 
-def convertMillis(millis):
-    seconds=(millis/1000)%60
-    minutes=(millis/(1000*60))%60
-    hours=(millis/(1000*60*60))%24
-    return seconds, minutes, hours
 
 # This method does two things:
 # 1. Check if song's album exists in our db. If it
