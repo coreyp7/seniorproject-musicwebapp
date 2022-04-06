@@ -4,18 +4,22 @@
 
 {% block content %}
 
-<h1> Album Results </h1>
+<h1> Album: {{album.name}} </h1>
+<h5> Amount of tracks: {{album.total_tracks}}</h5>
+<h2> Released: {{album.release_date}} </h2>
 
-Artist(s): {{album.artists}}
+<h2> Artist(s): {{album.artists}} </h2>
 
-<div class="card" style="width: 40rem;">
+<!--<div class="card" style="width: 40rem;">
   <div class="card-body">
     <iframe style="border-radius:12px" src="https://open.spotify.com/embed/album/{{id}}" width="100%" height="380"
       frameBorder="0" allowfullscreen=""
       allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture">
     </iframe>
   </div>
-</div>
+</div>-->
+
+<img src="{{album.cover}}">
 
 <div>
   {% if songs %}
