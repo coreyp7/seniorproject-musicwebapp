@@ -20,7 +20,7 @@ Artist(s): {{album.artists}}
 <div>
   {% if songs %}
   {%for song in songs %}
-  <a href="{% url 'songinfo' song.id %}">{{song.name}}</a>
+  <a href="{% url 'songinfo' song.id %}">{{forloop.counter}}. {{song.name}} - {{song.duration}}</a>
   <br>
   {% endfor %}
   {% endif %}

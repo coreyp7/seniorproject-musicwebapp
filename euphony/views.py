@@ -401,13 +401,35 @@ def album_info(request, id):
     album_tracks = []
     all_our_songs = Song.objects.filter(album_id=object)
 
+    song_counter = 1
     for song in all_our_songs:
-        # This inserts each song in order according to
-        # its track number and the disc its on.
-        album_tracks.insert(song.track_number * song.disc, song.name)
+        # Create dictionaries for the album_info.html to easily display, handle the logic here.
+        seconds, minutes, hours = convertMillis(song.duration_ms)
+        minutes = str.split(str(minutes), '.')[0]
+        seconds = str.split(str(seconds), '.')[0]
 
-    return render(request, "album_info.html", {"id": id, "songs": all_our_songs,
+        new_song = {
+            "id" : song.id,
+            "album_id" : song.album_id,
+            "name" : song.name,
+            "artists" : song.artists,
+            "duration" : f"{minutes}:{seconds}",
+            "explicit" : song.explicit,
+            "release_date" : song.release_date,
+            "track_number" : song.track_number,
+            "disc" : song.disc,
+            "allow_comments" : song.allow_comments
+        }
+        album_tracks.append(new_song)
+
+    return render(request, "album_info.html", {"id": id, "songs": album_tracks,
     "album": album_info})
+
+def convertMillis(millis):
+    seconds=(millis/1000)%60
+    minutes=(millis/(1000*60))%60
+    hours=(millis/(1000*60*60))%24
+    return seconds, minutes, hours
 
 # This method does two things:
 # 1. Check if song's album exists in our db. If it
