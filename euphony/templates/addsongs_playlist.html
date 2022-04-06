@@ -32,16 +32,13 @@
 
 <!-- For each key/value pair in this track's dictionary.-->
 {% for song in songs %}
-id: {{song.id}}
 <br>
 <a href="{% url 'songinfo' song.id%}">Song: {{song.name}}</a>
 <br>
-Album id: {{song.album_id}}
-<br>
-Album: {{song.album_name}}
+<a href="{% url 'album_info' song.album_id%}">Album: {{song.album_name}}</a>
 <br>
 Artist(s): {{song.artists}}
-<br><br>
+<br>
 <td>
     <form method="POST" action="add_song/{{playlist.id}}/{{song.id}}">
         {% csrf_token %}
