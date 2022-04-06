@@ -1,8 +1,10 @@
+
 from django.db import models
 
 # Create your models here.
 from django.contrib.auth.models import User
 from django.urls import reverse
+import json
 import re
 
 from django_comments_xtd.forms import XtdCommentForm
@@ -10,7 +12,7 @@ from django_comments_xtd.models import TmpXtdComment
 
 
 class Album(models.Model):
-    artist = models.TextField()  # Just artist name, not an ID or anything
+    artists = models.TextField()
     id = models.TextField(primary_key=True)  # Spotify ID of album
     name = models.TextField()
     release_date = models.TextField()
@@ -21,7 +23,7 @@ class Song(models.Model):
     id = models.TextField(primary_key=True)  # Spotify ID of song
     album_id = models.ForeignKey(Album, on_delete=models.CASCADE)
     name = models.TextField()
-    artist = models.TextField() # make this a list
+    artists = models.TextField()
     duration_ms = models.FloatField()
     explicit = models.FloatField()
     release_date = models.TextField()

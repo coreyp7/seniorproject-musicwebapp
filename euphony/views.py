@@ -140,60 +140,6 @@ def proccess_vote(request):
     return HttpResponse('not logged in')
 
 
-# Function for adding all of the songs of a specified album to our db.
-# album_json is a specific dictionary found in search methods.
-# album_model_obj is the object reference of the album
-#       (This is required to set the one to many field in Song)
-def add_albums_songs(album_json, album_model_obj):
-    album_tracks = sp.album_tracks(album_json["id"])
-    #print(json.dumps(album_tracks, indent=4))
-    album_tracks = album_tracks["items"]
-
-    for json_obj in album_tracks:
-        # track stuff
-        track_id = json_obj["id"]
-        track_name = json_obj["name"]
-        track_number = json_obj["track_number"] # track's placement in album
-        track_explicit = json_obj["explicit"] # track's explicitity
-        track_artists = json_obj["artists"]
-        track_artists_list = [] # list of track's artists formatted how we want
-        for artist_obj in track_artists:
-            artist_name = artist_obj["name"]
-            track_artists_list.append(artist_name)
-
-        #artist stuff
-        album_artists_list = [] # list of track's artists formatted how we want
-        for artist_obj in track_artists:
-            artist_name = artist_obj["name"]
-            album_artists_list.append(artist_name)
-
-        track_info = {
-            "id" : track_id,
-            "name" : track_name,
-            "number" : track_number,
-            "disc" : json_obj["disc_number"],
-            "explicit" : track_explicit,
-            "artists" : track_artists_list,
-            "album_artists" : album_artists_list,
-            "release_date" : album_json["release_date"]
-        }
-
-        object, created = Song.objects.get_or_create(
-            id=track_info["id"],
-            defaults = {
-            "name" : track_info["name"],
-            "artist" : track_info["artists"][0],
-            "release_date" : track_info["release_date"],
-            "track_number" : json_obj["track_number"],
-            "disc" : track_info["disc"],
-            "album_id" : album_model_obj,
-            "duration_ms" : json_obj["duration_ms"],
-            "explicit" : json_obj["explicit"]
-            }
-        )
-        if created:
-            print(f""+str(object)+" : "+track_info["name"]+" has been added." )
-
 @require_GET
 def search_album(request):
     form = SongForm()
@@ -272,12 +218,22 @@ def search_song_results(request):
                 artist_name = artist_obj["name"]
                 album_artists_list.append(artist_name)
 
+            i = 0
+            track_artists_str = ""
+            for artist_obj in json_obj["artists"]:
+                artist_name = artist_obj['name']
+                if i > 0:
+                    track_artists_str += ", "+artist_name
+                else:
+                    track_artists_str = artist_name
+                i = i+1
+
             track_info = {
                 "id" : json_obj["id"],
                 "name" : json_obj["name"],
                 "number" : json_obj["track_number"],
                 "explicit" : json_obj["explicit"],
-                "artists" : json_obj["artists"][0]["name"], #TEMPORARY
+                "artists" : track_artists_str, 
                 "album_id" : album_id,
                 "album_name" : album_json["name"],
                 "album_release_date" : album_json["release_date"],
@@ -424,10 +380,15 @@ def album_info(request, id):
     # Get the json for this album id
     album = sp.album(f"spotify:album:"+id)
 
-    album_artists_list = []
+    i = 0
+    track_artists_str = ""
     for artist_obj in album["artists"]:
-        artist_name = artist_obj["name"]
-        album_artists_list.append(artist_name)
+        artist_name = artist_obj['name']
+        if i > 0:
+            track_artists_str += ", "+artist_name
+        else:
+            track_artists_str = artist_name
+        i = i+1
 
     album_info = {
         "id" : album["id"],
@@ -435,7 +396,7 @@ def album_info(request, id):
         "release_date" : album["release_date"],
         "type" : album["type"],
         "total_tracks" : album["total_tracks"],
-        "artists" : album_artists_list,
+        "artists" : track_artists_str,
         "cover" : album["images"][1]["url"] #TEMPORARY
     }
 
@@ -444,7 +405,7 @@ def album_info(request, id):
         id=album_info["id"],
         defaults = {
         "name" : album_info["name"],
-        "artist" : album_info["artists"][0], #TEMPORARY
+        "artists" : album_info["artists"],
         "release_date" : album_info["release_date"],
         "total_tracks" : album_info["total_tracks"],
         "cover" : album_info["cover"]
@@ -461,7 +422,8 @@ def album_info(request, id):
         # its track number and the disc its on.
         album_tracks.insert(song.track_number * song.disc, song.name)
 
-    return render(request, "album_info.html", {"id": id, "songs": all_our_songs})
+    return render(request, "album_info.html", {"id": id, "songs": all_our_songs,
+    "album": album_info})
 
 # This method does two things:
 # 1. Check if song's album exists in our db. If it
@@ -471,10 +433,15 @@ def songinfo(request, music_id):
     # Get the json object for this specific track.
     track = sp.track(f"spotify:track:"+music_id)
 
-    album_artists_list = []
+    i = 0
+    track_artists_str = ""
     for artist_obj in track["artists"]:
-        artist_name = artist_obj["name"]
-        album_artists_list.append(artist_name)
+        artist_name = artist_obj['name']
+        if i > 0:
+            track_artists_str += ", "+artist_name
+        else:
+            track_artists_str = artist_name
+        i = i+1
 
     # Get the album info of this song's album.
     album_info = {
@@ -483,7 +450,7 @@ def songinfo(request, music_id):
         "release_date" : track["album"]["release_date"],
         "type" : track["album"]["type"],
         "total_tracks" : track["album"]["total_tracks"],
-        "artists" : album_artists_list,
+        "artists" : track_artists_str,
         "cover" : track["album"]["images"][1]["url"]
     }
 
@@ -492,7 +459,7 @@ def songinfo(request, music_id):
         id=album_info["id"],
         defaults = {
         "name" : album_info["name"],
-        "artist" : album_info["artists"][0], #TEMPORARY
+        "artists" : album_info["artists"], 
         "release_date" : album_info["release_date"],
         "total_tracks" : album_info["total_tracks"],
         "cover" : album_info["cover"]
@@ -502,7 +469,7 @@ def songinfo(request, music_id):
         add_albums_songs(album_info, object)
 
     songid = Song.objects.get(pk=music_id)
-    return render(request, 'songinfo.html', {'songid': songid,
+    return render(request, 'songinfo.html', {'songid': songid, "song_artists": track_artists_str,
     "album": {
         "name": album_info["name"],
         "id": album_info["id"]}})

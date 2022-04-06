@@ -1,7 +1,10 @@
 import spotipy
+from spotipy.oauth2 import SpotifyClientCredentials, SpotifyOAuth
 from .cashe_handler import DatabaseTokenHandler
 from numpy.random import default_rng
 from .models import Song, Album
+
+sp = spotipy.Spotify(client_credentials_manager=SpotifyClientCredentials())
 
 rng = default_rng()
 
@@ -88,5 +91,70 @@ def gen_recomendations(client):
         album_list.append(object)
 
     return album_list
+
+# Function for adding all of the songs of a specified album to our db.
+# album_json is a specific dictionary:
+"""
+album_json = {
+    "id" : "spotify id of album",
+    "name" : "name of album",
+    "release_date" : "",
+    "type" : "",
+    "total_tracks" : "",
+    "artists" : ["This", "will", "be", "a", "list"],
+    "cover" : "This will be a link"
+    }
+    """
+# album_model_obj is the object reference of the album.
+#       This is required to easily set the 1toMany field in each Song row. You receive this obj when using 'get_or_create' in dbs.
+# (This is required to set the one to many field in Song)
+def add_albums_songs(album_json, album_model_obj):
+    album_tracks = sp.album_tracks(album_json["id"])
+    #print(json.dumps(album_tracks, indent=4))
+    album_tracks = album_tracks["items"]
+
+    for json_obj in album_tracks:
+        # track stuff
+        track_id = json_obj["id"]
+        track_name = json_obj["name"]
+        track_number = json_obj["track_number"] # track's placement in album
+        track_explicit = json_obj["explicit"] # track's explicitity
+        track_artists = json_obj["artists"]
+
+        i = 0
+        track_artists_str = ""
+        for artist_obj in track_artists:
+            artist_name = artist_obj['name']
+            if i > 0:
+                track_artists_str += ", "+artist_name
+            else:
+                track_artists_str = artist_name
+            i = i+1
+
+        track_info = {
+            "id" : track_id,
+            "name" : track_name,
+            "number" : track_number,
+            "disc" : json_obj["disc_number"],
+            "explicit" : track_explicit,
+            "artists" : track_artists_str,
+            "release_date" : album_json["release_date"]
+        }
+
+        object, created = Song.objects.get_or_create(
+            id=track_info["id"],
+            defaults = {
+            "name" : track_info["name"],
+            "artists" : track_info["artists"],
+            "release_date" : track_info["release_date"],
+            "track_number" : json_obj["track_number"],
+            "disc" : track_info["disc"],
+            "album_id" : album_model_obj,
+            "duration_ms" : json_obj["duration_ms"],
+            "explicit" : json_obj["explicit"]
+            }
+        )
+        if created:
+            print(f""+str(object)+" : "+track_info["name"]+" has been added." )
 
 
