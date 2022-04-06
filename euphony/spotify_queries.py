@@ -121,15 +121,10 @@ def add_albums_songs(album_json, album_model_obj):
         track_explicit = json_obj["explicit"] # track's explicitity
         track_artists = json_obj["artists"]
 
-        i = 0
-        track_artists_str = ""
+        track_artists = []
         for artist_obj in track_artists:
-            artist_name = artist_obj['name']
-            if i > 0:
-                track_artists_str += ", "+artist_name
-            else:
-                track_artists_str = artist_name
-            i = i+1
+            track_artists.append(artist_obj['name'])
+        track_artists_str = ", ".join(track_artists)
 
         track_info = {
             "id" : track_id,
@@ -156,5 +151,6 @@ def add_albums_songs(album_json, album_model_obj):
         )
         if created:
             print(f""+str(object)+" : "+track_info["name"]+" has been added." )
+
 
 
