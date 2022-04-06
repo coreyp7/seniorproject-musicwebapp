@@ -1,13 +1,11 @@
 {% load static %}
 {% include 'base.html' %}
 
-{% block title %}Euphony{% endblock %}
-
 {% block content %}
 <br>
-<h1 style="margin-left: -70px;">Euphony home page</h1>
+<h1>Euphony home page</h1>
 <br>
-<h3 style="margin-right: 25px;">This will be our temporary home page. Link your stuff here if you want to
+<h3>This will be our temporary home page. Link your stuff here if you want to
   easily access it.
 </h3>
 
@@ -35,6 +33,6 @@
 
 <script type="text/javascript">
   if ("{{ user.userExt.dark_mode }}" == "True") {
-    document.write('<link rel="stylesheet" type="text/css" href="{% static 'css / dark_mode.css' %}">');
+    document.write('<link rel="stylesheet" type="text/css" href="{% static 'css/dark_mode.css' %}">');
   }
 </script>

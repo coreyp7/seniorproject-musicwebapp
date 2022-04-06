@@ -1,14 +1,16 @@
-{% extends 'base.html' %}
+{% load static %}
 
-{% block title %}Album Results{% endblock %}
+{% include 'base.html' %}
 
 {% block content %}
 
 <h1> Album Results </h1>
 
-<div class="card" style="width: 40rem;">
+<link rel="stylesheet" href="{% static 'css/style.css' %}">
+
+<div class="card album_info_card">
   <div class="card-body">
-    <iframe style="border-radius:12px" src="https://open.spotify.com/embed/album/{{id}}" width="100%" height="380"
+    <iframe class="album_info_iframe" src="https://open.spotify.com/embed/album/{{id}}" width="100%" height="380"
       frameBorder="0" allowfullscreen=""
       allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture">
     </iframe>
@@ -25,3 +27,10 @@
 </div>
 
 {% endblock %}
+
+
+<script type="text/javascript">
+  if ("{{ user.userExt.dark_mode }}" == "True") {
+    document.write('<link rel="stylesheet" type="text/css" href="{% static 'css/dark_mode.css' %}">');
+  }
+</script>

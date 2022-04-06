@@ -1,4 +1,5 @@
-{% extends 'base.html' %}
+{% load static %}
+{% include 'base.html' %}
 {% load comments %}
 {% load comments_xtd %}
 
@@ -7,6 +8,7 @@
 
 {% block content %}
 
+<link rel="stylesheet" href="{% static 'css/style.css' %}">
 
 <div class="container">
 	<form method="POST">
@@ -15,7 +17,7 @@
           {{object.name}}
        <h1>{{songid.name}}</h1>
        <h1><a href="{% url 'album_info' album.id %}">{{album.name}}</a></h1>
-       <iframe style="border-radius:12px" 
+       <iframe class="songinfo_iframe" 
        src="https://open.spotify.com/embed/track/{{songid.id}}" 
        width="100%" height="80" frameBorder="0" allowfullscreen="" allow="autoplay; 
        clipboard-write; 
@@ -46,3 +48,9 @@
      {% endif %}
 
 {% endblock %}
+
+<script type="text/javascript">
+  if ("{{ user.userExt.dark_mode }}" == "True") {
+    document.write('<link rel="stylesheet" type="text/css" href="{% static 'css/dark_mode.css' %}">');
+  }
+</script>
