@@ -24,7 +24,7 @@
   </form>
   {% get_comment_count for songid as comment_count %}
   <div class="py-4 text-center">
-    <a href="{% url 'search_song' %}">Back to the song search</a>
+    <a href="{% url 'search' %}">Back to search page</a>
     &nbsp;&sdot;&nbsp;
     {{ comment_count }} comment{{ comment_count|pluralize }}
     ha{{ comment_count|pluralize:"s,ve"}} been posted.

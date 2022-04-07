@@ -12,11 +12,9 @@ urlpatterns = [
     path("playlists", views.allplaylists_view, name="playlists"),
     path('settings_general/', views.settings_general, name='settings_general'),
     path("search", views.search, name="search"),
-    path("search_results", views.search_results, name="search_results"),
     # Bottom section are pages which we redirect the user to.
     # Extensions of the pages above. (hope that makes sense)
-    path("search_song_results", views.search_song_results, name="search_song_results"),
-    path("search_album_results", views.search_album_results, name="search_album_results"),
+    path("search_results", views.search_results, name="search_results"),
     path("create_playlist", views.create_playlist, name="create_playlist"),
     path('delete_playlist/<list_id>', views.delete_playlist, name='delete_playlist'),
     path('addsongs_view/<list_id>', views.addsongs_view, name='addsongs_view'),
