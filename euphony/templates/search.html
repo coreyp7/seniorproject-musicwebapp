@@ -46,11 +46,12 @@
 </div>
 {% endif %}
 
+<!-- First create Songs scrollbar. -->
+
 {% if songs %}
-<h1> Search Results </h1>
+<h3>Songs:</h3>
 
 <div class="scrollmenu">
-    <!-- For each key/value pair in this track's dictionary.-->
     <table>
         <tr>
             {% for song in songs %}
@@ -62,6 +63,30 @@
                     <a href="{% url 'album_info' song.album_id%}">Album: {{song.album_name}}</a>
                 </div>
                 Artist(s): {{song.artists}}
+            </td>
+            {% endfor %}
+        </tr>
+    </table>
+</div>
+
+{% endif %}
+
+<!-- Next create Albums scrollbar. -->
+{% if albums %}
+<h3>Albums:</h3>
+<div class="scrollmenu">
+    <table>
+        <tr>
+            {% for album in albums %}
+            <td>
+                <img src="{{album.cover}}">
+                <div>
+                    <a href="{% url 'album_info' album.id %}">Album: {{album.name}}</a>
+                    <br>
+                    Artist(s): {{album.artists}}
+                    <br>
+                    Release date: {{album.release_date}}
+                </div>
             </td>
             {% endfor %}
         </tr>

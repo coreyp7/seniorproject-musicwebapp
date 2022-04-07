@@ -233,9 +233,44 @@ def search_results(request):
             # If it is in a compilation, we just flat out ignore it and don't show it.
             if album_json["album_type"] != 'compilation':
                 final_songs_list.append(track_info)
+            
+        # ALBUM STUFF SECOND
+        album_query = form.cleaned_data["song_name"]
+        albums_json = sp.search(album_query, type="album", limit=10) # json with song information
+
+        albums_json = albums_json["albums"]
+        all_albums = []
+        for json_obj in albums_json["items"]:
+            album_id = json_obj["id"]
+            album_name = json_obj["name"]
+            album_release_date = json_obj["release_date"]
+            album_type = json_obj["album_type"]
+            album_total_tracks = json_obj["total_tracks"]
+            album_artists = json_obj["artists"]
+            album_cover_art = json_obj["images"][1]["url"]
+            # cover is hardcoded rn but seems consistent from spotify
+            album_artists_list = []
+            for artist_obj in album_artists:
+                album_artists_list.append(artist_obj['name'])
+            album_artists_str = ", ".join(album_artists_list)
+
+            album_info = {
+                "id" : album_id,
+                "name" : album_name,
+                "release_date" : album_release_date,
+                "type" : album_type,
+                "total_tracks" : album_total_tracks,
+                "artists" : album_artists_str,
+                "cover" : album_cover_art
+            }
+
+            # If it is a compilation, we just flat out ignore it and don't show it.
+            if album_info["type"] != 'compilation':
+                all_albums.append(album_info)
+            
 
         return render(request, "search.html",
-        {"form_info": form, "songs": final_songs_list})
+        {"form_info": form, "songs": final_songs_list, "albums": all_albums})
     else:
         print("unsuccessful :(")
 
