@@ -7,7 +7,6 @@
     div.scroll {
         margin: 4px, 4px;
         padding: 4px;
-        background-color: #a1a1a1;
         width: 300px;
         overflow-x: auto;
         overflow-y: hidden;
@@ -15,7 +14,6 @@
     }
 
     div.scrollmenu {
-        background-color: rgb(255, 255, 255);
         overflow: auto;
         white-space: nowrap;
     }
@@ -50,6 +48,9 @@
     <table>
         <tr>
             {% for song in songs %}
+            <!-- Loop through each of our song dictionaries.
+            You can see all the fields acessible in the track_info dicionary
+            in search_results in views.py.-->
             <td>
                 <img src="{{song.album_cover}}">
                 <div>
@@ -69,12 +70,17 @@
 {% endif %}
 
 <!-- Next create Albums scrollbar. -->
+
 {% if albums %}
+
 <h3>Albums:</h3>
 <div class="scrollmenu">
     <table>
         <tr>
             {% for album in albums %}
+            <!-- Loop through each of our album dictionaries.
+            You can see all the fields acessible in the album_info dicionary
+            in search_results in views.py.-->
             <td>
                 <img src="{{album.cover}}">
                 <div>
@@ -98,10 +104,9 @@
 
 {% endblock %}
 
-<!--
+
 <script type="text/javascript">
     if ("{{ user.userExt.dark_mode }}" == "True") {
         document.write('<link rel="stylesheet" type="text/css" href="{% static 'css / dark_mode.css' %}">');
     }
 </script>
--->

@@ -195,11 +195,15 @@ def search(request):
     form = SongForm()
     return render(request, "search.html", {"form": form})
 
+# Function for search page when form has been submitted.
+# 1. Query for songs on spotify and create a list of dictionaries with information we need to display.
+# 2. Query for albums on spotify and create a list of dictionaries with information we need to display.
+# Also put a boolean named 'results' in our render dictionary to tell the front end the form was submitted.
 def search_results(request):
     form = SongForm(request.POST)
 
     if form.is_valid():
-        #SONG STUFF FIRST
+        # 1. Get Song query results and put it in 'final_songs_list'
 
         # find song list from spotipy and return the list in the form of a parameter in our render
         track_query = "track:"+form.cleaned_data["song_name"]
@@ -234,9 +238,9 @@ def search_results(request):
             if album_json["album_type"] != 'compilation':
                 final_songs_list.append(track_info)
             
-        # ALBUM STUFF SECOND
+        # 2. Get Album query results and put it in 'all_albums'
         album_query = form.cleaned_data["song_name"]
-        albums_json = sp.search(album_query, type="album", limit=10) # json with song information
+        albums_json = sp.search(album_query, type="album", limit=10) # json with album information
 
         albums_json = albums_json["albums"]
         all_albums = []
