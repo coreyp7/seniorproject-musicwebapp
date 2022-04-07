@@ -11,7 +11,7 @@
   easily access it.
 </h3>
 
-<a href="{% url 'search_song' %}">Search Song Page</a>
+<strike><a href="{% url 'search_song' %}">Search Song Page</a></strike>
 <br>
 <a href="{% url 'playlists' %}">Playlists</a>
 <br>
@@ -29,9 +29,11 @@
 <br>
 <a href="{% url 'register' %}">Register Page</a>
 <br>
-<a href="{% url 'search_album' %}">Search Album Page</a>
+<strike><a href="{% url 'search_album' %}">Search Album Page</a></strike>
 <br>
-<a href="{% url 'search' %}">Search ALL Page</a>
+<br>
+<a href="{% url 'search' %}">Search Page (Song & Album results)</a> NOTE: Waiting to include user/playlist search
+until Shane finishes his updated search page.
 
 {% endblock %}
 

@@ -268,9 +268,10 @@ def search_results(request):
             if album_info["type"] != 'compilation':
                 all_albums.append(album_info)
             
+            
 
         return render(request, "search.html",
-        {"form_info": form, "songs": final_songs_list, "albums": all_albums})
+        {"form_info": form, "songs": final_songs_list, "albums": all_albums, "results": True})
     else:
         print("unsuccessful :(")
 
