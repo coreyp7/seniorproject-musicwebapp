@@ -141,56 +141,6 @@ def proccess_vote(request):
 
 
 @require_GET
-def search_album(request):
-    form = SongForm()
-    return render(request, "search_album.html", {"form": form, "albums": None})
-
-@require_POST
-def search_album_results(request):
-    form = SongForm(request.POST)
-
-    if form.is_valid():
-        album_query = form.cleaned_data["song_name"]
-        albums_json = sp.search(album_query, type="album", limit=10) # json with song information
-
-        albums_json = albums_json["albums"]
-        all_albums = []
-        for json_obj in albums_json["items"]:
-            album_id = json_obj["id"]
-            album_name = json_obj["name"]
-            album_release_date = json_obj["release_date"]
-            album_type = json_obj["album_type"]
-            album_total_tracks = json_obj["total_tracks"]
-            album_artists = json_obj["artists"]
-            album_cover_art = json_obj["images"][1]["url"]
-            # cover is hardcoded rn but seems consistent from spotify
-            album_artists_list = []
-            for artist_obj in album_artists:
-                album_artists_list.append(artist_obj['name'])
-            album_artists_str = ", ".join(album_artists_list)
-
-            album_info = {
-                "id" : album_id,
-                "name" : album_name,
-                "release_date" : album_release_date,
-                "type" : album_type,
-                "total_tracks" : album_total_tracks,
-                "artists" : album_artists_str,
-                "cover" : album_cover_art
-            }
-
-            # If it is a compilation, we just flat out ignore it and don't show it.
-            if album_info["type"] != 'compilation':
-                all_albums.append(album_info)
-            #print(json.dumps(album_info, indent=4, sort_keys=True))
-        if len(all_albums) == 0:
-            return render(request, "search_album.html", {"form": form, "albums_empty": True})
-        return render(request, "search_album.html", {"form": form, "albums": all_albums})
-    else:
-        print("Invalid form in search_album_results")
-    return render(request, "search_album.html", {"form": form, "albums": None})
-
-@require_GET
 def search(request):
     form = SongForm()
     return render(request, "search.html", {"form": form})
@@ -281,58 +231,6 @@ def search_results(request):
 
     return render(request, "search.html", {"form_info": form, "songs": None})
 
-# Search song page that is blank, what is initially shown to user.
-@require_GET
-def search_song(request):
-    form = SongForm()
-    return render(request, "search_song.html", {"form": form})
-
-# Search song page that is displaying any results that the user requested
-# on the search_song page.
-@require_POST
-def search_song_results(request):
-    form = SongForm(request.POST)
-
-    if form.is_valid():
-        # find song list from spotipy and return the list in the form of a parameter in our render
-        track_query = "track:"+form.cleaned_data["song_name"]
-        songs_json = sp.search(track_query, limit=10) # json with song information
-
-        final_songs_list = []
-
-        songs_json = songs_json["tracks"]
-        for json_obj in songs_json["items"]:
-            album_json = json_obj["album"] # album json object
-            album_id = album_json["id"] # track's album id
-
-            album_artists = []
-            for artist_obj in json_obj["artists"]:
-                album_artists.append(artist_obj['name'])
-            album_artists_str = ", ".join(album_artists)
-
-            track_info = {
-                "id" : json_obj["id"],
-                "name" : json_obj["name"],
-                "number" : json_obj["track_number"],
-                "explicit" : json_obj["explicit"],
-                "artists" : album_artists_str, 
-                "album_id" : album_id,
-                "album_name" : album_json["name"],
-                "album_release_date" : album_json["release_date"],
-                "album_cover" : album_json["images"][1]["url"]
-                # IN "album_cover", change to 0 for bigger pic, 2 for smaller pic
-            }
-
-            # If it is in a compilation, we just flat out ignore it and don't show it.
-            if album_json["album_type"] != 'compilation':
-                final_songs_list.append(track_info)
-
-        return render(request, "search_song.html",
-        {"form_info": form, "songs": final_songs_list})
-    else:
-        print("unsuccessful :(")
-
-    return render(request, "search_song.html", {"form_info": form, "songs": None})
 
 # Playlist Page functions
 @require_GET
