@@ -57,7 +57,7 @@ def get_song_list(client, album_list):
             object, created = Song.objects.get_or_create(id=track['id'],
                                                                album_id=album,
                                                                name=track['name'],
-                                                               artist=track['artists'][0],
+                                                               artists=track['artists'][0],
                                                                duration_ms=track['duration_ms'],
                                                                explicit = track['explicit'],
                                                                release_date = album.release_date,
@@ -82,7 +82,7 @@ def gen_recomendations(client):
                                                     id=item['album']["id"],
                                                     defaults = {
                                                     "name"  : item["name"],
-                                                    "artist" : item["artists"][0], #TEMPORARY
+                                                    "artists" : item["artists"][0], #TEMPORARY
                                                     "release_date" : item['album']["release_date"],
                                                     "total_tracks" : item['album']["total_tracks"],
                                                     "cover" : item["album"]["images"][1]["url"]
@@ -162,11 +162,11 @@ def convertMillis(millis):
     seconds=(millis/1000)%60
     minutes=(millis/(1000*60))%60
     hours=(millis/(1000*60*60))%24
-    
+
     hours = str.split(str(hours), '.')[0]
     minutes = str.split(str(minutes), '.')[0]
     seconds = str.split(str(seconds), '.')[0]
-    
+
     if int(seconds)<10:
         seconds = f"0{seconds}"
 
@@ -187,4 +187,3 @@ def convertMillis(millis):
         final_string = f"{hours}:{minutes}:{seconds}"
 
     return final_string
-
