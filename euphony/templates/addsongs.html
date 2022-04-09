@@ -8,8 +8,7 @@
 <br>
 <h1>{{playlist.name}}</h1>
 <br>
-<button type="submit" style="float: right;" class="btn btn-secondary"><a href="{% url 'playlist_song' playlist.id %}"
-        style="color: white;">+</a></button>
+<a class="btn btn-secondary"  style="float: right;" href="{% url 'playlist_song' playlist.id %}" role="button"><strong>+</strong></a>
 <br>
 <table style="background-color: whitesmoke;" class="table">
     <br>
@@ -20,15 +19,13 @@
         </tr>
     </thead>
     <tbody>
-        {% for song in listsong %}
+        {% for song in songs%}
         <tr>
-            {% for s in song %}
-            <th>{{forloop.parentloop.counter}}</th>
-            <td><iframe style="border-radius:12px" src="https://open.spotify.com/embed/track/{{s.id}}" width="100%"
+            <th>{{forloop.counter}}</th>
+            <td><iframe style="border-radius:12px" src="https://open.spotify.com/embed/track/{{song.id}}" width="100%"
                     height="80" frameBorder="0" allowfullscreen="" allow="autoplay; 
                 clipboard-write; 
                 encrypted-media; fullscreen; picture-in-picture"></iframe></td>
-            {% endfor %}
         </tr>
         {% endfor %}
     </tbody>
