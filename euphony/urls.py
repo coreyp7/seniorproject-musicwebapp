@@ -7,7 +7,7 @@ urlpatterns = [
     path("", views.home, name="home"),
     path('dash', views.dash, name='dash'),
     path("link_account", views.link_account, name="link_account"),
-    path("playlists", views.allplaylists_view, name="playlists"),
+    path("playlists/", views.allplaylists_view, name="playlists"),
     path('settings_general/', views.settings_general, name='settings_general'),
     path("search", views.search, name="search"),
     # Bottom section are pages which we redirect the user to.

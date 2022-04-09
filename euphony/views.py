@@ -4,7 +4,7 @@ from django.views.decorators.http import require_POST, require_GET
 from django.http import HttpResponse
 from django.db.utils import OperationalError
 from django.core.exceptions import ObjectDoesNotExist # for checking if row exists
-from euphony.models import Playlist
+from euphony.models import Playlist, Album
 from .forms import PlaylistForm
 from django.contrib import messages
 from friendship.models import Friend, Follow, Block
@@ -320,12 +320,9 @@ def add_song(request, list_id, song_id):
     song = Song.objects.get(pk=song_id)
     playlist.songs.add(song)
     playlist.save()
-    songs = playlist.songs.all()
-    all_songs = list(songs)
-    n = 1
-    list_songs = [all_songs[i:i+n] for i in range(0, len(all_songs), n)]
-    listsong = list(list_songs)
-    return render(request, 'addsongs.html', {'playlist': playlist, 'listsong': listsong})
+
+    return redirect('addsongs_view', list_id=playlist.id)
+
 
 # Playlist Page functions
 def allplaylists_view(request):
@@ -354,7 +351,8 @@ def delete_playlist(request, list_id):
 
 def addsongs_view(request, list_id):
     playlist = Playlist.objects.get(pk=list_id)
-    return render(request, "addsongs.html", {'playlist': playlist})
+    songs = playlist.songs.all()
+    return render(request, "addsongs.html", {'playlist': playlist, 'songs': songs})
 
 #Displays Album - and hopefully the tracks of the album uhh
 def album_info(request, id):
