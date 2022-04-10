@@ -2,6 +2,9 @@
 {% include 'base.html' %}
 
 {% block content %}
+
+<link rel="stylesheet" href="{% static 'css/style.css' %}">
+
 <br>
 <h1>Euphony home page</h1>
 <br>
@@ -28,6 +31,8 @@
 <a href="{% url 'register' %}">Register Page</a>
 <br>
 <a href="{% url 'search_album' %}">Search Album Page</a>
+<br>
+<a href="{% url 'top' %}">Top Chart Page</a>
 
 {% endblock %}
 

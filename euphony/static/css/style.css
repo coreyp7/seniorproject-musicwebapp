@@ -1,4 +1,5 @@
 body{
+  background-color: #DEDCDE;
 }
 
 .hello-msg{
@@ -132,3 +133,15 @@ body{
   border-radius:12px
 }
 
+.navbarcolor{
+  background-color: #3B3B3B;
+}
+
+.navbar_serach_button_spacing{
+  padding-right: 8px;
+}
+
+.navbar_items{
+  font-weight: bold;
+  font-size: 20px;
+}
