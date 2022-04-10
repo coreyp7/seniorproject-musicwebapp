@@ -1,6 +1,6 @@
-{% extends 'base.html' %}
+{% load static %}
 
-{% block title %} Top Charts {% endblock %}
+{% include 'base.html' %}
 
 {% block content %}
 
@@ -14,26 +14,20 @@
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
   <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
-
+  <link rel="stylesheet" href="{% static 'css/style.css' %}">
   <script>
     $('#SpaceAccommodation').change(function () {
     var selectedText = $(this).find("option:selected").text();
     
     $(".test").text(selectedText);
     });
+
+
+  if ("{{ user.userExt.dark_mode }}" == "True") {
+    document.write('<link rel="stylesheet" type="text/css" href="{% static 'css/dark_mode.css' %}">');
+  }
   </script>
   
-
-  <style type="text/css">
-    
-    .dropdown-menu {
-    max-height: 280px;
-    overflow-y: auto;
-}
-
-
-  </style>
-
   
 </head>
 <body>
@@ -57,7 +51,7 @@
 
 <br>
 
-<iframe style="border-radius:12px" src="https://open.spotify.com/embed/playlist/37i9dQZEVXbO3qyFxbkOE1?utm_source=generator" width="100%" height="380" frameBorder="0" allowfullscreen="" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"></iframe>
+<iframe class="topchart_iframe" src="https://open.spotify.com/embed/playlist/37i9dQZEVXbO3qyFxbkOE1?utm_source=generator" width="100%" height="380" frameBorder="0" allowfullscreen="" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"></iframe>
 
 </body>
 </html>

@@ -1,0 +1,147 @@
+body{
+  background-color: #DEDCDE;
+}
+
+.hello-msg{
+    font-size: 18px;
+    color: #fff;
+    margin-right: 20px;
+  }
+
+  .navbar-title{
+    font-size: 22px;
+    color: #fff;
+    margin-right: 20px;
+  }
+
+  .navbar-item{
+    font-size: 18px;
+    color: #fff;
+    margin-right: 20px;
+  }
+
+.user_card {
+  width: 350px;
+  margin-top: auto;
+  margin-bottom: auto;
+  background: #90A19D;
+  position: relative;
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
+  padding: 10px;
+  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+  -webkit-box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+  -moz-box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+  border-radius: 5px;
+
+}
+
+.form_container {
+  margin-top: 20px;
+}
+
+#form-title {
+  color: #fff;
+}
+
+.login_btn {
+  width: 100%;
+  background: #CC94F2 !important;
+  color: white !important;
+}
+
+.login_btn:focus {
+  box-shadow: none !important;
+  outline: 0px !important;
+}
+
+.login_container {
+  padding: 0 2rem;
+}
+
+.input-group-text {
+  background: #B65CF2 !important;
+  color: white !important;
+  border: 0 !important;
+  border-radius: 0.25rem 0 0 0.25rem !important;
+}
+
+.input_user,
+.input_pass:focus {
+  box-shadow: none !important;
+  outline: 0px !important;
+}
+
+#messages {
+  background-color: grey;
+  color: #fff;
+  padding: 10px;
+  margin-top: 10px;
+}
+
+.login_register {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  background: #363432 !important;
+}
+
+.addsong_button{
+  float: right;
+  color: white;
+}
+
+.addsong_iframe{
+  border-radius:12px
+}
+
+.addsong_table{
+  background-color: whitesmoke;
+}
+
+.playlist_button_text{
+  color: white;
+}
+
+.playlist_table{
+  background-color: whitesmoke;
+}
+
+.album_info_card{
+  width: 40rem;
+}
+
+.album_info_iframe{
+  border-radius:12px
+}
+
+.dropdown-menu {
+    max-height: 280px;
+    overflow-y: auto;
+}
+
+.topchart_iframe{
+  border-radius:12px
+}
+
+.createplaylist_newplaylist_text{
+  color: black;
+}
+
+.songinfo_iframe{
+  border-radius:12px
+}
+
+.navbarcolor{
+  background-color: #3B3B3B;
+}
+
+.navbar_serach_button_spacing{
+  padding-right: 8px;
+}
+
+.navbar_items{
+  font-weight: bold;
+  font-size: 20px;
+}

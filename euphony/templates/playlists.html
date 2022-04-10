@@ -1,10 +1,13 @@
-{% extends 'base.html' %}
+{% load static %}
+{% include 'base.html' %}
 
 <title>{% block title %} Playlists {% endblock %}</title>
 
+<link rel="stylesheet" href="{% static 'css/style.css' %}">
+
 {% block content %}
 
-<body style="background-color: white;"></body>
+<body></body>
 <br>
 {% if messages %}
 {% for message in messages %}
@@ -23,7 +26,7 @@
     </h1>
 </body>
 <br>
-<table style="background-color: whitesmoke;" class="table">
+<table class="table playlist_table">
     <thead>
         <tr>
             <th scope="col">#</th>
@@ -42,3 +45,9 @@
     </tbody>
 </table>
 {% endblock %}
+
+<script type="text/javascript">
+    if ("{{ user.userExt.dark_mode }}" == "True") {
+        document.write('<link rel="stylesheet" type="text/css" href="{% static 'css / dark_mode.css' %}">');
+    }
+</script>

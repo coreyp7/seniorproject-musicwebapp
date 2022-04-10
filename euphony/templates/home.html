@@ -1,13 +1,14 @@
 {% load static %}
 {% include 'base.html' %}
 
-{% block title %}Euphony{% endblock %}
-
 {% block content %}
+
+<link rel="stylesheet" href="{% static 'css/style.css' %}">
+
 <br>
-<h1 style="margin-left: -70px;">Euphony home page</h1>
+<h1>Euphony home page</h1>
 <br>
-<h3 style="margin-right: 25px;">This will be our temporary home page. Link your stuff here if you want to
+<h3>This will be our temporary home page. Link your stuff here if you want to
   easily access it.
 </h3>
 
@@ -31,9 +32,13 @@
 <br>
 <strike>Search Album Page</strike>
 <br>
+<a href="{% url 'top' %}">Top Chart Page</a>
+<br>
 <br>
 <a href="{% url 'search' %}">Search Page (Song & Album results)</a> NOTE: Waiting to include user/playlist search
 until Shane finishes his updated search page.
+
+
 
 {% endblock %}
 

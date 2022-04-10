@@ -1,12 +1,14 @@
-{% extends 'base.html' %}
-
-{% block title %}Search Song{% endblock %}
+{% load static %}
+{% include 'base.html' %}
 
 {% block content %}
 
 
 {% if not songs %}
 <h1> Search for a Song </h1>
+
+<link rel="stylesheet" href="{% static 'css/style.css' %}">
+
 
 <form method='post' action="playlist_song_results/{{playlist.id}}">
     {% csrf_token %}
@@ -50,3 +52,10 @@ Artist(s): {{song.artists}}
 {% endif %}
 
 {% endblock %}
+
+
+<script type="text/javascript">
+  if ("{{ user.userExt.dark_mode }}" == "True") {
+    document.write('<link rel="stylesheet" type="text/css" href="{% static 'css/dark_mode.css' %}">');
+  }
+</script>

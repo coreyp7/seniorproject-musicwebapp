@@ -1,10 +1,13 @@
+{% load static %}
+
 {% extends 'base.html' %}
 
 <title>{% block title %} Playlists {% endblock %}</title>
+<link rel="stylesheet" href="{% static 'css/style.css' %}">
 
 {% block content %}
 
-<body style="background-color:white;"></body>
+<body></body>
 <br>
 {% if submitted %}
 {% if messages %}
@@ -22,7 +25,7 @@
     {% csrf_token %}
     <br>
     <center>
-        <h2 style="color: black;">New Playlist</h2>
+        <h2 class="createplaylist_newplaylist_text">New Playlist</h2>
     </center>
     <br>
 
@@ -32,3 +35,9 @@
 </form>
 {% endif %}
 {% endblock %}
+
+<script type="text/javascript">
+  if ("{{ user.userExt.dark_mode }}" == "True") {
+    document.write('<link rel="stylesheet" type="text/css" href="{% static 'css/dark_mode.css' %}">');
+  }
+</script>

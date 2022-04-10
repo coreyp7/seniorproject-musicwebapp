@@ -50,6 +50,10 @@
      var ratings = {{item.ratings}};
      document.getElementById("{{item.song.id}}-rating").innerHTML = ratings.toString();
 
+    if ("{{ user.userExt.dark_mode }}" == "True") {
+      document.write('<link rel="stylesheet" type="text/css" href="{% static 'css/dark_mode.css' %}">');
+    }
+
     </script>
   </div>
 </div>

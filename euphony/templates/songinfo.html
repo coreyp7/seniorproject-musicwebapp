@@ -1,4 +1,5 @@
-{% extends 'base.html' %}
+{% load static %}
+{% include 'base.html' %}
 {% load comments %}
 {% load comments_xtd %}
 
@@ -7,6 +8,7 @@
 
 {% block content %}
 
+<link rel="stylesheet" href="{% static 'css/style.css' %}">
 
 <div class="container">
   <form method="POST">
