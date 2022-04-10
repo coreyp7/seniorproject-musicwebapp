@@ -64,40 +64,15 @@ body{
   display: flex;
 }
 
-.general_settings_name{
+.settings_name{
+    padding-top: 10px;
     position: absolute;
     right: 47%;
     text-align: center;
     /* border: 3px solid green; */
     font-weight: bold;
     font-size: 40px;
-}
-
-.account_settings_name{
-    position: absolute;
-    right: 47%;
-    text-align: center;
-    /* border: 3px solid green; */
-    font-weight: bold;
-    font-size: 40px;
-}
-
-.security_settings_name{
-    position: absolute;
-    right: 47%;
-    text-align: center;
-    /* border: 3px solid green; */
-    font-weight: bold;
-    font-size: 40px;
-}
-
-.account_reset_password{
-    position: absolute;
-    right: 47%;
-    text-align: center;
-    /* border: 3px solid green; */
-    font-weight: bold;
-    font-size: 40px;
+    padding-bottom: 10px;
 }
 
 .settings_reset_password{
@@ -116,7 +91,7 @@ body{
 }
 
 .info-general{
-    padding-top: 60px;
+    padding-top: 80px;
     position: absolute;
     right: 54%;
     text-align: center;

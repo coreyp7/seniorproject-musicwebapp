@@ -10,6 +10,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" href="{% static 'css/settings.css' %}">
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
 
 	<title>{% block title %} Music App | General Setting {% endblock %}</title>
 
@@ -35,7 +36,7 @@
 
 	<div class="main_content">
 
-		<h3 class = "general_settings_name">General Settings</h3>
+		<h3 class = "settings_name">General Settings</h3>
 
 		<form method="post" enctype="multipart/form-data">
 			{% csrf_token %}
