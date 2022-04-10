@@ -25,19 +25,35 @@ def gen_client(user, scope):
     else:
         return None
 
-def get_saved_tracks(client):
+def gen_seed(client):
     '''
     takes in a client object with user account permissions
-    gets a users top tracks
+    gets a users top tracks, or top artist to make a recommendation seed
     '''
 
-    tracks = client.current_user_saved_tracks()['items']
-    indexs = rng.choice(range(len(tracks)), size=5, replace=False)
-    track_urls = []
-    for index in indexs:
-        track_urls.append(tracks[index]['track']['href'])
+    seeds = [[],[],[]]
 
-    return track_urls
+
+    tracks = client.current_user_saved_tracks()['items']
+
+    if len(tracks) != 5:
+        indexs = rng.choice(range(len(tracks)), size=5, replace=False)
+        track_urls = []
+        for index in indexs:
+            track_urls.append(tracks[index]['track']['href'])
+
+        seeds[2] = track_urls
+
+    else:
+        artist_urls = []
+        artists = client.current_user_top_artists(limit=5)['items']
+
+        for artist in artists:
+            artist_urls.append(artist['href'])
+
+        seeds[0] = artist_urls
+
+    return seeds
 
 def insert_songs(album_id, song_id):
     pass
@@ -74,10 +90,10 @@ def gen_recomendations(client):
     returns a list of recommended playlists, also puts the albums into database objects
     '''
 
-    seed_tracks = get_saved_tracks(client)
-    album_list = []
+    seeds = gen_seed(client)
 
-    for item in client.recommendations(seed_genres=[], seed_tracks=seed_tracks)['tracks']:
+    album_list = []
+    for item in client.recommendations(seed_artists=seeds[0], seed_genres=seeds[1], seed_tracks=seeds[2])['tracks']:
         object, created = Album.objects.get_or_create(
                                                     id=item['album']["id"],
                                                     defaults = {

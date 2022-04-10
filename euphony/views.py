@@ -30,7 +30,7 @@ from .forms import EditUserForm
 from django.contrib.auth.forms import PasswordChangeForm
 from django.contrib.auth import update_session_auth_hash
 
-scope = "user-library-read"
+scope = "user-library-read user-top-read"
 #sp = spotipy.Spotify(auth_manager=SpotifyOAuth(scope=scope))
 sp = spotipy.Spotify(client_credentials_manager=SpotifyClientCredentials())
 
@@ -122,7 +122,6 @@ def proccess_vote(request):
         new_vote = (int(request.POST['vote']) == 1)
         if len(rating) == 0:
             vote = Song_rating.objects.create(song_id=song, user_id=user, rating_type=new_vote)
-            print('new', vote.id, vote.song_id ,vote.rating_type)
             if(new_vote):
                 return HttpResponse('1')
             else:
@@ -130,7 +129,6 @@ def proccess_vote(request):
         else:
             vote = rating[0]
             old_vote = vote.rating_type
-            print('not new',vote.id, vote.song_id ,vote.rating_type)
             if(old_vote == new_vote):
                 vote.delete()
                 if(old_vote):
