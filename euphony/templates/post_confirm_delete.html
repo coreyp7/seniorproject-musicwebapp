@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+
+{% block post_content %}
+    <div class="" style="">
+{% include "post.html" with post=object hide_delete=True%}
+    </div>
+{% endblock %}
+
+{% block post_post %}
+    <form method="post">
+        {% csrf_token %}
+        <input type="submit" value="Confirm Delete" class="btn btn-danger btn-default">
+        <a href="{% url 'posts:single' username=user.username pk=object.pk %}"
+           class="btn btn-simple btn-default">Cancel</a>
+                    <div style="float: right">
+                        <a href="{% url 'posts:update' pk=post.pk %}" title="update" class="btn btn-simple">
+                            <span class="glyphicon glyphicon-edit text-info" aria-hidden="true"></span>
+                            <span class="text-info icon-label">Edit</span>
+                        </a>
+                        <a href="{% url 'posts:delete' pk=post.pk %}" title="delete" class="btn btn-simple">
+                            <span class="glyphicon glyphicon-remove text-danger" aria-hidden="true"></span>
+                            <span class="text-danger icon-label">Delete</span>
+                        </a>
+                    </div>
+    </form>
+{% endblock %}

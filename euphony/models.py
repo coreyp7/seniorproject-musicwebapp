@@ -5,6 +5,11 @@ from django.contrib.auth.models import User
 from django.urls import reverse
 import re
 
+from django.contrib.auth import get_user_model
+import misaka
+from django import template
+from django.conf import settings
+
 from django_comments_xtd.forms import XtdCommentForm
 from django_comments_xtd.models import TmpXtdComment
 
@@ -97,17 +102,66 @@ class User_Setting_Ext(models.Model):
     explicit = models.BooleanField(default=False) #Explicit content toggle
 
 #Section dedicated towards UserGroups
-class UserGroup(models.Model):
-    name = models.TextField(max_length=200)
-    ''' Wanted to designate owner of group but
-        members clashed with owner when making table
-        Decided to throw out owner
-    owner = models.OneToOneField(
-        User,
-        on_delete=models.CASCADE,
-    )
-    '''
-    members = models.ManyToManyField(User)
-    membership = models.BooleanField(default=False)
+
+AuthUser = get_user_model()
+# AuthUser is a regular User
+register = template.Library()
+
+class Group(models.Model):
+    name = models.CharField(max_length=255, unique=True)
+    description = models.TextField(blank=True, default='')
+    members = models.ManyToManyField(AuthUser, related_name='group_members', through='GroupMember')
+
     def __str__(self):
-        return self.name + ' | ' + str(self.membership)
+        return self.name
+
+    def save(self, *args, **kwargs):
+        super().save(*args, **kwargs)
+
+    class Meta:
+        ordering = ['name']
+
+
+class GroupMember(models.Model):
+    group = models.ForeignKey(Group, related_name='memberships')
+    user = models.ForeignKey(AuthUser, related_name='user_group')
+
+    def __str__(self):
+        return self.user.username
+
+    class Meta:
+        unique_together = ('group', 'user')
+
+class Post(models.Model):
+    user = models.ForeignKey(AuthUser, related_name='posts')
+    created_at = models.DateTimeField(auto_now=True)
+    message = models.TextField(blank=True, default="")
+    message_html = models.TextField(editable=False)
+    group = models.ForeignKey(Group, related_name='posts', null=True, blank=True)
+    postlike_members = models.ManyToManyField(AuthUser, related_name='postlike_members', through='PostLike')
+
+    def __str__(self):
+        return self.message
+
+    def save(self, *args, **kwargs):
+        self.message_html = misaka.html(self.message)
+        super().save(*args, **kwargs)
+
+    def get_absolute_url(self):
+        return reverse('posts:single', kwargs={'username': self.user.username,
+                                               'pk': self.pk})
+
+    class Meta:
+        ordering = ['-created_at']
+        unique_together = ['user', 'message']
+
+
+class PostLike(models.Model):
+    post = models.ForeignKey(Post, related_name='post_liked')
+    user = models.ForeignKey(AuthUser, related_name='user_like')
+
+    def __str__(self):
+        return self.user.username
+
+    class Meta:
+        unique_together = ('post', 'user')

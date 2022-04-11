@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+{% load bootstrap3 %}
+
+{% block group_content %}
+<div class="col-sm-6 col-sm-offset-2 col-md-4 col-md-offset-4" style="padding-top: 10px">
+    <h4>New Group</h4>
+    <form id="groupForm" action="{% url 'groups:create' %}" method="post">
+        {% csrf_token %}
+        {% bootstrap_form form %}
+        <input type="submit" value="Create" class="btn btn-primary btn-default">
+        <a href="{% url 'groups:all' %}"
+           class="btn btn-simple btn-default">Cancel</a>
+    </form>
+</div>
+{% endblock %}

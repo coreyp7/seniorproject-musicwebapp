@@ -1,0 +1,48 @@
+<div class="media thumbnail col-sm-6 col-md-3 transparent-padding grid-item">
+	<div class="media-heading">
+        <p>
+        <h4 class="media-body center-div"> {{ post.message_html|safe|truncatechars_html:80 }}
+        </h4>
+        </p>
+        <span class="username">
+            <a href="{% url 'accounts:detail' pk=post.user.id %}">@{{ post.user.username }}</a>
+        </span>
+        {% if post.group %}
+            <span class="group-name"> posted in group
+                <a href="{% url 'groups:single' pk=post.group.pk %}">{{ post.group.name }}</a>
+            </span>
+        {% endif %}
+        <span class="time-name"> at
+            <time class="time">
+                <a href="{% url 'posts:single' username=post.user.username pk=post.pk %}">{{ post.created_at }}</a>
+            </time>
+            </span>
+        <h5 class="media-body">
+            {% if request.user.is_authenticated and request.user.id == user.id %}
+                {% if user.is_authenticated and post.user.id == user.id and not hide_delete %}
+                    <div style="float: right">
+                        <a href="{% url 'posts:update' pk=post.pk %}" title="update" class="btn">
+                            <span class="glyphicon glyphicon-edit text-warning" aria-hidden="true"></span>
+                            <span class="text-warning icon-label">Edit</span>
+                        </a>
+                        <a href="{% url 'posts:delete' pk=post.pk %}" title="delete" class="btn">
+                            <span class="glyphicon glyphicon-remove text-danger" aria-hidden="true"></span>
+                            <span class="text-danger icon-label">Delete</span>
+                        </a>
+                    </div>
+                {% endif %}
+            {% endif %}
+        </h5>
+	</div>
+</div>
+
+<div class="modal fade" id="imagemodal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-body">
+                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span
+                        class="sr-only">Close</span></button>
+            </div>
+        </div>
+    </div>
+</div>

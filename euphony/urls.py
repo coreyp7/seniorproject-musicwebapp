@@ -47,4 +47,22 @@ urlpatterns = [
     path('user_group_leave/<user_group_id>', views.user_group_leave, name="user_group_leave"),
     path('user_group_page/<user_group_id>', views.user_group_page, name="user_group_page"),
 
+    path('user_group_all/', views.ListGroups.as_view(), name='all'),
+    path('user_group_create/', views.CreateGroup.as_view(), name='create'),
+    path('user_group_page/<user_group_id>', views.SingleGroup.as_view(), name='single'),
+    path('user_group_update/<user_group_id>', views.UpdateGroup.as_view(), name='update'),
+    path('user_group_join/<user_group_id>', views.JoinGroup.as_view(), name='join'),
+    path('user_group_leave/<user_group_id>', views.LeaveGroup.as_view(), name='leave'),
+
+    path(r'posts/in/(?P<slug>[-\w]+)/$', views.SingleGroup.as_view(), name='single'),
+    path(r'update/(?P<pk>\d+)/$', views.UpdateGroup.as_view(), name='update'),
+    path(r'join/(?P<slug>[-\w]+)/$', views.JoinGroup.as_view(), name='join'),
+    path(r'leave/(?P<slug>[-\w]+)/$', views.LeaveGroup.as_view(), name='leave'),
+
+    path('post_all/', views.PostList.as_view(), name='all'),
+    path('post_create/', views.CreatePost.as_view(), name='create'),
+    path(r'by/(?P<username>[-\w]+)/$', views.UserPosts.as_view(), name='for_user'),
+    path(r'by/(?P<username>[-\w]+)/(?P<pk>\d+)/$', views.PostDetail.as_view(), name='single'),
+    path(r'update/(?P<pk>\d+)/$', views.UpdatePost.as_view(), name='update'),
+    path(r'delete/(?P<pk>\d+)/$', views.DeletePost.as_view(), name='delete'),
 ]

@@ -18,7 +18,7 @@ import json
 from .cashe_handler import DatabaseTokenHandler
 from .spotify_queries import *
 
-from .forms import SongForm, CreateUserForm, UserGroupForm
+from .forms import SongForm, CreateUserForm
 from .models import *
 
 from .models import Song, UserToken, Song_rating
@@ -28,6 +28,18 @@ from .forms import EditUserForm
 
 from django.contrib.auth.forms import PasswordChangeForm
 from django.contrib.auth import update_session_auth_hash
+
+#Start of Kristen's imports - for debugging purposes
+from .forms import PostForm
+from django.shortcuts import render, get_object_or_404, render_to_response
+from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin #restricts based on class of users and non-users
+from django.http import Http404
+from django.views import generic
+from django.db.models import Q
+from django.db import IntegrityError
+from braces.views import SelectRelatedMixin
+from django.contrib.auth import get_user_model
+
 
 scope = "user-library-read"
 #sp = spotipy.Spotify(auth_manager=SpotifyOAuth(scope=scope))
@@ -565,43 +577,145 @@ def topChart_Mexico(request):
 def topChart_USA(request):
     return render(request, 'USATopChart.html')
 
-def user_group_all(request):
-    all_groups = UserGroup.objects.all
-    return render(request,'user_groups_all.html',{'all_groups' : all_groups})
+#For User Groups and Posts
+class CreateGroup(LoginRequiredMixin, generic.CreateView):
+    fields = ('name', 'description')
+    model = Group
 
-def user_group_join(request, user_group_id):
-	user_group = UserGroup.objects.get(pk=user_group_id)
-	user_group.membership = True
-	user_group.save()
-	return redirect('user_groups_all')
+class UpdateGroup(LoginRequiredMixin, generic.UpdateView):
+    fields = ('name', 'description')
+    model = Group
+    template_name_suffix = '_update_form'
 
-def user_group_leave(request, user_group_id):
-	user_group = UserGroup.objects.get(pk=user_group_id)
-	user_group.membership = False
-	user_group.save()
-	return redirect('user_groups_all')
+    def get_object(self, *args, **kwargs):
+        group = get_object_or_404(self.model, pk=self.kwargs['pk'])
+        return group
 
-def user_group_delete(request, user_group_id):
-	user_group = UserGroup.objects.get(pk=user_group_id)
-	user_group.delete()
-	messages.success(request, ('Group Has Been Deleted'))
-	return redirect('user_groups_all')
+class SingleGroup(generic.DetailView):
+    model = Group
 
-def user_group_create(request):
-    submitted = False
-    if request.method == "POST":
-        form = PlaylistForm(request.POST)
-        if form.is_valid():
-            form.save()
-            messages.success(request, ('New Group Created'))
-            return redirect('user_groups_all')
+class ListGroups(generic.ListView):
+    model = Group
+
+class JoinGroup(LoginRequiredMixin, generic.RedirectView):
+
+    def get_redirect_url(self, *args, **kwargs):
+        return reverse('groups:all')
+
+    def get(self, request, *args, **kwargs):
+        group = get_object_or_404(Group)
+
+        try:
+            GroupMember.objects.create(user=self.request.user, group=group)
+        except IntegrityError:
+            messages.warning(self.request, 'Warning already a member!')
+        else:
+            messages.success(self.request, 'You are now a member!')
+
+        return super().get(request, *args, **kwargs)
+
+
+class LeaveGroup(LoginRequiredMixin, generic.RedirectView):
+
+    def get_redirect_url(self, *args, **kwargs):
+        return reverse('groups:all')
+
+    def get(self, request, *args, **kwargs):
+
+        try:
+            membership = models.GroupMember.objects.filter(
+                user=self.request.user,
+            ).get()
+        except models.GroupMember.DoesNotExist:
+            messages.warning(self.request, 'Sorry you are not in this group!')
+        else:
+            membership.delete()
+            messages.success(self.request, 'You have left the group!')
+        return super().get(request, *args, **kwargs)
+
+User = get_user_model()
+
+def search(request):
+    if request.method == 'GET':
+        in_text = request.GET.get('in_text', '')
+        try:
+            status = models.Post.objects.filter(Q(message__icontains=in_text) |
+                                                Q(user__username__icontains=in_text) |
+                                                Q(group__name__icontains=in_text))
+        except models.Post.DoesNotExist:
+            raise Http404
+        else:
+            return render(request, "posts/post_search.html", {"posts": status})
     else:
-        form = PlaylistForm
-        if 'submitted' in request.GET:
-            submitted = True
-        return render(request,'user_groups_create.html',{'form': form, 'submitted': submitted})
+        return render(request, "posts/post_search.html", {})
 
-def user_group_page(request, user_group_id):
-    user_group = UserGroup.objects.get(pk=user_group_id)
-    return render(request,'user_groups_page.html',{'user_group': user_group})
+class PostList(SelectRelatedMixin, generic.ListView):
+    model = models.Post
+    # paginate_by = 5
+    context_object_name = 'posts'
+    select_related = ('user', 'group')
 
+class UserPosts(generic.ListView):
+    model = models.Post
+    template_name = 'posts/user_post_list.html'
+
+    def get_queryset(self):
+        try:
+            self.post_user = User.objects.prefetch_related("posts").get(
+                username__iexact=self.kwargs.get("username")
+            )
+        except User.DoesNotExist:
+            raise Http404
+        else:
+            return self.post_user.posts.all()
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["post_user"] = self.post_user
+        return context
+
+
+class PostDetail(SelectRelatedMixin, generic.DetailView):
+    model = models.Post
+    select_related = ('user', 'group')
+
+    def get_queryset(self):
+        queryset = super().get_queryset()
+        return queryset.filter(user__username__iexact=self.kwargs.get('username'))
+
+
+class CreatePost(LoginRequiredMixin, SelectRelatedMixin, generic.CreateView):
+    # form_class = forms.PostForm
+    # fields = ('message', 'group')
+    fields = ('message', 'group')
+    model = models.Post
+
+    def form_valid(self, form):
+        self.object = form.save(commit=False)
+        self.object.user = self.request.user
+        self.object.save()
+        return super().form_valid(form)
+
+
+class UpdatePost(LoginRequiredMixin, SelectRelatedMixin, generic.UpdateView):
+    fields = ('message', 'group')
+    model = models.Post
+    template_name_suffix = '_update_form'
+
+    def get_object(self, *args, **kwargs):
+        post = get_object_or_404(self.model, pk=self.kwargs['pk'])
+        return post
+
+
+class DeletePost(LoginRequiredMixin, SelectRelatedMixin, generic.DeleteView):
+    model = models.Post
+    select_related = ('user', 'group')
+    success_url = reverse_lazy('posts:all')
+
+    def get_queryset(self):
+        queryset = super().get_queryset()
+        return queryset.filter(user_id=self.request.user.id)
+
+    def delete(self, *args, **kwargs):
+        messages.success(self.request, 'Post Deleted')
+        return super().delete(*args, **kwargs)

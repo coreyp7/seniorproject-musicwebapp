@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+
+{% block pregroup %}
+
+        {% include "groups/_group.html" %}
+
+{% endblock %}
+
+{% block group_content %}
+
+<div class="container">
+    <h3>Posts</h3>
+    {% if group.posts.count == 0 %}
+        <h2>No posts in this group yet!</h2>
+    {% else %}
+        {% for post in group.posts.all %}
+            {% include "post.html" %}
+        {% endfor %}
+    {% endif %}
+</div>
+{% endblock %}

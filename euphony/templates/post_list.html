@@ -1,0 +1,12 @@
+{% extends "base.html" %}
+
+{% block pre_post_content %}
+{% endblock %}
+
+{% block post_content %}
+    {% if user.is_authenticated %}
+    {% for post in posts %}
+        {% include "posts/_post.html"%}
+    {% endfor %}
+    {% endif %}
+{% endblock %}

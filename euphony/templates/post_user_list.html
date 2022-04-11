@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+
+    {% block pre_post_content %}
+        {% if request.user.is_authenticated %}
+            <div class="card card-with-shadow">
+                <div class="content">
+                    <h5 class="title">Groups</h5>
+                    <ul class="list-unstyled">
+                        {% for group in post_user.group_members.all %}
+                            <li class="group li-with-bullet">
+                                <a href="{% url 'groups:single' pk=group.pk %}"> {{ group.name }}</a>
+                            </li>
+                        {% endfor %}
+                    </ul>
+                </div>
+            </div>
+        {% endif %}
+    {% endblock %}
+
+    {% block post_content %}
+        {% if request.user.is_authenticated %}
+        {% for post in post_list %}
+            {% include "post.html" %}
+        {% endfor %}
+        {% endif %}
+    {% endblock %}
