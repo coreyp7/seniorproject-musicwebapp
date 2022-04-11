@@ -467,12 +467,22 @@ def songinfo(request, music_id):
         "id": album_info["id"]}})
 
 def settings_general(request):
+    # Do not allow anonymous users to go to settings. Redirect to login.
+    if not request.user.is_authenticated:
+        return redirect('login', permanent=True)
     return render(request, 'settings_general.html')
 
 def settings_security(request):
+    # Do not allow anonymous users to go to settings. Redirect to login.
+    if not request.user.is_authenticated:
+        return redirect('login', permanent=True)
     return render(request, 'settings_security.html')
 
 def settings_reset_password(request):
+    # Do not allow anonymous users to go to settings. Redirect to login.
+    if not request.user.is_authenticated:
+        return redirect('login', permanent=True)
+
     if request.method == 'POST':
         form = PasswordChangeForm(data=request.POST, user=request.user)
 
@@ -490,13 +500,17 @@ def settings_reset_password(request):
         return render(request, 'settings_reset_password.html', args)
 
 def settings_account(request):
-      if request.method == 'POST':
+    # Do not allow anonymous users to go to settings. Redirect to login.
+    if not request.user.is_authenticated:
+        return redirect('login', permanent=True)
+    
+    if request.method == 'POST':
         form = EditUserForm(request.POST, instance=request.user)
         if form.is_valid:
           form.save()
           messages.success(request, ('Settings has been Saved!'))
           return render(request, 'settings_account.html')
-      else:
+    else:
         form = EditUserForm(instance=request.user)
         args = {
           'form': form,
