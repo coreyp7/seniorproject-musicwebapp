@@ -43,6 +43,8 @@ INSTALLED_APPS = [
     "django_comments_xtd",
     "django_comments",
     "friendship",
+    'debug_toolbar',
+    'bootstrap3',
 ]
 
 # comments settings

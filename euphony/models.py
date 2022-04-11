@@ -8,6 +8,7 @@ import re
 from django.contrib.auth import get_user_model
 import misaka
 from django import template
+from django.utils.text import slugify
 from django.conf import settings
 
 from django_comments_xtd.forms import XtdCommentForm
@@ -104,12 +105,13 @@ class User_Setting_Ext(models.Model):
 #Section dedicated towards UserGroups
 
 AuthUser = get_user_model()
-# AuthUser is a regular User
 register = template.Library()
 
 class Group(models.Model):
     name = models.CharField(max_length=255, unique=True)
+    slug = models.SlugField(allow_unicode=True, unique=True)
     description = models.TextField(blank=True, default='')
+    description_html = models.TextField(editable=False, blank=True, default='')
     members = models.ManyToManyField(AuthUser, related_name='group_members', through='GroupMember')
 
     def __str__(self):
@@ -123,8 +125,8 @@ class Group(models.Model):
 
 
 class GroupMember(models.Model):
-    group = models.ForeignKey(Group, related_name='memberships')
-    user = models.ForeignKey(AuthUser, related_name='user_group')
+    group = models.ForeignKey(Group, on_delete=models.CASCADE, related_name='memberships')
+    user = models.ForeignKey(AuthUser, on_delete=models.CASCADE, related_name='user_group')
 
     def __str__(self):
         return self.user.username
@@ -133,11 +135,11 @@ class GroupMember(models.Model):
         unique_together = ('group', 'user')
 
 class Post(models.Model):
-    user = models.ForeignKey(AuthUser, related_name='posts')
+    user = models.ForeignKey(AuthUser, on_delete=models.CASCADE, related_name='posts')
     created_at = models.DateTimeField(auto_now=True)
     message = models.TextField(blank=True, default="")
     message_html = models.TextField(editable=False)
-    group = models.ForeignKey(Group, related_name='posts', null=True, blank=True)
+    group = models.ForeignKey(Group, on_delete=models.CASCADE, related_name='posts', null=True, blank=True)
     postlike_members = models.ManyToManyField(AuthUser, related_name='postlike_members', through='PostLike')
 
     def __str__(self):
@@ -157,8 +159,8 @@ class Post(models.Model):
 
 
 class PostLike(models.Model):
-    post = models.ForeignKey(Post, related_name='post_liked')
-    user = models.ForeignKey(AuthUser, related_name='user_like')
+    post = models.ForeignKey(Post, on_delete=models.CASCADE, related_name='post_liked')
+    user = models.ForeignKey(AuthUser, on_delete=models.CASCADE, related_name='user_like')
 
     def __str__(self):
         return self.user.username

@@ -530,7 +530,6 @@ def registerPage(request):
 
             return redirect('login')
 
-
     context = {'form': form}
     return render(request, 'register.html', context)
 
@@ -635,20 +634,6 @@ class LeaveGroup(LoginRequiredMixin, generic.RedirectView):
 
 User = get_user_model()
 
-def search(request):
-    if request.method == 'GET':
-        in_text = request.GET.get('in_text', '')
-        try:
-            status = models.Post.objects.filter(Q(message__icontains=in_text) |
-                                                Q(user__username__icontains=in_text) |
-                                                Q(group__name__icontains=in_text))
-        except models.Post.DoesNotExist:
-            raise Http404
-        else:
-            return render(request, "posts/post_search.html", {"posts": status})
-    else:
-        return render(request, "posts/post_search.html", {})
-
 class PostList(SelectRelatedMixin, generic.ListView):
     model = models.Post
     # paginate_by = 5
@@ -685,8 +670,6 @@ class PostDetail(SelectRelatedMixin, generic.DetailView):
 
 
 class CreatePost(LoginRequiredMixin, SelectRelatedMixin, generic.CreateView):
-    # form_class = forms.PostForm
-    # fields = ('message', 'group')
     fields = ('message', 'group')
     model = models.Post
 
