@@ -9,10 +9,16 @@
                 {% load friendshiptags %}
                 Username: {{ user }} <br>
                 User ID: {{ user.id }}<br>
-                Friends: {% friends user %}<br>
-            <br/>
+                Friends:
+                    <a href="{% url 'search_users' %}">{% friends user %}</a>
+
+
+
+
+                <br/>
             <br/>
             {% endfor %}
+                <a href="{% url 'search_users' %}">Go back</a><br> <br> <br>
 
         {% else %}
             <h1 style="color:white;">Hey! You Forgot To Search For A User... </h1>

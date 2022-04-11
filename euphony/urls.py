@@ -24,10 +24,14 @@ urlpatterns = [
     path('settings_account/', views.settings_account, name='settings_account'),
     path('settings_security/', views.settings_security, name='settings_security'),
     path('profile/', views.profile, name='profile'),
-    path('search_user/', views.search_user, name='search_users'),
+    #path('search_user/', views.search_user, name='search_users'),
+    #path('search_user/<user_id>', views.search_userId, name='search_usersid'),
     path('topchart/', views.topChart, name="top"),
-
     path('register/', views.registerPage, name="register"),
     path('login/', views.loginPage, name="login"),
     path('logout/', views.logoutUser, name="logout"),
+    path('search_users/', views.search_users, name="search_users"),
+    path('events/list_users/', views.list_users, name="list-users"),
+    path('show_user/<user_id>', views.show_user, name="show_user"),
+    path('friendship/', include('friendship.urls')),
 ]
