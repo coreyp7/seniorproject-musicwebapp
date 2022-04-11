@@ -41,6 +41,12 @@
           </form>
 
         </ul>
+        <!-- 
+        Check that a user is logged in.
+        If they are, then display the dropdown with different options available.
+        Otherwise, display the login button, which redirects to the login page.
+        -->
+        {% if user.is_authenticated %}
         <div class="dropdown">
           <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton1"
             data-bs-toggle="dropdown" aria-expanded="false">
@@ -52,6 +58,11 @@
             <li><a class="dropdown-item" href="{% url 'logout' %}">Logout</a></li>
           </ul>
         </div>
+        {% else %}
+        <div>
+          <a type="button" class="btn btn-primary" href="{% url 'login' %}" role="button">Login</a>
+        </div>
+        {% endif %}
       </div>
     </div>
   </nav>
