@@ -12,38 +12,47 @@
   easily access it.
 </h3>
 
-<strike>Search Song Page</strike>
-<br>
+New changes as of 4/11/22:
+<ul>
+  <li>Search everything page</li>
+  <li>Playlist view update/fix.</li>
+  <li>Dashboard provides links now.</li>
+  <li>Album view updated.</li>
+  <li>Standard CSS created.</li>
+  <li>Comments on albums added.</li>
+  <li>Anonymous user restricted pages.</li>
+</ul>
+
 <a href="{% url 'playlists' %}">Playlists</a>
-<br>
-<a href="{% url 'link_account' %}">Link account(admin)</a>
 <br>
 <a href="{% url 'dash' %}">dashboard</a>
 <br>
-<a href="{% url 'settings_general' %}">User Settings</a>
-<br>
 <a href="{% url 'profile' %}">Profile Search</a>
 <br>
-<a href="{% url 'login' %}">Login page</a>
-<br>
-<a href="{% url 'logout' %}">Logout page (instant logout, redirects to login page)</a>
-<br>
-<a href="{% url 'register' %}">Register Page</a>
-<br>
-<strike>Search Album Page</strike>
+<a href="{% url 'register' %}">Register Page</a> We should prolly make a new button for this in the navbar
 <br>
 <a href="{% url 'top' %}">Top Chart Page</a>
-<br>
 <br>
 <a href="{% url 'search' %}">Search Page (Song & Album results)</a> NOTE: Waiting to include user/playlist search
 until Shane finishes his updated search page.
 
-
+<strike>Search Song Page</strike>
+<br>
+<strike>Search Album Page</strike>
+<br>
+<strike>Link account(admin)</strike> Now in the account settings page
+<br>
+<strike>User Settings</strike>Accessible at top right dropdown menu now (must be logged in)
+<br>
+<strike>Logout page (instant logout, redirects to login page)</strike> Accessible at top right dropdown menu now (must
+be logged in)
+<br>
+<strike>Login page</strike>
 
 {% endblock %}
 
 <script type="text/javascript">
-  if("{{ user.userExt.dark_mode }}" == "True") {
-  document.write('<link rel="stylesheet" type="text/css" href="{% static 'css/dark_mode.css' %}">');
-}
+  if ("{{ user.userExt.dark_mode }}" == "True") {
+    document.write('<link rel="stylesheet" type="text/css" href="{% static 'css / dark_mode.css' %}">');
+  }
 </script>
