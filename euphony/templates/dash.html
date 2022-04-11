@@ -41,10 +41,15 @@
     </iframe>
     <p id="{{item.song.id}}-rating">
     <p/>
-    <button class="btn btn-primary", onclick="vote('{{item.song.id}}', 1)">Upvote</button>
-    <button class="btn btn-primary", onclick="vote('{{item.song.id}}', 0)">Downvote</button>
-    <a href="{% url 'songinfo' item.song.id  %}" class="btn btn-primary">Comments</a>
 
+    {% if user.id %}
+
+      <button class="btn btn-primary", onclick="vote('{{item.song.id}}', 1)">Upvote</button>
+      <button class="btn btn-primary", onclick="vote('{{item.song.id}}', 0)">Downvote</button>
+
+    {% endif %}
+
+    <a href="{% url 'songinfo' item.song.id  %}" class="btn btn-primary">Comments</a>
     <script type="text/javascript">
 
      var ratings = {{item.ratings}};

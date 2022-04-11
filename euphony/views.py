@@ -14,6 +14,7 @@ import spotipy
 from spotipy.oauth2 import SpotifyClientCredentials, SpotifyOAuth
 from numpy.random import default_rng, shuffle
 import json
+import numpy as np
 
 from .cashe_handler import DatabaseTokenHandler
 from .spotify_queries import *
@@ -29,7 +30,7 @@ from .forms import EditUserForm
 from django.contrib.auth.forms import PasswordChangeForm
 from django.contrib.auth import update_session_auth_hash
 
-scope = "user-library-read"
+scope = "user-library-read user-top-read"
 #sp = spotipy.Spotify(auth_manager=SpotifyOAuth(scope=scope))
 sp = spotipy.Spotify(client_credentials_manager=SpotifyClientCredentials())
 
@@ -103,6 +104,13 @@ def dash(request):
         else:
             return HttpResponse("account not linked with spotify")
 
+    else:
+        songs = Song.objects.all()
+        indexs = rng.choice(range(len(songs)), size=50, replace=False)
+        song_list = np.array(list(songs))[indexs]
+        posts = [{ "song" : item[0] , "ratings" : item[1]} for item in zip(song_list, get_song_rating_numbers(song_list)) ]
+        posts.sort(key = lambda item : item['ratings'], reverse=True )
+
     return render(request, 'dash.html', {'recommendations' : posts})
 
 
@@ -114,7 +122,6 @@ def proccess_vote(request):
         new_vote = (int(request.POST['vote']) == 1)
         if len(rating) == 0:
             vote = Song_rating.objects.create(song_id=song, user_id=user, rating_type=new_vote)
-            print('new', vote.id, vote.song_id ,vote.rating_type)
             if(new_vote):
                 return HttpResponse('1')
             else:
@@ -122,7 +129,6 @@ def proccess_vote(request):
         else:
             vote = rating[0]
             old_vote = vote.rating_type
-            print('not new',vote.id, vote.song_id ,vote.rating_type)
             if(old_vote == new_vote):
                 vote.delete()
                 if(old_vote):
@@ -176,7 +182,7 @@ def search_results(request):
                 "name" : json_obj["name"],
                 "number" : json_obj["track_number"],
                 "explicit" : json_obj["explicit"],
-                "artists" : album_artists_str, 
+                "artists" : album_artists_str,
                 "album_id" : album_id,
                 "album_name" : album_json["name"],
                 "album_release_date" : album_json["release_date"],
@@ -187,7 +193,7 @@ def search_results(request):
             # If it is in a compilation, we just flat out ignore it and don't show it.
             if album_json["album_type"] != 'compilation':
                 final_songs_list.append(track_info)
-            
+
         # 2. Get Album query results and put it in 'all_albums'
         album_query = form.cleaned_data["song_name"]
         albums_json = sp.search(album_query, type="album", limit=10) # json with album information
@@ -221,8 +227,8 @@ def search_results(request):
             # If it is a compilation, we just flat out ignore it and don't show it.
             if album_info["type"] != 'compilation':
                 all_albums.append(album_info)
-            
-            
+
+
 
         return render(request, "search.html",
         {"form_info": form, "songs": final_songs_list, "albums": all_albums, "results": True})
@@ -445,7 +451,7 @@ def songinfo(request, music_id):
         id=album_info["id"],
         defaults = {
         "name" : album_info["name"],
-        "artists" : album_info["artists"], 
+        "artists" : album_info["artists"],
         "release_date" : album_info["release_date"],
         "total_tracks" : album_info["total_tracks"],
         "cover" : album_info["cover"]
