@@ -411,7 +411,8 @@ def album_info(request, id):
         }
         album_tracks.append(new_song)
 
-    return render(request, "album_info.html", {"id": id, "songs": album_tracks,
+    albumid = Album.objects.get(pk=id)
+    return render(request, "album_info.html", {"albumid": albumid, "songs": album_tracks,
     "album": album_info})
 
 

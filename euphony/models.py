@@ -18,6 +18,10 @@ class Album(models.Model):
     release_date = models.TextField()
     cover = models.URLField(max_length=200) # link to cover of album
     total_tracks = models.IntegerField()
+    allow_comments = models.BooleanField('allow comments', default=True)
+
+    def get_absolute_url(self):
+        return reverse('album_info', args=[str(self.id)])
 
 class Song(models.Model):
     id = models.TextField(primary_key=True)  # Spotify ID of song
