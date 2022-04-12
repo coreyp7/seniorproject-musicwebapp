@@ -33,9 +33,17 @@
       </button>
       <div class="collapse navbar-collapse" id="navbarSupportedContent">
         <ul class="navbar-nav me-auto mb-2 mb-lg-0 mr-auto ml-auto">
-
+          <!--
           <form class="form-inline justify-content-center">
             <input class="form-control mr-sm-2" type="text" placeholder="Search" aria-label="Search">
+            <div class="navbar_serach_button_spacing"></div>
+            <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
+          </form>
+          -->
+
+          <form class="form-inline justify-content-center" method=POST action="{% url 'search_results' %}">
+            {% csrf_token %}
+            <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search" name="search_query">
             <div class="navbar_serach_button_spacing"></div>
             <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
           </form>

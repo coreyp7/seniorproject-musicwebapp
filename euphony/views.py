@@ -159,13 +159,13 @@ def search(request):
 # 2. Query for albums on spotify and create a list of dictionaries with information we need to display.
 # Also put a boolean named 'results' in our render dictionary to tell the front end the form was submitted.
 def search_results(request):
-    form = SongForm(request.POST)
-
-    if form.is_valid():
+    #form = SongForm(request.POST)
+    if request.method == "POST":
+        search_query = request.POST['search_query']
         # 1. Get Song query results and put it in 'final_songs_list'
 
         # find song list from spotipy and return the list in the form of a parameter in our render
-        track_query = "track:"+form.cleaned_data["song_name"]
+        track_query = "track:"+search_query
         songs_json = sp.search(track_query, limit=10) # json with song information
 
         final_songs_list = []
@@ -198,7 +198,7 @@ def search_results(request):
                 final_songs_list.append(track_info)
 
         # 2. Get Album query results and put it in 'all_albums'
-        album_query = form.cleaned_data["song_name"]
+        album_query = search_query
         albums_json = sp.search(album_query, type="album", limit=10) # json with album information
 
         albums_json = albums_json["albums"]
@@ -234,11 +234,11 @@ def search_results(request):
 
 
         return render(request, "search.html",
-        {"form_info": form, "songs": final_songs_list, "albums": all_albums, "results": True})
+        {"songs": final_songs_list, "albums": all_albums, "results": True})
     else:
         print("unsuccessful :(")
 
-    return render(request, "search.html", {"form_info": form, "songs": None})
+    return render(request, "search.html", {"songs": None})
 
 
 # Playlist Page functions
