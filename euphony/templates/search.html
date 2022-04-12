@@ -100,6 +100,32 @@
 
 {% endif %}
 
+<!-- Now create Users results. -->
+{% if users %}
+<h3>Users:</h3>
+<div class="scrollmenu">
+    <table>
+        <tr>
+            {% for user in users %}
+            <!-- Loop through each of our album dictionaries.
+            You can see all the fields acessible in the album_info dicionary
+            in search_results in views.py.-->
+            <td>
+                <div>
+                    {{ user.id }} | <a href="{% url 'show_user' user.id %}">{{ user }}</a>
+                    <br>
+                    {% load friendshiptags %}
+                    Friends: {% friends user %}
+                </div>
+            </td>
+            {% endfor %}
+        </tr>
+    </table>
+</div>
+{% else %}
+<h1>No users :(</h1>
+{% endif %}
+
 {% endif %}
 
 {% endblock %}

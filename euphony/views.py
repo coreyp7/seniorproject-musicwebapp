@@ -230,11 +230,17 @@ def search_results(request):
             # If it is a compilation, we just flat out ignore it and don't show it.
             if album_info["type"] != 'compilation':
                 all_albums.append(album_info)
+            
+            
+        # Third: search user query.
+        users = User.objects.filter(username__contains=search_query)
+        friends = Friend.objects.friends(request.user)
 
 
 
         return render(request, "search.html",
-        {"songs": final_songs_list, "albums": all_albums, "results": True})
+        {"songs": final_songs_list, "albums": all_albums, "results": True,
+        "users": users, "friends": friends})
     else:
         print("unsuccessful :(")
 
