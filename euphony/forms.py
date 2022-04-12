@@ -43,4 +43,16 @@ class CreateUserForm(UserCreationForm):
         model = User
         fields = ['username', 'email', 'password1', 'password2']
 
+class SearchByUserID(forms.ModelForm):
+    class Meta:
+        model= User
+        fields= ["id"]
+        labels = {
+            'name': 'Search by user id',
+        }
+        widgets = {
+            'name': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Search For User ID'})
+        }
 
+class ProfileForm(forms.Form):
+    user_name = forms.CharField(widget=forms.TextInput(attrs={"size": "50"}))

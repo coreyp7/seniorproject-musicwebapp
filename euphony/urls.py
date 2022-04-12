@@ -23,7 +23,8 @@ urlpatterns = [
     path('settings_security/', views.settings_security, name='settings_security'),
     path('settings_reset_password/', views.settings_reset_password, name='settings_reset_password'),
     path('profile/', views.profile, name='profile'),
-    path('search_user/', views.search_user, name='search_users'),
+    #path('search_user/', views.search_user, name='search_users'),
+    #path('search_user/<user_id>', views.search_userId, name='search_usersid'),
     path('topchart/', views.topChart, name="top"),
     path('topchart/Global', views.topChart_Global, name="Global"),
     path('topchart/Canada', views.topChart_Canada, name="Canada"),
@@ -37,4 +38,8 @@ urlpatterns = [
     path('playlist_song/<list_id>',views.playlist_song,name='playlist_song'),
     path('playlist_song/playlist_song_results/<list_id>',views.playlist_song_results,name='playlist_song_results'),
     path('playlist_song/playlist_song_results/add_song/<list_id>/<song_id>',views.add_song,name='add_song'),
+    path('search_users/', views.search_users, name="search_users"),
+    path('events/list_users/', views.list_users, name="list-users"),
+    path('show_user/<user_id>', views.show_user, name="show_user"),
+    path('friendship/', include('friendship.urls')),
 ]

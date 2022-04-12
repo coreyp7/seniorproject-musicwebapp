@@ -6,9 +6,12 @@ from django.db.utils import OperationalError
 from django.core.exceptions import ObjectDoesNotExist # for checking if row exists
 from euphony.models import Playlist, Album
 from .forms import PlaylistForm
+    #ProfileForm
+
 from django.contrib import messages
 from friendship.models import Friend, Follow, Block
 from django.contrib.auth import authenticate, login, logout
+
 
 import spotipy
 from spotipy.oauth2 import SpotifyClientCredentials, SpotifyOAuth
@@ -520,14 +523,6 @@ def settings_account(request):
 def profile(request):
     return render(request, 'profile.html', {})
 
-def search_user(request):
-    if request.method == "POST":
-        searched = request.POST['searched']
-        user_names = User.objects.filter(username__contains=searched)
-        friends = Friend.objects.friends(request.user)
-        return render(request, 'events/search_user.html', {'searched': searched, 'user_names': user_names,
-                                                               'friends': friends})
-
 def my_view(request):
     # List of this user's friends
     all_friends = Friend.objects.friends(request.user)
@@ -639,3 +634,30 @@ def topChart_Mexico(request):
 
 def topChart_USA(request):
     return render(request, 'USATopChart.html')
+def topChart_post(request):
+    context  = {}
+    return render(request, 'topcharts.html', context)
+
+def search_users(request):
+    if request.method == "POST":
+        searched2 = request.POST['searched2']
+        users = User.objects.filter(username__contains=searched2)
+        friends = Friend.objects.friends(request.user)
+        print(request.user, searched2)
+        other_user = User.objects.get(pk=1)
+        return render(request, 'events/search_users.html', {'searched2': searched2, 'users':users, 'friends':friends, 'other_user':other_user})
+    else:
+        return render(request, 'events/search_users.html', {})
+
+
+def list_users(request):
+    user_list = User.objects.all()
+    return render(request, 'events/users.html', {'user_list': user_list})
+
+def show_user(request, user_id):
+    user = User.objects.get(pk=user_id)
+    allfriends = Friend.objects.friends(user)
+    #print(request.user, user)
+    return render(request, 'events/show_user.html', {'user': user, 'allfriends':allfriends})
+
+
