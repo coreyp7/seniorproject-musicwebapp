@@ -135,8 +135,11 @@
             in search_results in views.py.-->
             <td>
                 <div>
-                    <a href="{% url 'addsongs_view' playlist.id %}">{{ playlist.id }}:{{ playlist.name }}</a>
+                    id: {{playlist.id}}
                     <br>
+                    <a href="{% url 'addsongs_view' playlist.id %}">Playlist name: {{ playlist.name }}</a>
+                    <br>
+                    <a href="{% url 'show_user' playlist.user_id.id %}">User: {{playlist.user_id.username}}</a>
                 </div>
             </td>
             {% endfor %}
