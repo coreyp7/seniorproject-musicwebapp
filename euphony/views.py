@@ -235,9 +235,7 @@ def search_results(request):
 
         # Third: search user query.
         users = User.objects.filter(username__contains=search_query)
-        friends = Friend.objects.friends(request.user)
-
-
+        friends = Friend.objects.friends(User.objects.get(pk=1))
 
         return render(request, "search.html",
         {"songs": final_songs_list, "albums": all_albums, "results": True,
