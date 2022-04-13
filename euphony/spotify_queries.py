@@ -45,13 +45,13 @@ def gen_seed(client):
         seeds[2] = track_urls
 
     else:
-        artist_urls = []
-        artists = client.current_user_top_artists(limit=5)['items']
+        #artist_urls = []
+        #artists = client.current_user_top_artists(limit=5)['items']
 
-        for artist in artists:
-            artist_urls.append(artist['href'])
+        #for artist in artists:
+        #    artist_urls.append(artist['href'])
 
-        seeds[0] = artist_urls
+        seeds[1] = ['anime']
 
     return seeds
 
