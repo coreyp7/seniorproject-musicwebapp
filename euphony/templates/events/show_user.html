@@ -3,8 +3,8 @@
 {% block content %}
 <div>
     <center>
-    <h1>User: {{ user }}</h1>
-    UserID: {{ user.id }} <br>
+    <h1>User: {{ user_to_show }}</h1>
+    UserID: {{ user_to_show.id }} <br>
     {% load friendshiptags %}
     Friends:<br>
     {% for friends in allfriends %}

@@ -678,4 +678,4 @@ def show_user(request, user_id):
     user = User.objects.get(pk=user_id)
     allfriends = Friend.objects.friends(user)
     #print(request.user, user)
-    return render(request, 'events/show_user.html', {'user': user, 'allfriends':allfriends})
+    return render(request, 'events/show_user.html', {'user_to_show': user, 'allfriends':allfriends})
