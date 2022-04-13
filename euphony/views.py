@@ -360,7 +360,10 @@ def create_playlist(request):
     if request.method == "POST":
         form = PlaylistForm(request.POST)
         if form.is_valid():
-            form.save()
+            playlist = form.save(commit=False) # tells django "don't put into db"
+            playlist.user_id = request.user
+            playlist.save()
+
             messages.success(request, ('New Playlist Created!'))
             return redirect('playlists')
     else:
