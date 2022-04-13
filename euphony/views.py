@@ -617,30 +617,164 @@ def logoutUser(request):
     logout(request)
     return redirect('login')
 
-def topChart(request):
-    #form = SearchForm() No search form exists, so commenting out.
-    return render(request, 'topcharts.html')
+
 
 
 def topChart(request):
     return render(request, 'topcharts.html')
 
-def topChart_Global(request):
-    return render(request, 'GlobalTopChart.html')
+def topChart_post(request, region_name):
 
-def topChart_Canada(request):
-    return render(request, 'CanadaTopChart.html')
+    if region_name == "Global"  :
+        region_id = "37i9dQZEVXbMDoHDwVN2tF"
+    if region_name == "Argentina"  :
+        region_id = "37i9dQZEVXbMMy2roB9myp"
+    if region_name == "Australia"  :
+        region_id = "37i9dQZEVXbJPcfkRz0wJ0"
+    if region_name == "Austria"  :
+        region_id = "37i9dQZEVXbKNHh6NIXu36"
+    if region_name == "Belarus" :
+        region_id = "37i9dQZEVXbIYfjSLbWr4V"
+    if region_name == "Belgium" :
+        region_id = "37i9dQZEVXbJNSeeHswcKB"
+    if region_name == "Bolivia" :
+        region_id = "37i9dQZEVXbJqfMFK4d691"
+    if region_name == "Brazil" :
+        region_id = "37i9dQZEVXbMXbN3EUUhlg"
+    if region_name == "Bulgaria" :
+        region_id = "37i9dQZEVXbNfM2w2mq1B8"
+    if region_name == "Canada" :
+        region_id = "37i9dQZEVXbKj23U1GF4IR"
+    if region_name == "Chile" :
+        region_id = "37i9dQZEVXbL0GavIqMTeb"
+    if region_name == "Colombia" :
+        region_id = "37i9dQZEVXbOa2lmxNORXQ"
+    if region_name == "Costa Rica" :
+        region_id = "37i9dQZEVXbMZAjGMynsQX"
+    if region_name == "Czech Republic" :
+        region_id = "37i9dQZEVXbIP3c3fqVrJY"
+    if region_name == "Denmark" :
+        region_id = "37i9dQZEVXbL3J0k32lWnN"
+    if region_name == "Dominican Republic" :
+        region_id = "37i9dQZEVXbKAbrMR8uuf7"
+    if region_name == "Ecuador" :
+        region_id = "37i9dQZEVXbJlM6nvL1nD1"
+    if region_name == "Egypt" :
+        region_id = "37i9dQZEVXbLn7RQmT5Xv2"
+    if region_name == "El Salvador" :
+        region_id = "37i9dQZEVXbLxoIml4MYkT"
+    if region_name == "Estonia" :
+        region_id = "37i9dQZEVXbLesry2Qw2xS"
+    if region_name == "Finland" :
+        region_id = "37i9dQZEVXbMxcczTSoGwZ"
+    if region_name == "France" :
+        region_id = "37i9dQZEVXbIPWwFssbupI"
+    if region_name == "Germany" :
+        region_id = "37i9dQZEVXbJiZcmkrIHGU"
+    if region_name == "Greece" :
+        region_id = "37i9dQZEVXbJqdarpmTJDL"
+    if region_name == "Guatemala" :
+        region_id = "37i9dQZEVXbLy5tBFyQvd4"
+    if region_name == "Honduras" :
+        region_id = "37i9dQZEVXbJp9wcIM9Eo5"
+    if region_name == "Hong Kong" :
+        region_id = "37i9dQZEVXbLwpL8TjsxOG"
+    if region_name == "Hungary" :
+        region_id = "37i9dQZEVXbNHwMxAkvmF8"
+    if region_name == "Iceland" :
+        region_id = "37i9dQZEVXbKMzVsSGQ49S"
+    if region_name == "India" :
+        region_id = "37i9dQZEVXbLZ52XmnySJg"
+    if region_name == "Indonesia" :
+        region_id = "37i9dQZEVXbObFQZ3JLcXt"
+    if region_name == "Ireland" :
+        region_id = "37i9dQZEVXbKM896FDX8L1"
+    if region_name == "Israel" :
+        region_id = "37i9dQZEVXbJ6IpvItkve3"
+    if region_name == "Italy" :
+        region_id = "37i9dQZEVXbIQnj7RRhdSX"
+    if region_name == "Japan" :
+        region_id = "37i9dQZEVXbKXQ4mDTEBXq"
+    if region_name == "Kazakhstan" :
+        region_id = "37i9dQZEVXbM472oKPNKzS"
+    if region_name == "Latvia" :
+        region_id = "37i9dQZEVXbJWuzDrTxbKS"
+    if region_name == "Lithuania" :
+        region_id = "37i9dQZEVXbMx56Rdq5lwc"
+    if region_name == "Luxembourg" :
+        region_id = "37i9dQZEVXbKGcyg6TFGx6"
+    if region_name == "Malaysia" :
+        region_id = "37i9dQZEVXbJlfUljuZExa"
+    if region_name == "Mexico" :
+        region_id = "37i9dQZEVXbO3qyFxbkOE1"
+    if region_name == "Morocco" :
+        region_id = "37i9dQZEVXbJU9eQpX8gPT"
+    if region_name == "Netherlands" :
+        region_id = "37i9dQZEVXbKCF6dqVpDkS"
+    if region_name == "New Zealand" :
+        region_id = "37i9dQZEVXbM8SIrkERIYl"
+    if region_name == "Nicaragua" :
+        region_id = "37i9dQZEVXbISk8kxnzfCq"
+    if region_name == "Nigeria" :
+        region_id = "37i9dQZEVXbKY7jLzlJ11V"
+    if region_name == "Norway" :
+        region_id = "37i9dQZEVXbJvfa0Yxg7E7"
+    if region_name == "Panama" :
+        region_id = "37i9dQZEVXbKypXHVwk1f0"
+    if region_name == "Paraguay" :
+        region_id = "37i9dQZEVXbNOUPGj7tW6T"
+    if region_name == "Peru" :
+        region_id = "37i9dQZEVXbJfdy5b0KP7W"
+    if region_name == "Philippines" :
+        region_id = "37i9dQZEVXbNBz9cRCSFkY"
+    if region_name == "Poland" :
+        region_id = "37i9dQZEVXbN6itCcaL3Tt"
+    if region_name == "Portugal" :
+        region_id = "37i9dQZEVXbKyJS56d1pgi"
+    if region_name == "Romania" :
+        region_id = "37i9dQZEVXbNZbJ6TZelCq"
+    if region_name == "Saudi Arabia" :
+        region_id = "37i9dQZEVXbLrQBcXqUtaC"
+    if region_name == "Singapore" :
+        region_id = "37i9dQZEVXbK4gjvS1FjPY"
+    if region_name == "Slovakia" :
+        region_id = "37i9dQZEVXbKIVTPX9a2Sb"
+    if region_name == "South Africa" :
+        region_id = "37i9dQZEVXbMH2jvi6jvjk"
+    if region_name == "South Korea" :
+        region_id = "37i9dQZEVXbNxXF4SkHj9F"
+    if region_name == "Spain" :
+        region_id = "37i9dQZEVXbNFJfN1Vw8d9"
+    if region_name == "Sweden" :
+        region_id = "37i9dQZEVXbLoATJ81JYXz"
+    if region_name == "Switzerland" :
+        region_id = "37i9dQZEVXbJiyhoAPEfMK"
+    if region_name == "Taiwan" :
+        region_id = "37i9dQZEVXbMnZEatlMSiu"
+    if region_name == "Thailand" :
+        region_id = "37i9dQZEVXbMnz8KIWsvf9"
+    if region_name == "Turkey" :
+        region_id = "37i9dQZEVXbIVYVBNw9D5K"
+    if region_name == "Ukraine" :
+        region_id = "37i9dQZEVXbKkidEfWYRuD"
+    if region_name == "UAE" :
+        region_id = "37i9dQZEVXbM4UZuIrvHvA"
+    if region_name == "United Kingdom" :
+        region_id = "37i9dQZEVXbLnolsZ8PSNw"
+    if region_name == "USA" :
+        region_id = "37i9dQZEVXbLRQDuF5jeBp"
+    if region_name == "Uruguay" :
+        region_id = "37i9dQZEVXbMJJi3wgRbAy"
+    if region_name == "Venezuela" :
+        region_id = "37i9dQZEVXbNLrliB10ZnX"
+    if region_name == "Vietnam" :
+        region_id = "37i9dQZEVXbLdGSmz6xilI"
+    
+    
 
-def topChart_Japan(request):
-    return render(request, 'JapanTopChart.html')
 
-def topChart_Mexico(request):
-    return render(request, 'MexicoTopChart.html')
-
-def topChart_USA(request):
-    return render(request, 'USATopChart.html')
-def topChart_post(request):
-    context  = {}
+    context  = {'region': region_id, 'region_name': region_name}
+    print (region_id)
     return render(request, 'topcharts.html', context)
 
 def search_users(request):
