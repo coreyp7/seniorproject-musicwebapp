@@ -3,6 +3,7 @@ from django.contrib.auth.models import User
 from django.views.decorators.http import require_POST, require_GET
 from django.http import HttpResponse
 from django.db.utils import OperationalError
+from django.urls import reverse
 from django.core.exceptions import ObjectDoesNotExist # for checking if row exists
 from euphony.models import Playlist, Album
 from .forms import PlaylistForm
@@ -105,7 +106,7 @@ def dash(request):
             posts = posts[:50]
             posts.sort(key = lambda item : item['ratings'], reverse=True )
         else:
-            return HttpResponse("account not linked with spotify")
+            return redirect(reverse("link_account"))
 
     else:
         songs = Song.objects.all()
@@ -230,8 +231,8 @@ def search_results(request):
             # If it is a compilation, we just flat out ignore it and don't show it.
             if album_info["type"] != 'compilation':
                 all_albums.append(album_info)
-            
-            
+
+
         # Third: search user query.
         users = User.objects.filter(username__contains=search_query)
         friends = Friend.objects.friends(request.user)
@@ -512,7 +513,7 @@ def settings_account(request):
     # Do not allow anonymous users to go to settings. Redirect to login.
     if not request.user.is_authenticated:
         return redirect('login', permanent=True)
-    
+
     if request.method == 'POST':
         form = EditUserForm(request.POST, instance=request.user)
         if form.is_valid:
@@ -665,5 +666,3 @@ def show_user(request, user_id):
     allfriends = Friend.objects.friends(user)
     #print(request.user, user)
     return render(request, 'events/show_user.html', {'user': user, 'allfriends':allfriends})
-
-

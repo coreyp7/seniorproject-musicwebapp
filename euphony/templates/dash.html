@@ -6,6 +6,12 @@
 
 <script type="text/javascript">
 
+  /*
+ if ("{{ user.userExt.dark_mode }}" == "True") {
+   document.write('<link rel="stylesheet" type="text/css" href="{# {% static 'css/dark_mode.css' %} #}">');
+ }
+ */
+
   function vote(song_id, up_or_down) {
     $.ajax({
         // Our sample url to make request
@@ -52,12 +58,10 @@
     <a href="{% url 'songinfo' item.song.id  %}" class="btn btn-primary">Comments</a>
     <script type="text/javascript">
 
+      // this bit of javascript gets duplicated for each recommendation sent by the server
+
      var ratings = {{item.ratings}};
      document.getElementById("{{item.song.id}}-rating").innerHTML = ratings.toString();
-
-    if ("{{ user.userExt.dark_mode }}" == "True") {
-      document.write('<link rel="stylesheet" type="text/css" href="{% static 'css/dark_mode.css' %}">');
-    }
 
     </script>
   </div>
