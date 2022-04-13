@@ -232,14 +232,26 @@ def search_results(request):
             if album_info["type"] != 'compilation':
                 all_albums.append(album_info)
 
-
-        # Third: search user query.
+        # 3: search user query.
         users = User.objects.filter(username__contains=search_query)
         friends = Friend.objects.friends(User.objects.get(pk=1))
 
+        # 4: Lastly, playlist search query. (across all playlist)
+        playlists = Playlist.objects.filter(name__contains=search_query)
+        """playlists_dict = []
+        for playlist in playlists:
+            playlist_obj = {
+                "id" : playlist.id,
+                "name" : playlist.name
+                /"user_id" : playlist.user_id.id
+            }
+            playlists_dict.append(playlist_obj)
+        """
+
+
         return render(request, "search.html",
         {"songs": final_songs_list, "albums": all_albums, "results": True,
-        "users": users, "friends": friends})
+        "users": users, "friends": friends, "playlists": playlists})
     else:
         print("unsuccessful :(")
 
