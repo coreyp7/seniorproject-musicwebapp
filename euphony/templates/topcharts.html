@@ -9,6 +9,7 @@
 
 <!DOCTYPE html>
 <html>
+
 <head>
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
@@ -17,120 +18,128 @@
   <link rel="stylesheet" href="{% static 'css/style.css' %}">
   <script>
     $('#SpaceAccommodation').change(function () {
-    var selectedText = $(this).find("option:selected").text();
-    
-    $(".test").text(selectedText);
+      var selectedText = $(this).find("option:selected").text();
+
+      $(".test").text(selectedText);
     });
 
 
-  if ("{{ user.userExt.dark_mode }}" == "True") {
-    document.write('<link rel="stylesheet" type="text/css" href="{% static 'css/dark_mode.css' %}">');
-  }
+    if ("{{ user.userExt.dark_mode }}" == "True") {
+      document.write('<link rel="stylesheet" type="text/css" href="{% static 'css/dark_mode.css' %}">');
+    }
   </script>
 
-  
+
 </head>
+
 <body>
 
-<div class="container">
-  <h2>Daily Song Chart {{ region_name }}</h2>  
+  <div class="container">
+    <h2>Daily Song Chart {{ region_name }}</h2>
 
 
-                                
-  <div class="dropdown">
-    <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown">Select Country
-   </button>
-    <ul class="dropdown-menu dropdown-toggle">
-      <li><a href="Global">Global</a></li>
-      <li><a href="Argentina">Argentina</a></li>
-      <li><a href="Australia">Australia</a></li>
-      <li><a href="Austria">Austria</a></li>
-      <li><a href="Belarus">Belarus</a></li>
-      <li><a href="Belgium">Belgium</a></li>
-      <li><a href="Bolivia">Bolivia</a></li>
-      <li><a href="Brazil">Brazil</a></li>
-      <li><a href="Bulgaria">Bulgaria</a></li>
-      <li><a href="Canada">Canada</a></li>
-      <li><a href="Chile">Chile</a></li>
-      <li><a href="Colombia">Colombia</a></li>
-      <li><a href="Costa Rica">Costa Rica</a></li>
-      <li><a href="Czech Republic">Czech Republic</a></li>
-      <li><a href="Denmark">Denmark</a></li>
-      <li><a href="Dominican Republic">Dominican Republic</a></li>
-      <li><a href="Ecuador">Ecuador</a></li>
-      <li><a href="Egypt">Egypt</a></li>
-      <li><a href="El Salvador">El Salvador</a></li>
-      <li><a href="Estonia">Estonia</a></li>
-      <li><a href="Finland">Finland</a></li>
-      <li><a href="France">France</a></li>
-      <li><a href="Germany">Germany</a></li>
-      <li><a href="Greece">Greece</a></li>
-      <li><a href="Guatemala">Guatemala</a></li>
-      <li><a href="Honduras">Honduras</a></li>
-      <li><a href="Hong Kong">Hong Kong</a></li>
-      <li><a href="Hungary">Hungary</a></li>
-      <li><a href="Iceland">Iceland</a></li>
-      <li><a href="India">India</a></li>
-      <li><a href="Indonesia">Indonesia</a></li>
-      <li><a href="Ireland">Ireland</a></li>
-      <li><a href="Israel">Israel</a></li>
-      <li><a href="Italy">Italy</a></li>
-      <li><a href="Japan">Japan</a></li>
-      <li><a href="Kazakhstan">Kazakhstan</a></li>
-      <li><a href="Latvia">Latvia</a></li>
-      <li><a href="Lithuania">Lithuania</a></li>
-      <li><a href="Luxembourg">Luxembourg</a></li>
-      <li><a href="Malaysia">Malaysia</a></li>
-      <li><a href="Mexico">Mexico</a></li>
-      <li><a href="Morocco">Morocco</a></li>
-      <li><a href="Netherlands">Netherlands</a></li>
-      <li><a href="New Zealand">New Zealand</a></li>
-      <li><a href="Nicaragua">Nicaragua</a></li>
-      <li><a href="Nigeria">Nigeria</a></li>
-      <li><a href="Norway">Norway</a></li>
-      <li><a href="Panama">Panama</a></li>
-      <li><a href="Paraguay">Paraguay</a></li>
-      <li><a href="Peru">Peru</a></li>
-      <li><a href="Philippines">Philippines</a></li>
-      <li><a href="Poland">Poland</a></li>
-      <li><a href="Portugal">Portugal</a></li>
-      <li><a href="Romania">Romania</a></li>
-      <li><a href="Saudi Arabia">Saudi Arabia</a></li>
-      <li><a href="Singapore">Singapore</a></li>
-      <li><a href="Slovakia">Slovakia</a></li>
-      <li><a href="South Africa">South Africa</a></li>
-      <li><a href="South Korea">South Korea</a></li>
-      <li><a href="Spain">Spain</a></li>
-      <li><a href="Sweden">Sweden</a></li>
-      <li><a href="Switzerland">Switzerland</a></li>
-      <li><a href="Taiwan">Taiwan</a></li>
-      <li><a href="Thailand">Thailand</a></li>
-      <li><a href="Turkey">Turkey</a></li>
-      <li><a href="Ukraine">Ukraine</a></li>
-      <li><a href="UAE">UAE</a></li>
-      <li><a href="United Kingdom">United Kingdom</a></li>
-      <li><a href="USA">USA</a></li>
-      <li><a href="Uruguay">Uruguay</a></li>
-      <li><a href="Venezuela">Venezuela</a></li>
-      <li><a href="Vietnam">Vietnam</a></li>
 
+    <div class="dropdown">
+      <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton"
+        data-toggle="dropdown">Select Country
+      </button>
+      <ul class="dropdown-menu dropdown-toggle">
+        <li><a href="Global">Global</a></li>
+        <li><a href="Argentina">Argentina</a></li>
+        <li><a href="Australia">Australia</a></li>
+        <li><a href="Austria">Austria</a></li>
+        <li><a href="Belarus">Belarus</a></li>
+        <li><a href="Belgium">Belgium</a></li>
+        <li><a href="Bolivia">Bolivia</a></li>
+        <li><a href="Brazil">Brazil</a></li>
+        <li><a href="Bulgaria">Bulgaria</a></li>
+        <li><a href="Canada">Canada</a></li>
+        <li><a href="Chile">Chile</a></li>
+        <li><a href="Colombia">Colombia</a></li>
+        <li><a href="Costa Rica">Costa Rica</a></li>
+        <li><a href="Czech Republic">Czech Republic</a></li>
+        <li><a href="Denmark">Denmark</a></li>
+        <li><a href="Dominican Republic">Dominican Republic</a></li>
+        <li><a href="Ecuador">Ecuador</a></li>
+        <li><a href="Egypt">Egypt</a></li>
+        <li><a href="El Salvador">El Salvador</a></li>
+        <li><a href="Estonia">Estonia</a></li>
+        <li><a href="Finland">Finland</a></li>
+        <li><a href="France">France</a></li>
+        <li><a href="Germany">Germany</a></li>
+        <li><a href="Greece">Greece</a></li>
+        <li><a href="Guatemala">Guatemala</a></li>
+        <li><a href="Honduras">Honduras</a></li>
+        <li><a href="Hong Kong">Hong Kong</a></li>
+        <li><a href="Hungary">Hungary</a></li>
+        <li><a href="Iceland">Iceland</a></li>
+        <li><a href="India">India</a></li>
+        <li><a href="Indonesia">Indonesia</a></li>
+        <li><a href="Ireland">Ireland</a></li>
+        <li><a href="Israel">Israel</a></li>
+        <li><a href="Italy">Italy</a></li>
+        <li><a href="Japan">Japan</a></li>
+        <li><a href="Kazakhstan">Kazakhstan</a></li>
+        <li><a href="Latvia">Latvia</a></li>
+        <li><a href="Lithuania">Lithuania</a></li>
+        <li><a href="Luxembourg">Luxembourg</a></li>
+        <li><a href="Malaysia">Malaysia</a></li>
+        <li><a href="Mexico">Mexico</a></li>
+        <li><a href="Morocco">Morocco</a></li>
+        <li><a href="Netherlands">Netherlands</a></li>
+        <li><a href="New Zealand">New Zealand</a></li>
+        <li><a href="Nicaragua">Nicaragua</a></li>
+        <li><a href="Nigeria">Nigeria</a></li>
+        <li><a href="Norway">Norway</a></li>
+        <li><a href="Panama">Panama</a></li>
+        <li><a href="Paraguay">Paraguay</a></li>
+        <li><a href="Peru">Peru</a></li>
+        <li><a href="Philippines">Philippines</a></li>
+        <li><a href="Poland">Poland</a></li>
+        <li><a href="Portugal">Portugal</a></li>
+        <li><a href="Romania">Romania</a></li>
+        <li><a href="Saudi Arabia">Saudi Arabia</a></li>
+        <li><a href="Singapore">Singapore</a></li>
+        <li><a href="Slovakia">Slovakia</a></li>
+        <li><a href="South Africa">South Africa</a></li>
+        <li><a href="South Korea">South Korea</a></li>
+        <li><a href="Spain">Spain</a></li>
+        <li><a href="Sweden">Sweden</a></li>
+        <li><a href="Switzerland">Switzerland</a></li>
+        <li><a href="Taiwan">Taiwan</a></li>
+        <li><a href="Thailand">Thailand</a></li>
+        <li><a href="Turkey">Turkey</a></li>
+        <li><a href="Ukraine">Ukraine</a></li>
+        <li><a href="UAE">UAE</a></li>
+        <li><a href="United Kingdom">United Kingdom</a></li>
+        <li><a href="USA">USA</a></li>
+        <li><a href="Uruguay">Uruguay</a></li>
+        <li><a href="Venezuela">Venezuela</a></li>
+        <li><a href="Vietnam">Vietnam</a></li>
+
+    </div>
   </div>
-</div>
 
-<br>
+  <br>
 
 
-{% if region %}
-<iframe style="border-radius:12px" src="https://open.spotify.com/embed/playlist/{{ region }}?utm_source=generator" width="100%" height="380" frameBorder="0" allowfullscreen="" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"></iframe>
-{% endif %}
+  {% if region %}
+  <iframe style="border-radius:12px" src="https://open.spotify.com/embed/playlist/{{ region }}?utm_source=generator"
+    width="100%" height="380" frameBorder="0" allowfullscreen=""
+    allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"></iframe>
+  {% endif %}
+
+  {% if songs %}
+  {% for song in songs %}
+  {{forloop.counter}}. Song: <a href="{% url 'songinfo' song.id%}">{{song.name}}</a>,
+  Album: <a href="{% url 'album_info' song.album_id %}">{{song.album_name}}</a>
+  <br>
+  {% endfor %}
+  {% endif %}
 
 
 </body>
+
 </html>
 
 {% endblock %}
-
-
-
-
-
