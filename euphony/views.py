@@ -7,6 +7,7 @@ from django.urls import reverse
 from django.core.exceptions import ObjectDoesNotExist # for checking if row exists
 from euphony.models import Playlist, Album
 from .forms import PlaylistForm
+from .region_codes import region_codes
     #ProfileForm
 
 from django.contrib import messages
@@ -632,30 +633,50 @@ def logoutUser(request):
     logout(request)
     return redirect('login')
 
-def topChart(request):
-    #form = SearchForm() No search form exists, so commenting out.
-    return render(request, 'topcharts.html')
+
 
 
 def topChart(request):
     return render(request, 'topcharts.html')
 
-def topChart_Global(request):
-    return render(request, 'GlobalTopChart.html')
+def topChart_post(request, region_name):
+    region_id = region_codes[region_name] # from dictionary in file region_codes.py
+    
+    songs_json = sp.playlist(region_id)
+    
+    final_songs_list = []
 
-def topChart_Canada(request):
-    return render(request, 'CanadaTopChart.html')
+    songs_json = songs_json["tracks"]
+    for json_obj in songs_json["items"]:
+        print(json.dumps(json_obj))
+        json_obj = json_obj["track"]
+        album_json = json_obj["album"] # album json object
+        album_id = album_json["id"] # track's album id
 
-def topChart_Japan(request):
-    return render(request, 'JapanTopChart.html')
+        album_artists = []
+        for artist_obj in json_obj["artists"]:
+            album_artists.append(artist_obj['name'])
+        album_artists_str = ", ".join(album_artists)
 
-def topChart_Mexico(request):
-    return render(request, 'MexicoTopChart.html')
+        track_info = {
+            "id" : json_obj["id"],
+            "name" : json_obj["name"],
+            "number" : json_obj["track_number"],
+            "explicit" : json_obj["explicit"],
+            "artists" : album_artists_str,
+            "album_id" : album_id,
+            "album_name" : album_json["name"],
+            "album_release_date" : album_json["release_date"],
+            "album_cover" : album_json["images"][2]["url"]
+            # IN "album_cover", change to 0 for bigger pic, 2 for smaller pic
+        }
 
-def topChart_USA(request):
-    return render(request, 'USATopChart.html')
-def topChart_post(request):
-    context  = {}
+        # If it is in a compilation, we just flat out ignore it and don't show it.
+        if album_json["album_type"] != 'compilation':
+            final_songs_list.append(track_info)
+    
+    context  = {'region': region_id, 'region_name': region_name, "songs": final_songs_list}
+    print (region_id)
     return render(request, 'topcharts.html', context)
 
 def search_users(request):
