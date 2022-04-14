@@ -1,6 +1,5 @@
+{% extends 'base.html' %}
 {% load static %}
-
-{% include 'base.html' %}
 
 <title>{% block title %} Playlists {% endblock %}</title>
 <link rel="stylesheet" href="{% static 'css/style.css' %}">
@@ -35,9 +34,3 @@
 </form>
 {% endif %}
 {% endblock %}
-
-<script type="text/javascript">
-  if ("{{ user.userExt.dark_mode }}" == "True") {
-    document.write('<link rel="stylesheet" type="text/css" href="{% static 'css/dark_mode.css' %}">');
-  }
-</script>

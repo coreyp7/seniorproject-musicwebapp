@@ -1,6 +1,5 @@
+{% extends 'base.html' %}
 {% load static %}
-
-{% include 'base.html' %}
 
 {% block content %}
 
@@ -11,7 +10,7 @@
 <html>
 <head>
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+  
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
   <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
   <link rel="stylesheet" href="{% static 'css/style.css' %}">
@@ -22,10 +21,6 @@
     $(".test").text(selectedText);
     });
 
-
-  if ("{{ user.userExt.dark_mode }}" == "True") {
-    document.write('<link rel="stylesheet" type="text/css" href="{% static 'css/dark_mode.css' %}">');
-  }
   </script>
 
   

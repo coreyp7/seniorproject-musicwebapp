@@ -1,6 +1,5 @@
+{% extends 'base.html' %}
 {% load static %}
-
-{% include 'base.html' %}
 
 {% block content %}
 
@@ -22,10 +21,6 @@
     $(".test").text(selectedText);
     });
 
-
-  if ("{{ user.userExt.dark_mode }}" == "True") {
-    document.write('<link rel="stylesheet" type="text/css" href="{% static 'css/dark_mode.css' %}">');
-  }
   </script>
   
 </head>

@@ -1,5 +1,5 @@
+{% extends 'base.html' %}
 {% load static %}
-{% include 'base.html' %}
 
 <title>{% block title %} Playlists {% endblock %}</title>
 
@@ -21,7 +21,7 @@
 {% endif %}
 
 <body>
-    <h1 style="color:black" class="display-6"><strong>Playlists</strong>
+    <h1 class="display-6"><strong>Playlists</strong>
         <a class="btn btn-secondary" href="{% url 'create_playlist' %}" role="button">+ Create new playlist...</a>
     </h1>
 </body>
@@ -45,9 +45,3 @@
     </tbody>
 </table>
 {% endblock %}
-
-<script type="text/javascript">
-    if ("{{ user.userExt.dark_mode }}" == "True") {
-        document.write('<link rel="stylesheet" type="text/css" href="{% static 'css/dark_mode.css' %}">');
-    }
-</script>

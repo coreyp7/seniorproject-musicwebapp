@@ -145,3 +145,23 @@ body{
   font-weight: bold;
   font-size: 20px;
 }
+
+.addsong_button{
+  float: right;
+}
+
+.addsongs_iframe{
+  border-radius:12px
+}
+
+.dash_card{
+  width: 40rem;
+}
+
+.dash_iframe{
+  border-radius:12px
+}
+
+.songinfo_iframe{
+  border-radius:12px
+}
