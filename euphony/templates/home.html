@@ -14,6 +14,9 @@
   <li>Profile page with links to friends pages.</li>
   <li>Searching is now done through the navbar search.</li>
   <li>User results are now included in search results (using navbar search).</li>
+  <li>Changed include statements to extent.</li>
+  <li>Javascript added to base file (removed from every other page).</li>
+  <li>Functional charts page with links to appropriate pages.</li>
 </ul>
 
 <a href="{% url 'playlists' %}">Playlists</a>
@@ -63,6 +66,6 @@ Changes during week of 4/4 - 4/11:
 
 <script type="text/javascript">
   if ("{{ user.userExt.dark_mode }}" == "True") {
-    document.write('<link rel="stylesheet" type="text/css" href="{% static 'css / dark_mode.css' %}">');
+    document.write('<link rel="stylesheet" type="text/css" href="{% static 'css/dark_mode.css' %}">');
   }
 </script>
