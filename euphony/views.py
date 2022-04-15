@@ -8,7 +8,7 @@ from django.core.exceptions import ObjectDoesNotExist # for checking if row exis
 from euphony.models import Playlist, Album
 from .forms import PlaylistForm
     #ProfileForm
-
+from friendship.models import FriendshipRequest
 from django.contrib import messages
 from friendship.models import Friend, Follow, Block
 from django.contrib.auth import authenticate, login, logout
@@ -663,6 +663,30 @@ def list_users(request):
 
 def show_user(request, user_id):
     user = User.objects.get(pk=user_id)
+    self = User.objects.get(pk=request.user.id)
     allfriends = Friend.objects.friends(user)
+    if user != self:
+        not_same_user = True
+    else:
+        not_same_user = False
+    already_friends = Friend.objects.are_friends(request.user, user)
     #print(request.user, user)
-    return render(request, 'events/show_user.html', {'user': user, 'allfriends':allfriends})
+    return render(request, 'events/show_user.html', {'user': user, 'allfriends':allfriends,
+                                                     'not_same_user':not_same_user, 'self':self,
+                                                     'already_friends':already_friends})
+
+def addFriend(request, user_id):
+    user = User.objects.get(pk=user_id)
+    self = User.objects.get(pk=request.user.id)
+    added = Friend.objects.add_friend(self,user)
+    friend_request = FriendshipRequest.objects.get(from_user=request.user, to_user=user)
+    friend_request.accept()
+    print("You :" , self, "Added: " , user, "Were they added:" , added)
+    return render(request, 'events/add_user.html', {'user':user, 'self':self, 'added':added})
+
+def deleteFriend(request, user_id):
+    user = User.objects.get(pk=user_id)
+    self = User.objects.get(pk=request.user.id)
+    removed = Friend.objects.remove_friend(user, self)
+    print("You :" , self, "Removed: " , user, "Were they removed:" , removed)
+    return render(request, 'events/delete_user.html', {'user':user, 'self':self, 'removed':removed})

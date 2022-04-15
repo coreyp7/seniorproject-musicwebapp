@@ -3,7 +3,22 @@
 {% block content %}
 <div>
     <center>
-    <h1>User: {{ user }}</h1>
+    <h1>
+        User: {{ user }}
+        {% if not_same_user %}
+            {% if already_friends %}
+                <form class="d-flex" method=POST action="{% url 'delete_friend' user.id %}">
+                {% csrf_token %}
+                <button class="btn btn-danger" type="submit">Remove Friend</button>
+                </form>
+            {% else %}
+                <form class="d-flex" method=POST action="{% url 'add_friend' user.id %}">
+                {% csrf_token %}
+                <button class="btn btn-primary" type="submit">Add Friend</button>
+                </form>
+            {% endif %}
+        {% endif %}
+    </h1>
     UserID: {{ user.id }} <br>
     {% load friendshiptags %}
     Friends:<br>
