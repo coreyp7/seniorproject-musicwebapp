@@ -38,4 +38,8 @@ urlpatterns = [
     path('events/list_users/', views.list_users, name="list-users"),
     path('show_user/<user_id>', views.show_user, name="show_user"),
     path('friendship/', include('friendship.urls')),
+    path('addFriend/<user_id>', views.addFriend, name="add_friend"),
+    path('deleteFriend/<user_id>', views.deleteFriend, name="delete_friend"),
+    #path('show_user/<user_id>', views.deleteFriend, name="delete_friend"),
+
 ]
