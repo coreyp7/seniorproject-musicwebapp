@@ -123,7 +123,7 @@
 <h5>No users :(</h5>
 {% endif %}
 
-<!-- Lastly show playlist serach results. -->
+<!-- Lastly show playlist search results. -->
 <h3>Playlists:</h3>
 {% if playlists %}
 <div class="scrollmenu">
@@ -137,7 +137,7 @@
                 <div>
                     id: {{playlist.id}}
                     <br>
-                    <a href="{% url 'addsongs_view' playlist.id %}">Playlist name: {{ playlist.name }}</a>
+                    <a href="{% url 'addsongs_view' playlist.id %}"> Playlist name: {{ playlist.name }}</a>
                     <br>
                     <a href="{% url 'show_user' playlist.user_id.id %}">User: {{playlist.user_id.username}}</a>
                 </div>

@@ -41,5 +41,5 @@ urlpatterns = [
     path('addFriend/<user_id>', views.addFriend, name="add_friend"),
     path('deleteFriend/<user_id>', views.deleteFriend, name="delete_friend"),
     #path('show_user/<user_id>', views.deleteFriend, name="delete_friend"),
-
+    path('save_playlist/<list_id>', views.save_playlist, name='save_playlist'),
 ]

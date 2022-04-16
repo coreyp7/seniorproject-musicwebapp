@@ -9,7 +9,8 @@
 
 <body></body>
 <br>
-<h1>{{playlist.name}}</h1>
+<h1>{{playlist.name}} <a class="btn btn-secondary" href="{% url 'save_playlist' playlist.id %}"
+role="button">Save This Playlist</a></h1>
 <br>
 <a class="btn btn-secondary addsong_button" href="{% url 'playlist_song' playlist.id %}"
     role="button"><strong>+</strong></a>
