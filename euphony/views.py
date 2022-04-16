@@ -87,6 +87,39 @@ def get_song_rating_numbers(song_list):
 
     return ratings_list
 
+def prepare_post_dicts(song_list, user_friends):
+
+    '''
+    puts together of a list of post dictioies, sorts them by rank, and list a friend that liked it.
+    '''
+
+    posts = [{ "song" : item[0] , "ratings" : item[1]} for item in zip(song_list, get_song_rating_numbers(song_list)) ]
+
+    #assign weights to posts based on friends upvotes
+
+    for post in posts:
+
+        friend_ratings = list( Song_rating.objects.filter(user_id__in = user_friends, song_id=post["song"]) )
+        post['weight'] = post['ratings'] + 2*len(friend_ratings)
+
+        if( len(friend_ratings) != 0 ):
+            friend_id = friend_ratings[0].user_id
+            out_friend = None
+            for friend in list(user_friends):
+                if(friend.id == friend_id):
+                    out_friend = friend.username
+                    break
+            post['friend_name'] = out_friend
+        else:
+            post['friend_name'] = None
+
+    shuffle(posts)
+    posts = posts[:50]
+    posts.sort(key = lambda item : item['weight'], reverse=True )
+
+
+    return posts
+
 def dash(request):
 
     '''
@@ -100,12 +133,12 @@ def dash(request):
 
         temp_client = gen_client(user, scope)
         if temp_client != None:
-            album_list = gen_recomendations(temp_client, Friend.objects.friends(user), scope)
+            user_friends = Friend.objects.friends(user)
+            album_list = gen_recomendations(temp_client, user_friends, scope)
             song_list = get_song_list(temp_client, album_list)
-            posts = [{ "song" : item[0] , "ratings" : item[1]} for item in zip(song_list, get_song_rating_numbers(song_list)) ]
-            shuffle(posts)
-            posts = posts[:50]
-            posts.sort(key = lambda item : item['ratings'], reverse=True )
+            # use song lists, ratings friends, to prepare posts to send out
+            posts = prepare_post_dicts(song_list, user_friends)
+
         else:
             return redirect(reverse("link_account"))
 

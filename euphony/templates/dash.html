@@ -31,25 +31,29 @@
 </script>
 
 
-{% for item in recommendations %}
+{% for post in recommendations %}
 <div class="card dash_card">
   <div class="card-body">
-    <iframe class="dash_iframe" src="https://open.spotify.com/embed/track/{{item.song.id}}?utm_source=generator" width="100%" height="80"
+    <iframe class="dash_iframe" src="https://open.spotify.com/embed/track/{{post.song.id}}?utm_source=generator" width="100%" height="80"
      frameBorder="0" allowfullscreen=""
      allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture">
     </iframe>
-    <p id="{{item.song.id}}-rating">
-      {{item.ratings}}
+    <p id="{{post.song.id}}-rating">
+      {{post.ratings}}
     <p/>
+
+    {% if post.friend_name %}
+      <p> friend has liked this <p/>
+    {% endif %}
 
     {% if user.id %}
 
-      <button class="btn btn-primary", onclick="vote('{{item.song.id}}', 1)">Upvote</button>
-      <button class="btn btn-primary", onclick="vote('{{item.song.id}}', 0)">Downvote</button>
+      <button class="btn btn-primary", onclick="vote('{{post.song.id}}', 1)">Upvote</button>
+      <button class="btn btn-primary", onclick="vote('{{post.song.id}}', 0)">Downvote</button>
 
     {% endif %}
 
-    <a href="{% url 'songinfo' item.song.id  %}" class="btn btn-primary">Comments</a>
+    <a href="{% url 'songinfo' post.song.id  %}" class="btn btn-primary">Comments</a>
   </div>
 </div>
 
