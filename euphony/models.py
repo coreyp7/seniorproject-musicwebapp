@@ -45,6 +45,9 @@ class Playlist(models.Model):
     songs = models.ManyToManyField(Song)
     user_id = models.ForeignKey(User, on_delete=models.CASCADE, blank=True, null=True)
 
+    def __str__(self):
+        return self.name
+
 # Section dedicated towards each rating table for songs/albums/playlists.
 
 
@@ -101,3 +104,7 @@ class User_Setting_Ext(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='userExt')
     dark_mode = models.BooleanField(default=False) #Color mode: dark/white toggle
     explicit = models.BooleanField(default=False) #Explicit content toggle
+
+class User_Profile(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE, blank=True, null=True)
+    saved_playlist = models.ForeignKey(Playlist, on_delete=models.CASCADE) 

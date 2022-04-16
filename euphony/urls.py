@@ -42,4 +42,5 @@ urlpatterns = [
     path('events/list_users/', views.list_users, name="list-users"),
     path('show_user/<user_id>', views.show_user, name="show_user"),
     path('friendship/', include('friendship.urls')),
+    path('save_playlist/<list_id>', views.save_playlist, name='save_playlist'),
 ]

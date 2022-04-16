@@ -13,6 +13,41 @@
         </li>
     {% endfor %}<br>
     </center>
+    <h1>My Playlists:</h1>
+    <table class="table table-bordered">
+        <thead>
+            <tr>
+                <th scope="col">#</th>
+                <th scope="col">Playlist Name</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for playlist in playlists %}
+            <tr>
+                <th scope="row">{{forloop.counter}}</th>
+                <td><a href="{% url 'addsongs_view' playlist.id %}"> {{ playlist.name }}</a></td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    <br>
+    <h1>Saved Playlists:</h1>
+    <table class="table table-bordered">
+        <thead>
+            <tr>
+                <th scope="col">#</th>
+                <th scope="col">Playlist Name</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for playlist in saved_playlists %}
+            <tr>
+                <th scope="row">{{forloop.counter}}</th>
+                <td><a href="{% url 'addsongs_view' playlist.id %}"> {{ playlist.saved_playlist }}</a></td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
 </div>
 
 

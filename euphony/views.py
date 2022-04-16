@@ -5,7 +5,7 @@ from django.http import HttpResponse
 from django.db.utils import OperationalError
 from django.urls import reverse
 from django.core.exceptions import ObjectDoesNotExist # for checking if row exists
-from euphony.models import Playlist, Album
+from euphony.models import Playlist, Album, User_Profile
 from .forms import PlaylistForm
     #ProfileForm
 
@@ -247,8 +247,6 @@ def search_results(request):
             }
             playlists_dict.append(playlist_obj)
         """
-
-
         return render(request, "search.html",
         {"songs": final_songs_list, "albums": all_albums, "results": True,
         "users": users, "friends": friends, "playlists": playlists})
@@ -256,7 +254,6 @@ def search_results(request):
         print("unsuccessful :(")
 
     return render(request, "search.html", {"songs": None})
-
 
 # Playlist Page functions
 @require_GET
@@ -352,7 +349,7 @@ def add_song(request, list_id, song_id):
 
 # Playlist Page functions
 def allplaylists_view(request):
-    playlists=Playlist.objects.all()
+    playlists = Playlist.objects.filter(user_id=request.user)
     return render(request,'playlists.html',{'playlists': playlists})
 
 def create_playlist(request):
@@ -382,6 +379,13 @@ def addsongs_view(request, list_id):
     playlist = Playlist.objects.get(pk=list_id)
     songs = playlist.songs.all()
     return render(request, "addsongs.html", {'playlist': playlist, 'songs': songs})
+
+def save_playlist(request, list_id):
+    user = request.user
+    playlist = Playlist.objects.get(pk=list_id)
+    saved_playlist = User_Profile(user=user, saved_playlist=playlist)
+    saved_playlist.save()
+    return redirect('show_user', user_id=user.id)
 
 #Displays Album - and hopefully the tracks of the album uhh
 def album_info(request, id):
@@ -677,5 +681,7 @@ def list_users(request):
 def show_user(request, user_id):
     user = User.objects.get(pk=user_id)
     allfriends = Friend.objects.friends(user)
+    saved_playlists = User_Profile.objects.filter(user=user_id)
+    playlists = Playlist.objects.filter(user_id=user_id)
     #print(request.user, user)
-    return render(request, 'events/show_user.html', {'user_to_show': user, 'allfriends':allfriends})
+    return render(request, 'events/show_user.html', {'user_to_show': user, 'allfriends':allfriends, 'saved_playlists': saved_playlists, 'playlists': playlists})
