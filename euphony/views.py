@@ -98,9 +98,13 @@ def dash(request):
 
     if str(request.user) != 'AnonymousUser' and ( user := User.objects.get(pk=int(request.user.id))):
 
+        #print(Friend.objects.friends(user))
+        #get friends with linked accounts
+        #print(get_friend_saved_tracks(list(Friend.objects.friends(user)),scope))
+
         temp_client = gen_client(user, scope)
         if temp_client != None:
-            album_list = gen_recomendations(temp_client)
+            album_list = gen_recomendations(temp_client, list(Friend.objects.friends(user)), scope)
             song_list = get_song_list(temp_client, album_list)
             posts = [{ "song" : item[0] , "ratings" : item[1]} for item in zip(song_list, get_song_rating_numbers(song_list)) ]
             shuffle(posts)
@@ -121,6 +125,14 @@ def dash(request):
 
 def proccess_vote(request):
 
+    '''
+    works with the js vote function I wrote to take in a song id
+    to create a rating object associated with that user, and song.
+    this then sends back a 1, or -1 to update the frontend vote count.
+
+    if a user preses a button two times in a row then that vote is deleted
+    '''
+
     if str(request.user) != 'AnonymousUser' and ( user := User.objects.get(pk=int(request.user.id))):
         song = Song.objects.get(id=request.POST['song'])
         rating = list(Song_rating.objects.filter(user_id=user, song_id=song))
@@ -128,9 +140,9 @@ def proccess_vote(request):
         if len(rating) == 0:
             vote = Song_rating.objects.create(song_id=song, user_id=user, rating_type=new_vote)
             if(new_vote):
-                return HttpResponse('1')
+                return HttpResponse(1)
             else:
-                return HttpResponse('-1')
+                return HttpResponse(-1)
         else:
             vote = rating[0]
             old_vote = vote.rating_type
@@ -645,9 +657,9 @@ def topChart(request):
 
 def topChart_post(request, region_name):
     region_id = region_codes[region_name] # from dictionary in file region_codes.py
-    
+
     songs_json = sp.playlist(region_id)
-    
+
     final_songs_list = []
 
     songs_json = songs_json["tracks"]
@@ -678,7 +690,7 @@ def topChart_post(request, region_name):
         # If it is in a compilation, we just flat out ignore it and don't show it.
         if album_json["album_type"] != 'compilation':
             final_songs_list.append(track_info)
-    
+
     context  = {'region': region_id, 'region_name': region_name, "songs": final_songs_list}
     print (region_id)
     return render(request, 'topcharts.html', context)

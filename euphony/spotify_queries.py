@@ -2,7 +2,7 @@ import spotipy
 from spotipy.oauth2 import SpotifyClientCredentials, SpotifyOAuth
 from .cashe_handler import DatabaseTokenHandler
 from numpy.random import default_rng
-from .models import Song, Album
+from .models import Song, Album, UserToken
 import json
 
 sp = spotipy.Spotify(client_credentials_manager=SpotifyClientCredentials())
@@ -25,7 +25,33 @@ def gen_client(user, scope):
     else:
         return None
 
-def gen_seed(client):
+def get_friend_saved_tracks(freinds, scope):
+    '''
+    takes in a list of users filters out the non linked accounts
+    and returns a list of song ids from the friends
+    '''
+
+    friends_with_tokens = []
+    songs = []
+
+    for friend in freinds:
+        try:
+            friends_with_tokens.append(UserToken.objects.get(user=friend.id))
+        except UserToken.DoesNotExist:
+            pass
+
+
+
+    for friend in friends_with_tokens:
+        client = gen_client(friend, scope)
+        tracks = client.current_user_saved_tracks()['items']
+
+    songs.extend(tracks)
+
+    return songs
+
+
+def gen_seed(client, friends, scope):
     '''
     takes in a client object with user account permissions
     gets a users top tracks, or top artist to make a recommendation seed
@@ -34,13 +60,19 @@ def gen_seed(client):
     seeds = [[],[],[]]
 
 
-    tracks = client.current_user_saved_tracks()['items']
+    my_tracks = client.current_user_saved_tracks()['items']
+    friends_tracks = get_friend_saved_tracks(friends, scope)
 
-    if len(tracks) < 5:
-        indexs = rng.choice(range(len(tracks)), size=5, replace=False)
+    if len(my_tracks) > 0:
+        rng.shuffle(list(my_tracks))
+        rng.shuffle(list(friends_tracks))
+
+        seed_tracks = my_tracks[:3]
+        seed_tracks.extend(friends_tracks[:2])
+
         track_urls = []
-        for index in indexs:
-            track_urls.append(tracks[index]['track']['href'])
+        for track in seed_tracks:
+            track_urls.append(track['track']['href'])
 
         seeds[2] = track_urls
 
@@ -85,12 +117,12 @@ def get_song_list(client, album_list):
 
     return songs_list
 
-def gen_recomendations(client):
+def gen_recomendations(client, friends, scope):
     '''
     returns a list of recommended playlists, also puts the albums into database objects
     '''
 
-    seeds = gen_seed(client)
+    seeds = gen_seed(client, friends, scope)
 
     album_list = []
     for item in client.recommendations(seed_artists=seeds[0], seed_genres=seeds[1], seed_tracks=seeds[2])['tracks']:
