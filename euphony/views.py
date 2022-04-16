@@ -98,13 +98,9 @@ def dash(request):
 
     if str(request.user) != 'AnonymousUser' and ( user := User.objects.get(pk=int(request.user.id))):
 
-        #print(Friend.objects.friends(user))
-        #get friends with linked accounts
-        #print(get_friend_saved_tracks(list(Friend.objects.friends(user)),scope))
-
         temp_client = gen_client(user, scope)
         if temp_client != None:
-            album_list = gen_recomendations(temp_client, list(Friend.objects.friends(user)), scope)
+            album_list = gen_recomendations(temp_client, Friend.objects.friends(user), scope)
             song_list = get_song_list(temp_client, album_list)
             posts = [{ "song" : item[0] , "ratings" : item[1]} for item in zip(song_list, get_song_rating_numbers(song_list)) ]
             shuffle(posts)
@@ -742,4 +738,3 @@ def deleteFriend(request, user_id):
     removed = Friend.objects.remove_friend(user, self)
     print("You :" , self, "Removed: " , user, "Were they removed:" , removed)
     return render(request, 'events/delete_user.html', {'user':user, 'self':self, 'removed':removed})
-

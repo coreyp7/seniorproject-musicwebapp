@@ -34,16 +34,13 @@ def get_friend_saved_tracks(freinds, scope):
     friends_with_tokens = []
     songs = []
 
-    for friend in freinds:
-        try:
-            friends_with_tokens.append(UserToken.objects.get(user=friend.id))
-        except UserToken.DoesNotExist:
-            pass
+    #get all the friend token objects
+    friends_token_objects = list(UserToken.objects.filter(user__in=freinds))
 
-
-
-    for friend in friends_with_tokens:
-        client = gen_client(friend, scope)
+    #from friend usertokens get saved songs
+    tracks = []
+    for friend in friends_token_objects:
+        client = gen_client(friend.user, scope)
         tracks = client.current_user_saved_tracks()['items']
 
     songs.extend(tracks)
@@ -77,12 +74,7 @@ def gen_seed(client, friends, scope):
         seeds[2] = track_urls
 
     else:
-        #artist_urls = []
-        #artists = client.current_user_top_artists(limit=5)['items']
-
-        #for artist in artists:
-        #    artist_urls.append(artist['href'])
-
+        # todo extend genric generes
         seeds[1] = ['anime']
 
     return seeds
