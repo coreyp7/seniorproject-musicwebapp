@@ -102,13 +102,17 @@ def prepare_post_dicts(song_list, user_friends):
         friend_ratings = list( Song_rating.objects.filter(user_id__in = user_friends, song_id=post["song"]) )
         post['weight'] = post['ratings'] + 2*len(friend_ratings)
 
+        # if possible get a friend's positve upvote,
+        # and assign their user name to the post
         if( len(friend_ratings) != 0 ):
-            friend_id = friend_ratings[0].user_id
+            friend_ratings
             out_friend = None
-            for friend in list(user_friends):
-                if(friend.id == friend_id):
-                    out_friend = friend.username
-                    break
+            friends_list = list(user_friends)
+            for friend_rating in friend_ratings:
+                for friend in friends_list:
+                    if(friend_rating.id == friend_id and friend_ratings.rating_type):
+                        out_friend = friend_rating.username
+                        break
             post['friend_name'] = out_friend
         else:
             post['friend_name'] = None
