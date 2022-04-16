@@ -36,7 +36,7 @@ def gen_seed(client):
 
     tracks = client.current_user_saved_tracks()['items']
 
-    if len(tracks) < 5:
+    if len(tracks) >= 5:
         indexs = rng.choice(range(len(tracks)), size=5, replace=False)
         track_urls = []
         for index in indexs:
