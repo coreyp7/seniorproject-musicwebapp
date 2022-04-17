@@ -5,7 +5,7 @@ from django.http import HttpResponse
 from django.db.utils import OperationalError
 from django.urls import reverse
 from django.core.exceptions import ObjectDoesNotExist # for checking if row exists
-from euphony.models import Playlist, Album, User_Profile
+from euphony.models import Playlist, Album, User_Profile, User_Setting_Ext
 from .forms import PlaylistForm
 from .region_codes import region_codes
     #ProfileForm
@@ -498,7 +498,29 @@ def settings_general(request):
     # Do not allow anonymous users to go to settings. Redirect to login.
     if not request.user.is_authenticated:
         return redirect('login', permanent=True)
-    return render(request, 'settings_general.html')
+    
+    if request.method == 'POST':
+        id_darkmode = request.POST.getlist('dark_mode')
+        id_explicit = request.POST.getlist('explicit')
+
+        User_Setting_Ext.objects.update(dark_mode=False, explicit=False)
+
+        for x in id_darkmode:
+            if x == 'on':
+                User_Setting_Ext.objects.update(dark_mode=True)
+            else:
+                User_Setting_Ext.objects.update(dark_mode=False)
+        
+        for y in id_explicit:
+            if y == 'on':
+                User_Setting_Ext.objects.update(explicit=True)
+            else:
+                User_Setting_Ext.objects.update(explicit=False)
+        
+    else:
+        return render(request, 'settings_general.html', {})
+
+    return render(request, 'settings_general.html', {})
 
 def settings_security(request):
     # Do not allow anonymous users to go to settings. Redirect to login.
