@@ -15,13 +15,18 @@
     {% csrf_token %}
     <center>
       {{object.name}}
-      <h1>{{songid.name}}</h1>
-      <h1><a href="{% url 'album_info' album.id %}">{{album.name}}</a></h1>
-      <h2>{{song_artists}}</h2>
-      <iframe class="songinfo_iframe" src="https://open.spotify.com/embed/track/{{songid.id}}" width="100%"
-        height="80" frameBorder="0" allowfullscreen="" allow="autoplay; 
-       clipboard-write; 
-       encrypted-media; fullscreen; picture-in-picture"></iframe>
+      <h1>Song Name:  {{songid.name}}</h1>
+      <h1>Album Name: <a href="{% url 'album_info' album.id %}">{{album.name}}</a></h1>
+      <h2>Artist(s): {{song_artists}}</h2>
+
+
+       <div class="spotify_container1">
+          <div class="spotify_container2">
+            <iframe src="https://open.spotify.com/embed/track/{{songid.id}}" class="spotify_embeded" allowfullscreen scrolling="no" allow="encrypted-media;" >
+            </iframe>
+          </div>
+        </div>
+
     </center>
   </form>
   {% get_comment_count for songid as comment_count %}
@@ -41,7 +46,7 @@
   {% if songid.allow_comments %}
   <div class="comment mt-3 mb-5">
     <h4 class="text-center mb-4">Post a Comment</h4>
-    <div class="card pt-4">
+    <div class="card pt-4 comments">
       {% render_comment_form for songid %}
     </div>
   </div>

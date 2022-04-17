@@ -605,6 +605,7 @@ def registerPage(request):
         if form.is_valid():
             form.save()
             user = form.cleaned_data.get('username')
+            User_Setting_Ext.objects.create(User.objects.get(username = user))
             messages.success(request, 'Account was created for ' + user)
 
             return redirect('login')
