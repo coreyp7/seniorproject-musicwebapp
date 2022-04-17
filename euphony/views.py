@@ -5,11 +5,11 @@ from django.http import HttpResponse
 from django.db.utils import OperationalError
 from django.urls import reverse
 from django.core.exceptions import ObjectDoesNotExist # for checking if row exists
-from euphony.models import Playlist, Album
+from euphony.models import Playlist, Album, User_Profile
 from .forms import PlaylistForm
 from .region_codes import region_codes
     #ProfileForm
-
+from friendship.models import FriendshipRequest
 from django.contrib import messages
 from friendship.models import Friend, Follow, Block
 from django.contrib.auth import authenticate, login, logout
@@ -100,7 +100,7 @@ def dash(request):
 
         temp_client = gen_client(user, scope)
         if temp_client != None:
-            album_list = gen_recomendations(temp_client)
+            album_list = gen_recomendations(temp_client, Friend.objects.friends(user), scope)
             song_list = get_song_list(temp_client, album_list)
             posts = [{ "song" : item[0] , "ratings" : item[1]} for item in zip(song_list, get_song_rating_numbers(song_list)) ]
             shuffle(posts)
@@ -121,6 +121,14 @@ def dash(request):
 
 def proccess_vote(request):
 
+    '''
+    works with the js vote function I wrote to take in a song id
+    to create a rating object associated with that user, and song.
+    this then sends back a 1, or -1 to update the frontend vote count.
+
+    if a user preses a button two times in a row then that vote is deleted
+    '''
+
     if str(request.user) != 'AnonymousUser' and ( user := User.objects.get(pk=int(request.user.id))):
         song = Song.objects.get(id=request.POST['song'])
         rating = list(Song_rating.objects.filter(user_id=user, song_id=song))
@@ -128,9 +136,9 @@ def proccess_vote(request):
         if len(rating) == 0:
             vote = Song_rating.objects.create(song_id=song, user_id=user, rating_type=new_vote)
             if(new_vote):
-                return HttpResponse('1')
+                return HttpResponse(1)
             else:
-                return HttpResponse('-1')
+                return HttpResponse(-1)
         else:
             vote = rating[0]
             old_vote = vote.rating_type
@@ -248,8 +256,6 @@ def search_results(request):
             }
             playlists_dict.append(playlist_obj)
         """
-
-
         return render(request, "search.html",
         {"songs": final_songs_list, "albums": all_albums, "results": True,
         "users": users, "friends": friends, "playlists": playlists})
@@ -257,7 +263,6 @@ def search_results(request):
         print("unsuccessful :(")
 
     return render(request, "search.html", {"songs": None})
-
 
 # Playlist Page functions
 @require_GET
@@ -353,7 +358,7 @@ def add_song(request, list_id, song_id):
 
 # Playlist Page functions
 def allplaylists_view(request):
-    playlists=Playlist.objects.all()
+    playlists = Playlist.objects.filter(user_id=request.user)
     return render(request,'playlists.html',{'playlists': playlists})
 
 def create_playlist(request):
@@ -383,6 +388,13 @@ def addsongs_view(request, list_id):
     playlist = Playlist.objects.get(pk=list_id)
     songs = playlist.songs.all()
     return render(request, "addsongs.html", {'playlist': playlist, 'songs': songs})
+
+def save_playlist(request, list_id):
+    user = request.user
+    playlist = Playlist.objects.get(pk=list_id)
+    saved_playlist = User_Profile(user=user, saved_playlist=playlist)
+    saved_playlist.save()
+    return redirect('show_user', user_id=user.id)
 
 #Displays Album - and hopefully the tracks of the album uhh
 def album_info(request, id):
@@ -642,9 +654,9 @@ def topChart(request):
 
 def topChart_post(request, region_name):
     region_id = region_codes[region_name] # from dictionary in file region_codes.py
-    
+
     songs_json = sp.playlist(region_id)
-    
+
     final_songs_list = []
 
     songs_json = songs_json["tracks"]
@@ -675,7 +687,7 @@ def topChart_post(request, region_name):
         # If it is in a compilation, we just flat out ignore it and don't show it.
         if album_json["album_type"] != 'compilation':
             final_songs_list.append(track_info)
-    
+
     context  = {'region': region_id, 'region_name': region_name, "songs": final_songs_list}
     print (region_id)
     return render(request, 'topcharts.html', context)
@@ -698,6 +710,32 @@ def list_users(request):
 
 def show_user(request, user_id):
     user = User.objects.get(pk=user_id)
+    self = User.objects.get(pk=request.user.id)
     allfriends = Friend.objects.friends(user)
+    saved_playlists = User_Profile.objects.filter(user=user_id)
+    playlists = Playlist.objects.filter(user_id=user_id)
+    if user != self:
+        not_same_user = True
+    else:
+        not_same_user = False
+    already_friends = Friend.objects.are_friends(request.user, user)
     #print(request.user, user)
-    return render(request, 'events/show_user.html', {'user_to_show': user, 'allfriends':allfriends})
+    return render(request, 'events/show_user.html', {'user': user, 'allfriends':allfriends,
+                                                     'not_same_user':not_same_user, 'self':self,
+                                                     'already_friends':already_friends, 'saved_playlists': saved_playlists, 'playlists': playlists})
+
+def addFriend(request, user_id):
+    user = User.objects.get(pk=user_id)
+    self = User.objects.get(pk=request.user.id)
+    added = Friend.objects.add_friend(self,user)
+    friend_request = FriendshipRequest.objects.get(from_user=request.user, to_user=user)
+    friend_request.accept()
+    print("You :" , self, "Added: " , user, "Were they added:" , added)
+    return render(request, 'events/add_user.html', {'user':user, 'self':self, 'added':added})
+
+def deleteFriend(request, user_id):
+    user = User.objects.get(pk=user_id)
+    self = User.objects.get(pk=request.user.id)
+    removed = Friend.objects.remove_friend(user, self)
+    print("You :" , self, "Removed: " , user, "Were they removed:" , removed)
+    return render(request, 'events/delete_user.html', {'user':user, 'self':self, 'removed':removed})

@@ -1,0 +1,8 @@
+{% extends 'profile.html' %}
+
+{% block content %}
+<center>
+  <h2>You Deleted: {{ user }} From Your Friends List</h2>
+    <a href="{% url 'show_user' user.id %}">Okay</a><br>
+</center>
+{% endblock %}
