@@ -14,6 +14,7 @@ urlpatterns = [
     # Extensions of the pages above. (hope that makes sense)
     path("search_results", views.search_results, name="search_results"),
     path("create_playlist", views.create_playlist, name="create_playlist"),
+    path('homepage', views.homepage, name="homepage"),
     path('delete_playlist/<list_id>', views.delete_playlist, name='delete_playlist'),
     path('addsongs_view/<list_id>', views.addsongs_view, name='addsongs_view'),
     path('album_info/<id>', views.album_info, name='album_info'),

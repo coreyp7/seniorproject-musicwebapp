@@ -2,6 +2,21 @@ body{
   background-color: #DEDCDE;
 }
 
+.hero{
+  position: fixed; 
+  top: 0; 
+  left: 0; 
+	
+  min-width: 100%;
+  min-height: 100%;
+  background-image: linear-gradient(to bottom right, #552586, #B589D6);
+}
+
+.text{
+  color: white;
+  font-size: larger;
+}
+
 .hello-msg{
     font-size: 18px;
     color: #fff;

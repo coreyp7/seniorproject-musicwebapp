@@ -42,6 +42,8 @@ sp = spotipy.Spotify(client_credentials_manager=SpotifyClientCredentials())
 def home(request):
     return render(request, "home.html", {})
 
+def homepage(request):
+    return render(request, "homepage.html", {})
 
 def link_account(request):
 
