@@ -91,6 +91,8 @@ def prepare_post_dicts(song_list, user_friends):
 
     '''
     puts together a list of post dictioies, sorts them by weight, and list a friend that liked it. (not 100% tested)
+
+    by the end of this proccess a post dict should be {song id, number of ratings, post weight, name of a friend or None if no friends}
     '''
 
     posts = [{ "song" : item[0] , "ratings" : item[1]} for item in zip(song_list, get_song_rating_numbers(song_list)) ]
