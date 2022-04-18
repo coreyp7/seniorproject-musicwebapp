@@ -242,9 +242,12 @@ def search_results(request):
                 all_albums.append(album_info)
 
         # 3: search user query.
-        self = User.objects.get(pk=request.user.id)
         users = User.objects.filter(username__contains=search_query)
-        users = filter(lambda user: Block.objects.is_blocked(self, user) != True, users)
+        try:
+            self = User.objects.get(pk=request.user.id)
+            users = filter(lambda user: Block.objects.is_blocked(self, user) != True, users)
+        except:
+            pass
         friends = Friend.objects.friends(User.objects.get(pk=1))
 
         # 4: Lastly, playlist search query. (across all playlist)
@@ -712,17 +715,25 @@ def list_users(request):
 
 def show_user(request, user_id):
     user = User.objects.get(pk=user_id)
-    self = User.objects.get(pk=request.user.id)
+    not_same_user = False
+    already_friends = False
+    self = None
+    try:
+        self = User.objects.get(pk=request.user.id)
+        if user != self:
+            not_same_user = True
+        else:
+            not_same_user = False
+        already_friends = Friend.objects.are_friends(request.user, user)
+    except:
+        pass # False values already set
+
     allfriends = Friend.objects.friends(user)
     saved_playlists = User_Profile.objects.filter(user=user_id)
     playlists = Playlist.objects.filter(user_id=user_id)
-    if user != self:
-        not_same_user = True
-    else:
-        not_same_user = False
-    already_friends = Friend.objects.are_friends(request.user, user)
+
     #print(request.user, user)
-    return render(request, 'events/show_user.html', {'user': user, 'allfriends':allfriends,
+    return render(request, 'events/show_user.html', {'user_to_show': user, 'allfriends':allfriends,
                                                      'not_same_user':not_same_user, 'self':self,
                                                      'already_friends':already_friends, 'saved_playlists': saved_playlists, 'playlists': playlists})
 
