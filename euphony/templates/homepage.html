@@ -1,18 +1,22 @@
+
 {% load static %}
-<html>
     <head>
         <title>Euphony</title>
         <link rel="stylesheet" href="{% static 'css/style.css' %}">
+
     </head>
 
     <body>
         <div class="hero">
-            <div class="text">
+            <div class="title">
+                <center><h1>Euphony</h1></center>
+            </div>
+            <div id="logo">
                 <img src="{% static 'images/logo.png' %}" alt="logo" />
-           <center><h1>Euphony</h1>
-           <p>a place to shit talk your favorite artists:)</p>
-           <button>get started</button></center> 
-           </div>
+            </div>
+            <div class="info">
+                <center><h3>A Place to Shit Talk Your Favorite Artists:)</h3>
+                    <a class="btn btn-secondary" href="{% url 'register' %}" role="button">Get Started</a></center> 
+            </div>
         </div>
     </body>
-</html>
