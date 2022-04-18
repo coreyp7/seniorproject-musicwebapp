@@ -11,6 +11,14 @@
                 {% csrf_token %}
                 <button class="btn btn-danger" type="submit">Remove Friend</button>
             </form>
+            <form class="d-flex" method=POST action="{% url 'block_friend' user.id %}">
+                {% csrf_token %}
+                <button class="btn btn-danger" type="submit">Block Friend</button>
+            </form>
+            <form class="d-flex" method=POST action="{% url 'unblock_friend' user.id %}">
+                {% csrf_token %}
+                <button class="btn btn-danger" type="submit">Unblock Friend</button>
+            </form>
             {% else %}
             <form class="d-flex" method=POST action="{% url 'add_friend' user.id %}">
                 {% csrf_token %}

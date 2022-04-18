@@ -242,7 +242,9 @@ def search_results(request):
                 all_albums.append(album_info)
 
         # 3: search user query.
+        self = User.objects.get(pk=request.user.id)
         users = User.objects.filter(username__contains=search_query)
+        users = filter(lambda user: Block.objects.is_blocked(self, user) != True, users)
         friends = Friend.objects.friends(User.objects.get(pk=1))
 
         # 4: Lastly, playlist search query. (across all playlist)
@@ -353,7 +355,9 @@ def add_song(request, list_id, song_id):
     playlist.songs.add(song)
     playlist.save()
 
-    return redirect('addsongs_view', list_id=playlist.id)
+    playlistid = Playlist.objects.get(pk=id)
+
+    return redirect('addsongs_view', list_id=playlist.id )
 
 
 # Playlist Page functions
@@ -702,7 +706,6 @@ def search_users(request):
     else:
         return render(request, 'events/search_users.html', {})
 
-
 def list_users(request):
     user_list = User.objects.all()
     return render(request, 'events/users.html', {'user_list': user_list})
@@ -738,3 +741,18 @@ def deleteFriend(request, user_id):
     removed = Friend.objects.remove_friend(user, self)
     print("You :" , self, "Removed: " , user, "Were they removed:" , removed)
     return render(request, 'events/delete_user.html', {'user':user, 'self':self, 'removed':removed})
+
+def blockFriend(request, user_id):
+    user = User.objects.get(pk=user_id)
+    self = User.objects.get(pk=request.user.id)
+    blocked = Block.objects.add_block(self, user)
+    removed = Friend.objects.remove_friend(user, self)
+    print("You :" , self, "Blocked: " , user , blocked)
+    return render(request, 'events/block_user.html', {'user':user, 'self':self, 'blocked':blocked})
+
+def unblockFriend(request, user_id):
+    user = User.objects.get(pk=user_id)
+    self = User.objects.get(pk=request.user.id)
+    unblocked = Block.objects.remove_block(self, user)
+    print("You :" , self, "Unblocked: " , user , unblocked)
+    return render(request, 'events/unblock_user.html', {'user':user, 'self':self, 'unblocked':unblocked})
