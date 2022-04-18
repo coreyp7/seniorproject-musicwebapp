@@ -15,24 +15,17 @@
     {% csrf_token %}
     <center>
       {{object.name}}
-      <h1>Song Name:  {{songid.name}}</h1>
-      <h1>Album Name: <a href="{% url 'album_info' album.id %}">{{album.name}}</a></h1>
-      <h2>Artist(s): {{song_artists}}</h2>
-
-
-       <div class="spotify_container1">
-          <div class="spotify_container2">
-            <iframe src="https://open.spotify.com/embed/track/{{songid.id}}" class="spotify_embeded" allowfullscreen scrolling="no" allow="encrypted-media;" >
-            </iframe>
-          </div>
-        </div>
-
+      <h1>{{songid.name}}</h1>
+      <h1><a href="{% url 'album_info' album.id %}">{{album.name}}</a></h1>
+      <h2>{{song_artists}}</h2>
+      <iframe class="songinfo_iframe" src="https://open.spotify.com/embed/track/{{songid.id}}" width="100%" height="80"
+        frameBorder="0" allowfullscreen="" allow="autoplay; 
+       clipboard-write; 
+       encrypted-media; fullscreen; picture-in-picture"></iframe>
     </center>
   </form>
   {% get_comment_count for songid as comment_count %}
   <div class="py-4 text-center">
-    <a href="{% url 'search' %}">Back to search page</a>
-    &nbsp;&sdot;&nbsp;
     {{ comment_count }} comment{{ comment_count|pluralize }}
     ha{{ comment_count|pluralize:"s,ve"}} been posted.
   </div>

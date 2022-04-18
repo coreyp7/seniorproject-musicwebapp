@@ -40,6 +40,8 @@ urlpatterns = [
     path('friendship/', include('friendship.urls')),
     path('addFriend/<user_id>', views.addFriend, name="add_friend"),
     path('deleteFriend/<user_id>', views.deleteFriend, name="delete_friend"),
+    path('blockFriend/<user_id>', views.blockFriend, name="block_friend"),
+    path('unblockFriend/<user_id>', views.unblockFriend, name="unblock_friend"),
     #path('show_user/<user_id>', views.deleteFriend, name="delete_friend"),
     path('save_playlist/<list_id>', views.save_playlist, name='save_playlist'),
 ]

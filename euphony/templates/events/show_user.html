@@ -4,22 +4,30 @@
 <div>
     <center>
         <h1>
-            User: {{ user }}
+            User: {{ user_to_show }}
             {% if not_same_user %}
             {% if already_friends %}
-            <form class="d-flex" method=POST action="{% url 'delete_friend' user.id %}">
+            <form class="d-flex" method=POST action="{% url 'delete_friend' user_to_show.id %}">
                 {% csrf_token %}
                 <button class="btn btn-danger" type="submit">Remove Friend</button>
             </form>
+            <form class="d-flex" method=POST action="{% url 'block_friend' user_to_show.id %}">
+                {% csrf_token %}
+                <button class="btn btn-danger" type="submit">Block Friend</button>
+            </form>
+            <form class="d-flex" method=POST action="{% url 'unblock_friend' user_to_show.id %}">
+                {% csrf_token %}
+                <button class="btn btn-danger" type="submit">Unblock Friend</button>
+            </form>
             {% else %}
-            <form class="d-flex" method=POST action="{% url 'add_friend' user.id %}">
+            <form class="d-flex" method=POST action="{% url 'add_friend' user_to_show.id %}">
                 {% csrf_token %}
                 <button class="btn btn-primary" type="submit">Add Friend</button>
             </form>
             {% endif %}
             {% endif %}
         </h1>
-        UserID: {{ user.id }} <br>
+        UserID: {{ user_to_show.id }} <br>
         {% load friendshiptags %}
         Friends:<br>
         {% for friends in allfriends %}

@@ -27,18 +27,16 @@
 </div>
 
 {% get_comment_count for albumid as comment_count %}
-  <div class="py-4 text-center">
-    <a href="{% url 'search' %}">Back to search page</a>
-    &nbsp;&sdot;&nbsp;
-    {{ comment_count }} comment{{ comment_count|pluralize }}
-    ha{{ comment_count|pluralize:"s,ve"}} been posted.
-  </div>
+<div class="py-4 text-center">
+  {{ comment_count }} comment{{ comment_count|pluralize }}
+  ha{{ comment_count|pluralize:"s,ve"}} been posted.
+</div>
 
-  {% if comment_count %}
-  <ul class="media-list">
-    {% render_xtdcomment_tree for albumid %}
-  </ul>
-  {% endif %}
+{% if comment_count %}
+<ul class="media-list">
+  {% render_xtdcomment_tree for albumid %}
+</ul>
+{% endif %}
 
   {% if albumid.allow_comments %}
   <div class="comment mt-3 mb-5">
