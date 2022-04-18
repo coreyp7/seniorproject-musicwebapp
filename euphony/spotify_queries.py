@@ -52,14 +52,18 @@ def gen_seed(client, friends, scope):
     '''
     takes in a client object with user account permissions
     gets a users top tracks, or top artist to make a recommendation seed
+
+    there are three possible seed to give the recommendation function songs, artists, and generes.
+    the sum of the number songs, artists, and generes that you give spotify can't be more than 5
+
     '''
 
     seeds = [[],[],[]]
 
-
     my_tracks = client.current_user_saved_tracks()['items']
     friends_tracks = get_friend_saved_tracks(friends, scope)
 
+    # if you have any liked songs use a song seed
     if len(my_tracks) > 0:
         rng.shuffle(list(my_tracks))
         rng.shuffle(list(friends_tracks))
@@ -73,15 +77,12 @@ def gen_seed(client, friends, scope):
 
         seeds[2] = track_urls
 
+    # if you have no liked songs use a genere seed
     else:
         # todo extend genric generes
         seeds[1] = ['anime']
 
     return seeds
-
-def insert_songs(album_id, song_id):
-    pass
-
 
 def get_song_list(client, album_list):
     '''

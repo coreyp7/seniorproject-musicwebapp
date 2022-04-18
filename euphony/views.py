@@ -90,7 +90,7 @@ def get_song_rating_numbers(song_list):
 def prepare_post_dicts(song_list, user_friends):
 
     '''
-    puts together of a list of post dictioies, sorts them by rank, and list a friend that liked it.
+    puts together a list of post dictioies, sorts them by weight, and list a friend that liked it. (not 100% tested)
     '''
 
     posts = [{ "song" : item[0] , "ratings" : item[1]} for item in zip(song_list, get_song_rating_numbers(song_list)) ]
@@ -99,15 +99,17 @@ def prepare_post_dicts(song_list, user_friends):
 
     for post in posts:
 
+        #give posts with friends likes a higher ranking
         friend_ratings = list( Song_rating.objects.filter(user_id__in = user_friends, song_id=post["song"]) )
         post['weight'] = post['ratings'] + 2*len(friend_ratings)
 
-        # if possible get a friend's positve upvote,
+        # if possible get a friend's positve upvotes,
         # and assign their user name to the post
         if( len(friend_ratings) != 0 ):
             friend_ratings
             out_friend = None
             friends_list = list(user_friends)
+            #get first friend with a postive upvote
             for friend_rating in friend_ratings:
                 for friend in friends_list:
                     if(friend_rating.id == friend_id and friend_ratings.rating_type):
@@ -128,29 +130,36 @@ def dash(request):
 
     '''
     returns a webapge of recommendations, or if an account is unlinked it returns "account not linked with spotify"
+
+    idea : so I don't need to think about ranking friends, and comments. display resent comments, and resent playlists display an extra two feeds of friend comments.
     '''
 
     id_list = []
     posts = []
 
+    #check if user is logged in
     if str(request.user) != 'AnonymousUser' and ( user := User.objects.get(pk=int(request.user.id))):
 
+        #get spotify client with user specific permissions
         temp_client = gen_client(user, scope)
         if temp_client != None:
             user_friends = Friend.objects.friends(user)
+            #with friends list get a set of recommended ALBUMBS
             album_list = gen_recomendations(temp_client, user_friends, scope)
+            #get the SONGS from those recommended albums from spotify
             song_list = get_song_list(temp_client, album_list)
-            # use song lists, ratings friends, to prepare posts to send out
+            #perpre, and rank a list of post dictioies
             posts = prepare_post_dicts(song_list, user_friends)
 
         else:
             return redirect(reverse("link_account"))
 
     else:
+        #when not logged in get 50 songs from the database and rank them
         songs = Song.objects.all()
         indexs = rng.choice(range(len(songs)), size=50, replace=False)
         song_list = np.array(list(songs))[indexs]
-        posts = [{ "song" : item[0] , "ratings" : item[1]} for item in zip(song_list, get_song_rating_numbers(song_list)) ]
+        posts = [{ "song" : item[0] , "ratings" : item[1], "friend_name" : None} for item in zip(song_list, get_song_rating_numbers(song_list)) ]
         posts.sort(key = lambda item : item['ratings'], reverse=True )
 
     return render(request, 'dash.html', {'recommendations' : posts})
