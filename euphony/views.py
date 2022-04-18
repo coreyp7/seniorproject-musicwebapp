@@ -150,7 +150,7 @@ def dash(request):
             album_list = gen_recomendations(temp_client, user_friends, scope)
             #get the SONGS from those recommended albums from spotify
             song_list = get_song_list(temp_client, album_list)
-            #perpre, and rank a list of post dictioies
+            #prepare, and rank a list of post dicts
             posts = prepare_post_dicts(song_list, user_friends)
 
         else:
