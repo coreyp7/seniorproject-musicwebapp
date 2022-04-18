@@ -43,9 +43,10 @@
 
           <form class="form-inline justify-content-center" method=POST action="{% url 'search_results' %}">
             {% csrf_token %}
-            <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search" name="search_query" required>
+            <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search" name="search_query"
+              required>
             <div class="navbar_serach_button_spacing"></div>
-            <button class="btn btn-outline-success my-2 my-sm-0" type="submit" >Search</button>
+            <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
           </form>
 
         </ul>
@@ -61,7 +62,7 @@
             {{ user }}
           </button>
           <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
-            <li><a class="dropdown-item" href="#">Help</a></li>
+            <li><a class="dropdown-item" href="{% url 'show_user' user.id %}">Profile</a></li>
             <li><a class="dropdown-item" href="{% url 'settings_general' %}">Settings</a></li>
             <li><a class="dropdown-item" href="{% url 'logout' %}">Logout</a></li>
           </ul>
