@@ -671,10 +671,20 @@ def registerPage(request):
         form = CreateUserForm(request.POST)
         if form.is_valid():
             form.save()
-            user = form.cleaned_data.get('username')
-            messages.success(request, 'Account was created for ' + user)
+            username = form.cleaned_data.get('username')
+            raw_password = form.cleaned_data.get('password1')
+            user = authenticate(username=username, password=raw_password)
+            login(request, user)
+            messages.success(request, 'Account was created for ' + username)
 
-            return redirect('login')
+            #Create appropriate rows in our user tables.
+            User_Setting_Ext.objects.create( # defaults
+                user=user,
+                dark_mode=False,
+                explicit=True
+            )
+
+            return redirect('home')
 
 
     context = {'form': form}
