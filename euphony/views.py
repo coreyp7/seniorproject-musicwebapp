@@ -1033,18 +1033,85 @@ def show_user(request, user_id):
     saved_playlists = User_Profile.objects.filter(user=user_id)
     playlists = Playlist.objects.filter(user_id=user_id)
 
+    # Used for checking if these two users have  requested each other already, and pass this to template.
+    request_information = {
+        "request_from_them": False,
+        "request_to_them": False
+    }
+    # Very ugly: checks if a request is available and changes dict accordingly.
+    # Is then passed to template to let it know what button to show.
+    try:
+        FriendshipRequest.objects.get(from_user=user, to_user=request.user)
+        request_information["request_from_them"] = True
+    except:
+        pass
+
+    try:
+        FriendshipRequest.objects.get(from_user=request.user, to_user=user)
+        request_information["request_to_them"] = True
+    except:
+        pass
+
     #print(request.user, user)
     return render(request, 'events/show_user.html', {'user_to_show': user, 'allfriends':allfriends,
                                                      'not_same_user':not_same_user, 'self':self,
-                                                     'already_friends':already_friends, 'saved_playlists': saved_playlists, 'playlists': playlists})
+                                                     'already_friends':already_friends, 'saved_playlists': saved_playlists, 'playlists': playlists,
+                                                     'request_info': request_information})
 
 def addFriend(request, user_id):
     user = User.objects.get(pk=user_id)
     self = User.objects.get(pk=request.user.id)
     added = Friend.objects.add_friend(self,user)
-    friend_request = FriendshipRequest.objects.get(from_user=request.user, to_user=user)
-    friend_request.accept()
+
     print("You :" , self, "Added: " , user, "Were they added:" , added)
+    # duplicate code because I don't get why it wont redirect properly
+    not_same_user = False
+    already_friends = False
+    self = None
+    try:
+        self = User.objects.get(pk=request.user.id)
+        if user != self:
+            not_same_user = True
+        else:
+            not_same_user = False
+        already_friends = Friend.objects.are_friends(request.user, user)
+    except:
+        pass # False values already set
+
+    allfriends = Friend.objects.friends(user)
+    saved_playlists = User_Profile.objects.filter(user=user_id)
+    playlists = Playlist.objects.filter(user_id=user_id)
+
+    # Used for checking if these two users have  requested each other already, and pass this to template.
+    request_information = {
+        "request_from_them": False,
+        "request_to_them": False
+    }
+    # Very ugly: checks if a request is available and changes dict accordingly.
+    # Is then passed to template to let it know what button to show.
+    try:
+        FriendshipRequest.objects.get(from_user=user, to_user=request.user)
+        request_information["request_from_them"] = True
+    except:
+        pass
+
+    try:
+        FriendshipRequest.objects.get(from_user=request.user, to_user=user)
+        request_information["request_to_them"] = True
+    except:
+        pass
+
+    #print(request.user, user)
+    return render(request, 'events/show_user.html', {'user_to_show': user, 'allfriends':allfriends,
+                                                     'not_same_user':not_same_user, 'self':self,
+                                                     'already_friends':already_friends, 'saved_playlists': saved_playlists, 'playlists': playlists,
+                                                     'request_info': request_information})
+
+def accept_friend_request_profile(request, user_id):
+    user = User.objects.get(pk=user_id)
+    self = User.objects.get(pk=request.user.id)
+    friend_request = FriendshipRequest.objects.get(from_user=user, to_user=self)
+    friend_request.accept()
     # duplicate code because I don't get why it wont redirect properly
     not_same_user = False
     already_friends = False
@@ -1067,6 +1134,7 @@ def addFriend(request, user_id):
     return render(request, 'events/show_user.html', {'user_to_show': user, 'allfriends':allfriends,
                                                      'not_same_user':not_same_user, 'self':self,
                                                      'already_friends':already_friends, 'saved_playlists': saved_playlists, 'playlists': playlists})
+    
 
 def deleteFriend(request, user_id):
     user = User.objects.get(pk=user_id)
