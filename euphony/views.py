@@ -1178,3 +1178,36 @@ def unblockFriend(request, user_id):
     unblocked = Block.objects.remove_block(self, user)
     print("You :" , self, "Unblocked: " , user , unblocked)
     return render(request, 'events/unblock_user.html', {'user':user, 'self':self, 'unblocked':unblocked})
+
+def notifications(request):
+    # Do not allow anonymous users to go to settings. Redirect to login.
+    if not request.user.is_authenticated:
+        return redirect('login', permanent=True)
+    
+    incoming_requests = Friend.objects.unread_requests(user=request.user)
+
+    return render(request, 'notifications.html', {"current_user": request.user,
+    "incoming_requests": incoming_requests})
+
+def accept_friend_request_notifications(request, user_id):
+    user = User.objects.get(pk=user_id)
+    self = User.objects.get(pk=request.user.id)
+    friend_request = FriendshipRequest.objects.get(from_user=user, to_user=self)
+    friend_request.accept()
+
+    incoming_requests = FriendshipRequest.objects.filter(to_user=request.user)
+
+    return render(request, 'notifications.html', {"current_user": request.user,
+    "incoming_requests": incoming_requests})
+
+def reject_friend_request_notifications(request, user_id):
+    user = User.objects.get(pk=user_id)
+    self = User.objects.get(pk=request.user.id)
+    friend_request = FriendshipRequest.objects.get(from_user=user, to_user=self)
+    friend_request.delete()
+
+    incoming_requests = FriendshipRequest.objects.filter(to_user=request.user)
+
+    return render(request, 'notifications.html', {"current_user": request.user,
+    "incoming_requests": incoming_requests})
+

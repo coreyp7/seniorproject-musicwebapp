@@ -52,5 +52,9 @@ urlpatterns = [
     path('addsongs_view/upvote/<playlistid>', views.playlist_upvote, name='playlist_upvote'),
     path('addsongs_view/downvote/<playlistid>', views.playlist_downvote, name='playlist_downvote'),
     path('delete_song/<list_id>/<song_id>', views.delete_song, name='delete_song'),
-    path('accept_friend_request_profile/<user_id>', views.accept_friend_request_profile, name='accept_friend_request_profile')
+    path('accept_friend_request_profile/<user_id>', views.accept_friend_request_profile, name='accept_friend_request_profile'),
+    path('notifications', views.notifications, name='notifications'),
+    path('accept_friend_request_notifications/<user_id>', views.accept_friend_request_notifications, name='accept_friend_request_notifications'),
+    path('reject_friend_request_notifications/<user_id>', views.reject_friend_request_notifications, name='reject_friend_request_notifications')
+    
 ]
