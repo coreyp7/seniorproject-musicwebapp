@@ -1045,14 +1045,56 @@ def addFriend(request, user_id):
     friend_request = FriendshipRequest.objects.get(from_user=request.user, to_user=user)
     friend_request.accept()
     print("You :" , self, "Added: " , user, "Were they added:" , added)
-    return render(request, 'events/add_user.html', {'user':user, 'self':self, 'added':added})
+    # duplicate code because I don't get why it wont redirect properly
+    not_same_user = False
+    already_friends = False
+    self = None
+    try:
+        self = User.objects.get(pk=request.user.id)
+        if user != self:
+            not_same_user = True
+        else:
+            not_same_user = False
+        already_friends = Friend.objects.are_friends(request.user, user)
+    except:
+        pass # False values already set
+
+    allfriends = Friend.objects.friends(user)
+    saved_playlists = User_Profile.objects.filter(user=user_id)
+    playlists = Playlist.objects.filter(user_id=user_id)
+
+    #print(request.user, user)
+    return render(request, 'events/show_user.html', {'user_to_show': user, 'allfriends':allfriends,
+                                                     'not_same_user':not_same_user, 'self':self,
+                                                     'already_friends':already_friends, 'saved_playlists': saved_playlists, 'playlists': playlists})
 
 def deleteFriend(request, user_id):
     user = User.objects.get(pk=user_id)
     self = User.objects.get(pk=request.user.id)
     removed = Friend.objects.remove_friend(user, self)
     print("You :" , self, "Removed: " , user, "Were they removed:" , removed)
-    return render(request, 'events/delete_user.html', {'user':user, 'self':self, 'removed':removed})
+    # duplicate code because I don't get why it wont redirect properly
+    not_same_user = False
+    already_friends = False
+    self = None
+    try:
+        self = User.objects.get(pk=request.user.id)
+        if user != self:
+            not_same_user = True
+        else:
+            not_same_user = False
+        already_friends = Friend.objects.are_friends(request.user, user)
+    except:
+        pass # False values already set
+
+    allfriends = Friend.objects.friends(user)
+    saved_playlists = User_Profile.objects.filter(user=user_id)
+    playlists = Playlist.objects.filter(user_id=user_id)
+
+    #print(request.user, user)
+    return render(request, 'events/show_user.html', {'user_to_show': user, 'allfriends':allfriends,
+                                                     'not_same_user':not_same_user, 'self':self,
+                                                     'already_friends':already_friends, 'saved_playlists': saved_playlists, 'playlists': playlists})
 
 def blockFriend(request, user_id):
     user = User.objects.get(pk=user_id)
