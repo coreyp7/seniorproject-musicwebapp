@@ -88,7 +88,7 @@ class Playlist_rating(models.Model):
     playlist_id = models.ForeignKey(
         Playlist, on_delete=models.CASCADE, default=None
     )  # ID of playlist which this rating corresponds to
-    rating_type = models.BooleanField()  # True = Upvote, False = Downvote
+    rating_type = models.BooleanField(null=True)  # True = Upvote, False = Downvote
     date = (
         models.TextField()
     )  # date that the rating was given. Helpful for getting most recent feed

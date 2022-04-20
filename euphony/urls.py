@@ -47,5 +47,7 @@ urlpatterns = [
     path('songinfo/upvote/<songid>', views.songinfo_upvote, name='songinfo_upvote'),
     path('songinfo/downvote/<songid>', views.songinfo_downvote, name='songinfo_downvote'),
     path('album_info/upvote/<albumid>', views.album_info_upvote, name='album_info_upvote'),
-    path('album_info/downvote/<albumid>', views.album_info_downvote, name='album_info_downvote')
+    path('album_info/downvote/<albumid>', views.album_info_downvote, name='album_info_downvote'),
+    path('addsongs_view/upvote/<playlistid>', views.playlist_upvote, name='playlist_upvote'),
+    path('addsongs_view/downvote/<playlistid>', views.playlist_downvote, name='playlist_downvote')
 ]

@@ -443,7 +443,35 @@ def delete_playlist(request, list_id):
 def addsongs_view(request, list_id):
     playlist = Playlist.objects.get(pk=list_id)
     songs = playlist.songs.all()
-    return render(request, "addsongs.html", {'playlist': playlist, 'songs': songs})
+
+    upvotes = 0
+    downvotes = 0
+    try:
+        list_ratings = Playlist_rating.objects.filter(playlist_id=list_id)
+        for rating in list_ratings:
+            if rating.rating_type:
+                upvotes += 1
+            elif not rating.rating_type:
+                downvotes += 1
+    except:
+        print("Except gone through")
+
+    user_upvoted = False
+    user_downvoted = False
+
+    if request.user.is_authenticated:
+        try:
+            users_rating = Song_rating.objects.get(list_id=list_id.id, user_id=request.user)
+            if users_rating.rating_type == True:
+                user_upvoted = True
+            elif users_rating.rating_type == False:
+                user_downvoted = True
+        except:
+            pass
+
+    return render(request, "addsongs.html", {'playlist': playlist, 'songs': songs,
+    "upvotes": upvotes, "downvotes": downvotes,
+    "user_upvoted": user_upvoted, "user_downvoted": user_downvoted})
 
 def save_playlist(request, list_id):
     user = request.user
@@ -690,6 +718,44 @@ def songinfo_downvote(request, songid):
         else: # User is pressing upvote button when it was already pressed, get rid of upvote.
             object.delete()
     return redirect('songinfo', songid, permanent=True)
+
+def playlist_upvote(request, playlistid):
+    playlist_instance = Playlist.objects.get(pk=playlistid)
+
+    object, created = Playlist_rating.objects.get_or_create(
+        user_id=request.user,
+        playlist_id=playlist_instance)
+    if created: # If new, assign time right now and save.
+        object.date = datetime.datetime.now()
+        object.rating_type = True
+        object.save()
+    else: # If not new
+        if not object.rating_type: # if its a downvote already, change it to be an upvote.
+            object.rating_type = True
+            object.date = datetime.datetime.now()
+            object.save()
+        else: # User is pressing upvote button when it was already pressed, get rid of upvote.
+            object.delete()
+    return redirect('addsongs_view', playlistid, permanent=True)
+
+def playlist_downvote(request, playlistid):
+    playlist_instance = Playlist.objects.get(pk=playlistid)
+
+    object, created = Playlist_rating.objects.get_or_create(
+        user_id=request.user,
+        playlist_id=playlist_instance)
+    if created: # If new, assign time right now and save.
+        object.date = datetime.datetime.now()
+        object.rating_type = False
+        object.save()
+    else: # If not new
+        if object.rating_type: # if its a downvote already, change it to be an upvote.
+            object.rating_type = False
+            object.date = datetime.datetime.now()
+            object.save()
+        else: # User is pressing upvote button when it was already pressed, get rid of upvote.
+            object.delete()
+    return redirect('addsongs_view', playlistid, permanent=True)
 
 
 def settings_general(request):
