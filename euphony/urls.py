@@ -44,6 +44,7 @@ urlpatterns = [
     path('unblockFriend/<user_id>', views.unblockFriend, name="unblock_friend"),
     #path('show_user/<user_id>', views.deleteFriend, name="delete_friend"),
     path('save_playlist/<list_id>', views.save_playlist, name='save_playlist'),
+    path('unsave_playlist/<list_id>', views.unsave_playlist, name='unsave_playlist'),
     path('songinfo/upvote/<songid>', views.songinfo_upvote, name='songinfo_upvote'),
     path('songinfo/downvote/<songid>', views.songinfo_downvote, name='songinfo_downvote'),
     path('album_info/upvote/<albumid>', views.album_info_upvote, name='album_info_upvote'),
@@ -51,4 +52,5 @@ urlpatterns = [
     path('addsongs_view/upvote/<playlistid>', views.playlist_upvote, name='playlist_upvote'),
     path('addsongs_view/downvote/<playlistid>', views.playlist_downvote, name='playlist_downvote'),
     path('delete_song/<list_id>/<song_id>', views.delete_song, name='delete_song'),
+
 ]

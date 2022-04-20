@@ -24,8 +24,13 @@
 <body></body>
 <br>
 
+{% if already_saved %}
+<h1>{{playlist.name}} <a class="btn btn-secondary" href="{% url 'unsave_playlist' playlist.id %}" role="button">Unsave
+    This Playlist</a></h1>
+{% else %}
 <h1>{{playlist.name}} <a class="btn btn-secondary" href="{% url 'save_playlist' playlist.id %}" role="button">Save This
     Playlist</a></h1>
+{% endif %}
 <h5>Created by: <a href="{% url 'show_user' playlist.user_id.id %}">{{playlist.user_id}}</a></h5>
 
 {% if user.is_authenticated %}

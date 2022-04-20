@@ -463,6 +463,8 @@ def addsongs_view(request, list_id):
     user_upvoted = False
     user_downvoted = False
 
+    already_saved = False
+
     if request.user.is_authenticated:
         try:
             users_rating = Song_rating.objects.get(list_id=list_id.id, user_id=request.user)
@@ -473,15 +475,30 @@ def addsongs_view(request, list_id):
         except:
             pass
 
+        # Does user already have this saved?
+        try:
+            is_this_playlist_saved = User_Profile.objects.get(user=request.user, saved_playlist=list_id)
+            already_saved = True
+        except:
+            pass
+
     return render(request, "addsongs.html", {'playlist': playlist, 'songs': songs,
     "upvotes": upvotes, "downvotes": downvotes,
-    "user_upvoted": user_upvoted, "user_downvoted": user_downvoted})
+    "user_upvoted": user_upvoted, "user_downvoted": user_downvoted,
+    "already_saved": already_saved})
 
 def save_playlist(request, list_id):
     user = request.user
     playlist = Playlist.objects.get(pk=list_id)
-    saved_playlist = User_Profile(user=user, saved_playlist=playlist)
+    saved_playlist = User_Profile.objects.create(user=user, saved_playlist=playlist)
     saved_playlist.save()
+    return redirect('show_user', user_id=user.id)
+
+def unsave_playlist(request, list_id):
+    user = request.user
+    playlist = Playlist.objects.get(pk=list_id)
+    saved_playlist = User_Profile.objects.get(user=user, saved_playlist=playlist)
+    saved_playlist.delete()
     return redirect('show_user', user_id=user.id)
 
 #Displays Album - and hopefully the tracks of the album uhh
