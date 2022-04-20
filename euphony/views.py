@@ -446,6 +446,10 @@ def delete_song(request, list_id, song_id):
 
 def addsongs_view(request, list_id):
     playlist = Playlist.objects.get(pk=list_id)
+
+    users_playlist = False
+    if playlist.user_id == request.user:
+        users_playlist = True
     songs = playlist.songs.all()
 
     upvotes = 0
@@ -485,7 +489,8 @@ def addsongs_view(request, list_id):
     return render(request, "addsongs.html", {'playlist': playlist, 'songs': songs,
     "upvotes": upvotes, "downvotes": downvotes,
     "user_upvoted": user_upvoted, "user_downvoted": user_downvoted,
-    "already_saved": already_saved})
+    "already_saved": already_saved,
+    "users_playlist":users_playlist})
 
 def save_playlist(request, list_id):
     user = request.user

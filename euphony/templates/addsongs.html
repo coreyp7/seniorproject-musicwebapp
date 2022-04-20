@@ -24,7 +24,9 @@
 <body></body>
 <br>
 
-{% if already_saved %}
+{% if users_playlist %}
+
+{% elif already_saved %}
 <h1>{{playlist.name}} <a class="btn btn-secondary" href="{% url 'unsave_playlist' playlist.id %}" role="button">Unsave
     This Playlist</a></h1>
 {% else %}
