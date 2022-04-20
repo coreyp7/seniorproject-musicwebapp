@@ -497,14 +497,14 @@ def save_playlist(request, list_id):
     playlist = Playlist.objects.get(pk=list_id)
     saved_playlist = User_Profile.objects.create(user=user, saved_playlist=playlist)
     saved_playlist.save()
-    return redirect('show_user', user_id=user.id)
+    return redirect('addsongs_view', playlist.id)
 
 def unsave_playlist(request, list_id):
     user = request.user
     playlist = Playlist.objects.get(pk=list_id)
     saved_playlist = User_Profile.objects.get(user=user, saved_playlist=playlist)
     saved_playlist.delete()
-    return redirect('show_user', user_id=user.id)
+    return redirect('addsongs_view', playlist.id)
 
 #Displays Album - and hopefully the tracks of the album uhh
 def album_info(request, id):
