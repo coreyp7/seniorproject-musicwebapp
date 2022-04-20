@@ -9,11 +9,25 @@
 
 {% block content %}
 
+<br>
+{% if messages %}
+{% for message in messages %}
+<div class="alert alert-secondary alert-dismissable" role="alert">
+  <span type="button" class="close float-end" data-bs-dismiss="alert">
+    <sup>X</sup>
+  </span>
+  {{ message }}
+</div>
+{% endfor%}
+{% endif %}
+
 <body></body>
 <br>
+
 <h1>{{playlist.name}} <a class="btn btn-secondary" href="{% url 'save_playlist' playlist.id %}" role="button">Save This
     Playlist</a></h1>
-<br>
+<h5>Created by: <a href="{% url 'show_user' playlist.user_id.id %}">{{playlist.user_id}}</a></h5>
+
 {% if user.is_authenticated %}
 
 <form method="post" action="{% url 'playlist_upvote' playlist.id %}">
@@ -28,6 +42,7 @@
 
 Upvotes: {{upvotes}}<br>
 Downvotes: {{downvotes}}<br>
+
 <br>
 <a class="btn btn-secondary addsong_button" href="{% url 'playlist_song' playlist.id %}"
   role="button"><strong>+</strong></a>
@@ -38,6 +53,7 @@ Downvotes: {{downvotes}}<br>
     <tr>
       <th scope="col">#</th>
       <th scope="col">Song</th>
+      <th scope="col">Delete Song</th>
     </tr>
   </thead>
   <tbody>
@@ -51,6 +67,7 @@ Downvotes: {{downvotes}}<br>
         <a href="{% url 'songinfo' song.id %}">{{song.name}}</a><br>
         <a href="{% url 'album_info' song.album_id.id %}">{{song.album_id.name}}</a><br>
       </td>
+      <td><a href="{% url 'delete_song' playlist.id song.id %}">Delete</a></td>
 
     </tr>
     {% endfor %}

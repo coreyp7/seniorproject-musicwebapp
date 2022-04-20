@@ -66,7 +66,7 @@
             {% for playlist in saved_playlists %}
             <tr>
                 <th scope="row">{{forloop.counter}}</th>
-                <td><a href="{% url 'addsongs_view' playlist.id %}"> {{ playlist.saved_playlist }}</a></td>
+                <td><a href="{% url 'addsongs_view' playlist.saved_playlist.id %}"> {{ playlist.saved_playlist }}</a></td>
             </tr>
             {% endfor %}
         </tbody>

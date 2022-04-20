@@ -5,7 +5,7 @@ from django.http import HttpResponse
 from django.db.utils import OperationalError
 from django.urls import reverse
 from django.core.exceptions import ObjectDoesNotExist # for checking if row exists
-from euphony.models import Playlist, Album, User_Profile
+from euphony.models import Playlist, Album, User_Profile, User_Setting_Ext
 from .forms import PlaylistForm
 from .region_codes import region_codes
     #ProfileForm
@@ -407,8 +407,6 @@ def add_song(request, list_id, song_id):
     playlist.songs.add(song)
     playlist.save()
 
-    playlistid = Playlist.objects.get(pk=id)
-
     return redirect('addsongs_view', list_id=playlist.id )
 
 
@@ -439,6 +437,12 @@ def delete_playlist(request, list_id):
     item.delete()
     messages.success(request, ('Playlist Has Been Deleted!'))
     return redirect('playlists')
+
+def delete_song(request, list_id, song_id):
+    playlist = Playlist.objects.get(pk=list_id)
+    song = playlist.songs.remove(song_id)
+    messages.success(request, ('Song Has Been Deleted!'))
+    return redirect('addsongs_view', list_id=playlist.id)
 
 def addsongs_view(request, list_id):
     playlist = Playlist.objects.get(pk=list_id)
@@ -762,7 +766,23 @@ def settings_general(request):
     # Do not allow anonymous users to go to settings. Redirect to login.
     if not request.user.is_authenticated:
         return redirect('login', permanent=True)
-    return render(request, 'settings_general.html')
+
+    if request.method == 'POST':
+
+        id_darkmode = request.POST.get('dark_mode')
+        id_explicit = request.POST.get('explicit')
+
+        if id_darkmode == 'on':
+            User_Setting_Ext.objects.filter(user=request.user).update(dark_mode=True)
+        else:
+            User_Setting_Ext.objects.filter(user=request.user).update(dark_mode=False)
+        
+        if id_explicit == 'on':
+            User_Setting_Ext.objects.filter(user=request.user).update(explicit=True)
+        else:
+            User_Setting_Ext.objects.filter(user=request.user).update(explicit=False)
+
+    return render(request, 'settings_general.html', {})
 
 def settings_security(request):
     # Do not allow anonymous users to go to settings. Redirect to login.
@@ -882,7 +902,7 @@ def registerPage(request):
             User_Setting_Ext.objects.create( # defaults
                 user=user,
                 dark_mode=False,
-                explicit=True
+                explicit=False
             )
 
             return redirect('home')
