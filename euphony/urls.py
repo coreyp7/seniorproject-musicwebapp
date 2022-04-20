@@ -44,4 +44,5 @@ urlpatterns = [
     path('unblockFriend/<user_id>', views.unblockFriend, name="unblock_friend"),
     #path('show_user/<user_id>', views.deleteFriend, name="delete_friend"),
     path('save_playlist/<list_id>', views.save_playlist, name='save_playlist'),
+    path('delete_song/<list_id>/<song_id>', views.delete_song, name='delete_song'),
 ]
