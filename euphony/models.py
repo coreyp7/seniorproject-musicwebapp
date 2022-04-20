@@ -62,7 +62,7 @@ class Song_rating(models.Model):
     song_id = models.ForeignKey(
         Song, on_delete=models.CASCADE, default=None
     )  # ID of song which this rating corresponds to
-    rating_type = models.BooleanField()  # True = Upvote, False = Downvote
+    rating_type = models.BooleanField(null=True)  # True = Upvote, False = Downvote
     date = (
         models.TextField()
     )  # date that the rating was given. Helpful for getting most recent feed

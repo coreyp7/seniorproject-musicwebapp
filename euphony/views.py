@@ -13,6 +13,7 @@ from friendship.models import FriendshipRequest
 from django.contrib import messages
 from friendship.models import Friend, Follow, Block
 from django.contrib.auth import authenticate, login, logout
+import datetime
 
 
 import spotipy
@@ -552,10 +553,78 @@ def songinfo(request, music_id):
         add_albums_songs(album_info, object)
 
     songid = Song.objects.get(pk=music_id)
+
+    upvotes = 0
+    downvotes = 0
+    try:
+        song_ratings = Song_rating.objects.filter(song_id=songid.id)
+        for rating in song_ratings:
+            if rating.rating_type:
+                upvotes += 1
+            elif not rating.rating_type:
+                downvotes += 1
+    except:
+        print("Except gone through")
+
+    user_upvoted = False
+    user_downvoted = False
+
+    if request.user.is_authenticated:
+        try:
+            users_rating = Song_rating.objects.get(song_id=songid.id, user_id=request.user)
+            if users_rating.rating_type == True:
+                user_upvoted = True
+            elif users_rating.rating_type == False:
+                user_upvoted = True
+        except:
+            pass
+
+
     return render(request, 'songinfo.html', {'songid': songid, "song_artists": track_artists_str,
     "album": {
         "name": album_info["name"],
-        "id": album_info["id"]}})
+        "id": album_info["id"]},
+    "upvotes": upvotes, "downvotes": downvotes,
+    "user_voted": user_upvoted, "user_downvoted": user_downvoted})
+    
+def songinfo_upvote(request, songid):
+    song_instance = Song.objects.get(pk=songid)
+
+    object, created = Song_rating.objects.get_or_create(
+        user_id=request.user,
+        song_id=song_instance)
+    if created: # If new, assign time right now and save.
+        object.date = datetime.datetime.now()
+        object.rating_type = True
+        object.save()
+    else: # If not new
+        if not object.rating_type: # if its a downvote already, change it to be an upvote.
+            object.rating_type = True
+            object.date = datetime.datetime.now()
+            object.save()
+        else: # User is pressing upvote button when it was already pressed, get rid of upvote.
+            object.delete()
+    return redirect('songinfo', songid, permanent=True)
+
+def songinfo_downvote(request, songid):
+    song_instance = Song.objects.get(pk=songid)
+
+    object, created = Song_rating.objects.get_or_create(
+        user_id=request.user,
+        song_id=song_instance)
+    if created: # If new, assign time right now and save.
+        object.date = datetime.datetime.now()
+        object.rating_type = False
+        object.save()
+    else: # If not new
+        if object.rating_type: # if its a upvote already, change it to be an upvote.
+            object.rating_type = False
+            object.date = datetime.datetime.now()
+            object.save()
+        else: # User is pressing upvote button when it was already pressed, get rid of upvote.
+            object.delete()
+    return redirect('songinfo', songid, permanent=True)
+
 
 def settings_general(request):
     # Do not allow anonymous users to go to settings. Redirect to login.

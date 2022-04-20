@@ -24,6 +24,22 @@
        encrypted-media; fullscreen; picture-in-picture"></iframe>
     </center>
   </form>
+
+  {% if user.is_authenticated %}
+
+  <form method="post" action="upvote/{{songid.id}}">
+    {% csrf_token %}
+    <button type="submit">Upvote</button>
+  </form>
+  <form method="post" action="downvote/{{songid.id}}">
+    {% csrf_token %}
+    <button type="submit">Downvote</button>
+  </form>
+  {% endif %}
+
+  Upvotes: {{upvotes}}<br>
+  Downvotes (should be 0): {{downvotes}}<br>
+
   {% get_comment_count for songid as comment_count %}
   <div class="py-4 text-center">
     {{ comment_count }} comment{{ comment_count|pluralize }}
