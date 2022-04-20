@@ -510,9 +510,75 @@ def album_info(request, id):
         album_tracks.append(new_song)
 
     albumid = Album.objects.get(pk=id)
-    return render(request, "album_info.html", {"albumid": albumid, "songs": album_tracks,
-    "album": album_info})
 
+    upvotes = 0
+    downvotes = 0
+    try:
+        album_ratings = Album_rating.objects.filter(album_id=albumid.id)
+        for rating in album_ratings:
+            if rating.rating_type:
+                upvotes += 1
+            elif not rating.rating_type:
+                downvotes += 1
+    except:
+        print("Except gone through")
+
+
+    user_upvoted = False
+    user_downvoted = False
+
+    if request.user.is_authenticated:
+        try:
+            users_rating = Album_rating.objects.get(album_id=albumid.id, user_id=request.user)
+            if users_rating.rating_type == True:
+                user_upvoted = True
+            elif users_rating.rating_type == False:
+                user_downvoted = True
+        except:
+            pass
+
+    return render(request, "album_info.html", {"albumid": albumid, "songs": album_tracks,
+    "album": album_info,
+    "upvotes": upvotes, "downvotes": downvotes,
+    "user_voted": user_upvoted, "user_downvoted": user_downvoted})
+
+def album_info_upvote(request, albumid):
+    album_instance = Album.objects.get(pk=albumid)
+
+    object, created = Album_rating.objects.get_or_create(
+        user_id=request.user,
+        album_id=album_instance)
+    if created: # If new, assign time right now and save.
+        object.date = datetime.datetime.now()
+        object.rating_type = True
+        object.save()
+    else: # If not new
+        if not object.rating_type: # if its a downvote already, change it to be an upvote.
+            object.rating_type = True
+            object.date = datetime.datetime.now()
+            object.save()
+        else: # User is pressing upvote button when it was already pressed, get rid of upvote.
+            object.delete()
+    return redirect('album_info', albumid, permanent=True)
+
+def album_info_downvote(request, albumid):
+    album_instance = Album.objects.get(pk=albumid)
+
+    object, created = Album_rating.objects.get_or_create(
+        user_id=request.user,
+        album_id=album_instance)
+    if created: # If new, assign time right now and save.
+        object.date = datetime.datetime.now()
+        object.rating_type = False
+        object.save()
+    else: # If not new
+        if object.rating_type: # if its a upvote already, change it to be an upvote.
+            object.rating_type = False
+            object.date = datetime.datetime.now()
+            object.save()
+        else: # User is pressing upvote button when it was already pressed, get rid of upvote.
+            object.delete()
+    return redirect('album_info', albumid, permanent=True)
 
 # This method does two things:
 # 1. Check if song's album exists in our db. If it
@@ -575,7 +641,7 @@ def songinfo(request, music_id):
             if users_rating.rating_type == True:
                 user_upvoted = True
             elif users_rating.rating_type == False:
-                user_upvoted = True
+                user_downvoted = True
         except:
             pass
 

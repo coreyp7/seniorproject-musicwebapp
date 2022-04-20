@@ -45,5 +45,7 @@ urlpatterns = [
     #path('show_user/<user_id>', views.deleteFriend, name="delete_friend"),
     path('save_playlist/<list_id>', views.save_playlist, name='save_playlist'),
     path('songinfo/upvote/<songid>', views.songinfo_upvote, name='songinfo_upvote'),
-    path('songinfo/downvote/<songid>', views.songinfo_downvote, name='songinfo_downvote')
+    path('songinfo/downvote/<songid>', views.songinfo_downvote, name='songinfo_downvote'),
+    path('album_info/upvote/<albumid>', views.album_info_upvote, name='album_info_upvote'),
+    path('album_info/downvote/<albumid>', views.album_info_downvote, name='album_info_downvote')
 ]

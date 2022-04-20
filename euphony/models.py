@@ -75,7 +75,7 @@ class Album_rating(models.Model):
     album_id = models.ForeignKey(
         Album, on_delete=models.CASCADE, default=None
     )  # ID of album which this rating corresponds to
-    rating_type = models.BooleanField()  # True = Upvote, False = Downvote
+    rating_type = models.BooleanField(null=True)  # True = Upvote, False = Downvote
     date = (
         models.TextField()
     )  # date that the rating was given. Helpful for getting most recent feed
