@@ -153,11 +153,14 @@ def dash(request):
             song_list = get_song_list(temp_client, album_list)
             #prepare, and rank a list of post dicts
             posts = prepare_post_dicts(song_list, user_friends)
-
+        # if user is logged in but not connected to spotify
         else:
-            return redirect(reverse("link_account"))
+            # Here we'll create a list of recommended songs from the user's upvotes.
+            # If no upvotes are available, then recommend based off their initial picked genres.
+            # (Get similar stuff ala spotify)
+            pass
 
-    else:
+    else: # if it's an anonymous user, just get 50 random songs from our database.
         #when not logged in get 50 songs from the database and rank them
         songs = Song.objects.all()
         indexs = rng.choice(range(len(songs)), size=50, replace=False)
@@ -165,7 +168,47 @@ def dash(request):
         posts = [{ "song" : item[0] , "ratings" : item[1], "friend_name" : None} for item in zip(song_list, get_song_rating_numbers(song_list)) ]
         posts.sort(key = lambda item : item['ratings'], reverse=True )
 
+    print(posts)
+
+    all_dashboard_feed = [] # list of dictionaries
+    
     return render(request, 'dash.html', {'recommendations' : posts})
+    # plan: return dictionary called 'recommendations' which contains objects which specify:
+    # 1. type and 2. information for that type of object
+    # The different types are:
+    # 1. 'recommendation' (what's there now) : leave out of the picture for now.
+    # 2. 'friend_rating' : {
+    #       'friend_id" : id of user,
+    #       'item_type' : type of content (song, album, or playlist),
+    #       'item_id' : id of the content (song, album, or playlist),
+    #       'song_album_cover' : cover link of the song/album, null if a playlist.
+    #       'rating_type' : True or False, indicating type of rating
+    # }
+    # 3. 'friend_comment' : {
+    #       'friend_id' : id of user,
+    #       'item_type' : type of content comment is on (song, album, or playlist),
+    #       'item_id' : id of the content comment is on (song, album, or playlist),
+    #       'song_album_cover' : cover link of the song/album, null if a playlist,
+    #       'comment_text' : the actual comment string
+    # }
+    # 4. 'friend_playlist' : {
+    #       'friend_id' : id of user,
+    #       'playlist_id' : id of playlist
+    # }
+    # 5. 'generic' (just a text post) : we could use the comments extension for this, no idea. Ignore for now.
+    # 
+    # Example dict:
+    # {
+    #       'post_type' : "friend_rating",
+    #       'friend_id" : id of user,
+    #       'item_type' : type of content (song, album, or playlist),
+    #       'item_id' : id of the content (song, album, or playlist),
+    #       'song_album_cover' : cover link of the song/album, null if a playlist.
+    #       'rating_type' : True or False, indicating type of rating
+    # }
+    # So process: filter out the results out of our tables,
+    # put it all into dictionaries formatted like this and 
+    # put it in a list organized by date.
 
 
 def proccess_vote(request):
