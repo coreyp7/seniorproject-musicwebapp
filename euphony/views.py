@@ -173,6 +173,7 @@ def dash(request):
     '''
     friends_ratings = []
     friends_comments = []
+    friends_new_playlists = []
 
     if str(request.user) != 'AnonymousUser' and ( user := User.objects.get(pk=int(request.user.id))):
         temp_client = gen_client(user, scope)
@@ -193,34 +194,40 @@ def dash(request):
         friends_ratings = get_users_friend_rating_activity(user_friends)
         # second, comments:
         friends_comments =  get_users_friend_comment_activity(user_friends)
+        # third, 
+        friends_new_playlists = get_users_friend_playlist_activity(user_friends)
 
     else:
-        pass # anon
+        songs = Song.objects.all()
+        indexs = rng.choice(range(len(songs)), size=50, replace=False)
+        song_list = np.array(list(songs))[indexs]
+        posts = [{ "song" : item[0] , "ratings" : item[1], "friend_name" : None} for item in zip(song_list, get_song_rating_numbers(song_list)) ]
+        posts.sort(key = lambda item : item['ratings'], reverse=True )
 
 
     all_dashboard_feed = [] # list of dictionaries
     
     return render(request, 'dash.html', {'recommendations' : posts,
-    'ratings': friends_ratings, 'comments': friends_comments})
+    'ratings': friends_ratings, 'comments': friends_comments, 'playlists': friends_new_playlists})
     # plan: return dictionary called 'recommendations' which contains objects which specify:
     # 1. type and 2. information for that type of object
     # The different types are:
     # 1. 'recommendation' (what's there now) : leave out of the picture for now.
-    # 2. 'friend_rating' : {
+    # 2. 'friend_rating' : { DONE
     #       'friend_id" : id of user,
     #       'item_type' : type of content (song, album, or playlist),
     #       'item_id' : id of the content (song, album, or playlist),
     #       'song_album_cover' : cover link of the song/album, null if a playlist.
     #       'rating_type' : True or False, indicating type of rating
     # }
-    # 3. 'friend_comment' : {
+    # 3. 'friend_comment' : { DONE
     #       'friend_id' : id of user,
     #       'item_type' : type of content comment is on (song, album, or playlist),
     #       'item_id' : id of the content comment is on (song, album, or playlist),
     #       'song_album_cover' : cover link of the song/album, null if a playlist,
     #       'comment_text' : the actual comment string
     # }
-    # 4. 'friend_playlist' : {
+    # 4. 'friend_playlist' : { DOING
     #       'friend_id' : id of user,
     #       'playlist_id' : id of playlist
     # }
@@ -239,6 +246,22 @@ def dash(request):
     # put it all into dictionaries formatted like this and 
     # put it in a list organized by date (front end shouldnt have to do this at all)
 
+def get_users_friend_playlist_activity(user_friends):
+    today = datetime.date.today() # today's date
+    week_ago = today - datetime.timedelta(7) # a week in the past
+    playlists_dict = []  
+
+    for friend in user_friends:
+        friend_playlists = Playlist.objects.filter(user_id=friend, date_created__range=[week_ago,today])
+        for playlist in friend_playlists:
+            new_dict = {
+                'post_type' : 'friend_playlist',
+                'friend_id' : friend.id,
+                'playlist_id' : playlist.id
+            }
+        playlists_dict.append(new_dict)
+    
+    return playlists_dict
 
 def get_users_friend_comment_activity(user_friends):
     today = datetime.date.today() # today's date
@@ -588,6 +611,7 @@ def create_playlist(request):
         if form.is_valid():
             playlist = form.save(commit=False) # tells django "don't put into db"
             playlist.user_id = request.user
+            playlist.date_created = datetime.datetime.now()
             playlist.save()
 
             messages.success(request, ('New Playlist Created!'))

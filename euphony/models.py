@@ -1,4 +1,5 @@
 
+from operator import truediv
 from django.db import models
 
 # Create your models here.
@@ -45,6 +46,7 @@ class Playlist(models.Model):
     songs = models.ManyToManyField(Song)
     user_id = models.ForeignKey(User, on_delete=models.CASCADE, blank=True, null=True)
     allow_comments = models.BooleanField('allow comments', default=True)
+    date_created = models.DateField(null=True)
 
     def __str__(self):
         return self.name
