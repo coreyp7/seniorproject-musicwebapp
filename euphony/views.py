@@ -1,3 +1,4 @@
+from tkinter import X
 from django.shortcuts import render, redirect
 from django.contrib.auth.models import User
 from django.views.decorators.http import require_POST, require_GET
@@ -14,6 +15,8 @@ from django.contrib import messages
 from friendship.models import Friend, Follow, Block
 from django.contrib.auth import authenticate, login, logout
 import datetime
+from django_comments_xtd.models import XtdComment
+from django.contrib.contenttypes.models import ContentType
 
 
 import spotipy
@@ -169,6 +172,7 @@ def dash(request):
         posts.sort(key = lambda item : item['ratings'], reverse=True )
     '''
     friends_ratings = []
+    friends_comments = []
 
     if str(request.user) != 'AnonymousUser' and ( user := User.objects.get(pk=int(request.user.id))):
         temp_client = gen_client(user, scope)
@@ -187,6 +191,9 @@ def dash(request):
         user_friends = Friend.objects.friends(request.user)
         # first, ratings:
         friends_ratings = get_users_friend_rating_activity(user_friends)
+        # second, comments:
+        friends_comments =  get_users_friend_comment_activity(user_friends)
+
     else:
         pass # anon
 
@@ -194,7 +201,7 @@ def dash(request):
     all_dashboard_feed = [] # list of dictionaries
     
     return render(request, 'dash.html', {'recommendations' : posts,
-    'ratings': friends_ratings})
+    'ratings': friends_ratings, 'comments': friends_comments})
     # plan: return dictionary called 'recommendations' which contains objects which specify:
     # 1. type and 2. information for that type of object
     # The different types are:
@@ -231,6 +238,52 @@ def dash(request):
     # So process: filter out the results out of our tables,
     # put it all into dictionaries formatted like this and 
     # put it in a list organized by date (front end shouldnt have to do this at all)
+
+
+def get_users_friend_comment_activity(user_friends):
+    today = datetime.date.today() # today's date
+    week_ago = today - datetime.timedelta(7) # a week in the past
+    comments_dict = []
+    
+    for friend in user_friends:
+        friend_comments = XtdComment.objects.filter(user=friend)
+        print(friend_comments)
+        for comment in friend_comments:
+            print(comment._meta.get_fields())
+            print(str(comment.content_type))
+            if str(comment.content_type) == "euphony | song":
+                cover = Song.objects.get(id=comment.object_pk).album_id.cover
+                new_dict = {
+                    'post_type' : 'friend_comment',
+                    'friend_id' : friend.id,
+                    'item_type' : "song",
+                    'item_id' : comment.object_pk,
+                    'song_album_cover' : cover,
+                    'comment_message' : comment.comment
+                }
+                comments_dict.append(new_dict)
+            elif str(comment.content_type) == "euphony | album":
+                cover = Album.objects.get(id=comment.object_pk).cover
+                new_dict = {
+                    'post_type' : 'friend_comment',
+                    'friend_id' : friend.id,
+                    'item_type' : "album",
+                    'item_id' : comment.object_pk,
+                    'song_album_cover' : cover,
+                    'comment_message' : comment.comment
+                }
+                comments_dict.append(new_dict)
+            else: # playlist
+                new_dict = {
+                    'post_type' : 'friend_comment',
+                    'friend_id' : friend.id,
+                    'item_type' : "playlist",
+                    'item_id' : comment.object_pk,
+                    'comment_message' : comment.comment
+                }
+                comments_dict.append(new_dict)
+
+    return comments_dict
 
 def get_users_friend_rating_activity(user_friends):
     today = datetime.date.today() # today's date
