@@ -13,7 +13,7 @@ from friendship.models import FriendshipRequest
 from django.contrib import messages
 from friendship.models import Friend, Follow, Block
 from django.contrib.auth import authenticate, login, logout
-import datetime
+from datetime import datetime, timedelta
 
 
 import spotipy
@@ -412,8 +412,11 @@ def add_song(request, list_id, song_id):
 
 # Playlist Page functions
 def allplaylists_view(request):
-    playlists = Playlist.objects.filter(user_id=request.user)
-    return render(request,'playlists.html',{'playlists': playlists})
+    if request.user.is_authenticated:
+        playlists = Playlist.objects.filter(user_id=request.user)
+        return render(request,'playlists.html',{'playlists': playlists})
+    else:
+        return redirect('login')
 
 def create_playlist(request):
     submitted = False
@@ -581,13 +584,13 @@ def album_info_upvote(request, albumid):
         user_id=request.user,
         album_id=album_instance)
     if created: # If new, assign time right now and save.
-        object.date = datetime.datetime.now()
+        object.date = datetime.now()
         object.rating_type = True
         object.save()
     else: # If not new
         if not object.rating_type: # if its a downvote already, change it to be an upvote.
             object.rating_type = True
-            object.date = datetime.datetime.now()
+            object.date = datetime.now()
             object.save()
         else: # User is pressing upvote button when it was already pressed, get rid of upvote.
             object.delete()
@@ -600,13 +603,13 @@ def album_info_downvote(request, albumid):
         user_id=request.user,
         album_id=album_instance)
     if created: # If new, assign time right now and save.
-        object.date = datetime.datetime.now()
+        object.date = datetime.now()
         object.rating_type = False
         object.save()
     else: # If not new
         if object.rating_type: # if its a upvote already, change it to be an upvote.
             object.rating_type = False
-            object.date = datetime.datetime.now()
+            object.date = datetime.now()
             object.save()
         else: # User is pressing upvote button when it was already pressed, get rid of upvote.
             object.delete()
@@ -692,13 +695,13 @@ def songinfo_upvote(request, songid):
         user_id=request.user,
         song_id=song_instance)
     if created: # If new, assign time right now and save.
-        object.date = datetime.datetime.now()
+        object.date = datetime.now()
         object.rating_type = True
         object.save()
     else: # If not new
         if not object.rating_type: # if its a downvote already, change it to be an upvote.
             object.rating_type = True
-            object.date = datetime.datetime.now()
+            object.date = datetime.now()
             object.save()
         else: # User is pressing upvote button when it was already pressed, get rid of upvote.
             object.delete()
@@ -711,13 +714,13 @@ def songinfo_downvote(request, songid):
         user_id=request.user,
         song_id=song_instance)
     if created: # If new, assign time right now and save.
-        object.date = datetime.datetime.now()
+        object.date = datetime.now()
         object.rating_type = False
         object.save()
     else: # If not new
         if object.rating_type: # if its a upvote already, change it to be an upvote.
             object.rating_type = False
-            object.date = datetime.datetime.now()
+            object.date = datetime.now()
             object.save()
         else: # User is pressing upvote button when it was already pressed, get rid of upvote.
             object.delete()
@@ -730,13 +733,13 @@ def playlist_upvote(request, playlistid):
         user_id=request.user,
         playlist_id=playlist_instance)
     if created: # If new, assign time right now and save.
-        object.date = datetime.datetime.now()
+        object.date = datetime.now()
         object.rating_type = True
         object.save()
     else: # If not new
         if not object.rating_type: # if its a downvote already, change it to be an upvote.
             object.rating_type = True
-            object.date = datetime.datetime.now()
+            object.date = datetime.now()
             object.save()
         else: # User is pressing upvote button when it was already pressed, get rid of upvote.
             object.delete()
@@ -749,13 +752,13 @@ def playlist_downvote(request, playlistid):
         user_id=request.user,
         playlist_id=playlist_instance)
     if created: # If new, assign time right now and save.
-        object.date = datetime.datetime.now()
+        object.date = datetime.now()
         object.rating_type = False
         object.save()
     else: # If not new
         if object.rating_type: # if its a downvote already, change it to be an upvote.
             object.rating_type = False
-            object.date = datetime.datetime.now()
+            object.date = datetime.now()
             object.save()
         else: # User is pressing upvote button when it was already pressed, get rid of upvote.
             object.delete()
@@ -1010,11 +1013,17 @@ def show_user(request, user_id):
     allfriends = Friend.objects.friends(user)
     saved_playlists = User_Profile.objects.filter(user=user_id)
     playlists = Playlist.objects.filter(user_id=user_id)
+    song_ratings = Song_rating.objects.filter(user_id=user_id, date__gte=datetime.now().date() - timedelta(days=7))
+    album_ratings = Album_rating.objects.filter(user_id=user_id, date__gte=datetime.now().date() - timedelta(days=7))
+    playlist_ratings = Playlist_rating.objects.filter(user_id=user_id, date__gte=datetime.now().date() - timedelta(days=7))
+
 
     #print(request.user, user)
     return render(request, 'events/show_user.html', {'user_to_show': user, 'allfriends':allfriends,
                                                      'not_same_user':not_same_user, 'self':self,
-                                                     'already_friends':already_friends, 'saved_playlists': saved_playlists, 'playlists': playlists})
+                                                     'already_friends':already_friends, 'saved_playlists': saved_playlists,
+                                                     'playlists': playlists, 'song_ratings': song_ratings, 'album_ratings': album_ratings,
+                                                     'playlist_ratings': playlist_ratings})
 
 def addFriend(request, user_id):
     user = User.objects.get(pk=user_id)
