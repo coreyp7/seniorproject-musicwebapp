@@ -139,7 +139,7 @@ def dash(request):
 
     id_list = []
     posts = []
-
+    '''
     #check if user is logged in
     if str(request.user) != 'AnonymousUser' and ( user := User.objects.get(pk=int(request.user.id))):
 
@@ -167,12 +167,34 @@ def dash(request):
         song_list = np.array(list(songs))[indexs]
         posts = [{ "song" : item[0] , "ratings" : item[1], "friend_name" : None} for item in zip(song_list, get_song_rating_numbers(song_list)) ]
         posts.sort(key = lambda item : item['ratings'], reverse=True )
+    '''
+    friends_ratings = []
 
-    print(posts)
+    if str(request.user) != 'AnonymousUser' and ( user := User.objects.get(pk=int(request.user.id))):
+        temp_client = gen_client(user, scope)
+        if temp_client != None:
+            # signed in and connected to spotify
+            # get recommendations from spotify for their connected account.
+            pass 
+        else:
+            # signed in, not connected to spotify
+            # get recommendations based off activity on site
+            # if not possible, random (get genres from spotify by looking in their preferred genres, not implemented yet)
+            pass
+
+        # here we will get friends ratings, comments, and new playlists.
+        # get the list of rows of all this users' friends.
+        user_friends = Friend.objects.friends(request.user)
+        # first, ratings:
+        friends_ratings = get_users_friend_rating_activity(user_friends)
+    else:
+        pass # anon
+
 
     all_dashboard_feed = [] # list of dictionaries
     
-    return render(request, 'dash.html', {'recommendations' : posts})
+    return render(request, 'dash.html', {'recommendations' : posts,
+    'ratings': friends_ratings})
     # plan: return dictionary called 'recommendations' which contains objects which specify:
     # 1. type and 2. information for that type of object
     # The different types are:
@@ -208,7 +230,55 @@ def dash(request):
     # }
     # So process: filter out the results out of our tables,
     # put it all into dictionaries formatted like this and 
-    # put it in a list organized by date.
+    # put it in a list organized by date (front end shouldnt have to do this at all)
+
+def get_users_friend_rating_activity(user_friends):
+    today = datetime.date.today() # today's date
+    week_ago = today - datetime.timedelta(7) # a week in the past
+    ratings_dict = [] # Our ratings list, containing formatted dicts.
+    for friend in user_friends:
+            friend_song_ratings = Song_rating.objects.filter(
+                user_id=friend,
+                date__range=[week_ago, today])
+            friend_album_ratings = Album_rating.objects.filter(
+                user_id=friend,
+                date__range=[week_ago, today])
+            friend_playlist_ratings = Playlist_rating.objects.filter(
+                user_id=friend,
+                date__range=[week_ago, today])
+
+            for rating in friend_song_ratings:
+                new_dict = {
+                    'post_type' : "friend_rating",
+                    'friend_id' : friend.id,
+                    'item_type' : "song",
+                    'item_id' : rating.id,
+                    'song_album_cover' : rating.song_id.album_id.cover,
+                    'rating_type' : rating.rating_type
+                }
+                ratings_dict.append(new_dict)
+            
+            for rating in friend_album_ratings:
+                new_dict = {
+                    'post_type' : "friend_rating",
+                    'friend_id' : friend.id,
+                    'item_type' : "album",
+                    'item_id' : rating.id,
+                    'song_album_cover' : rating.album_id.cover,
+                    'rating_type' : rating.rating_type
+                }
+                ratings_dict.append(new_dict)
+            
+            for rating in friend_playlist_ratings:
+                new_dict = {
+                    'post_type' : "friend_rating",
+                    'friend_id' : friend.id,
+                    'item_type' : "playlist",
+                    'item_id' : rating.playlist_id,
+                    'rating_type' : rating.rating_type
+                }
+                ratings_dict.append(new_dict)
+    return ratings_dict
 
 
 def proccess_vote(request):

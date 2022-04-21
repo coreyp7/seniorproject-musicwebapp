@@ -64,7 +64,7 @@ class Song_rating(models.Model):
     )  # ID of song which this rating corresponds to
     rating_type = models.BooleanField(null=True)  # True = Upvote, False = Downvote
     date = (
-        models.TextField()
+        models.DateField(null=True)
     )  # date that the rating was given. Helpful for getting most recent feed
 
 
@@ -77,7 +77,7 @@ class Album_rating(models.Model):
     )  # ID of album which this rating corresponds to
     rating_type = models.BooleanField(null=True)  # True = Upvote, False = Downvote
     date = (
-        models.TextField()
+        models.DateField(null=True)
     )  # date that the rating was given. Helpful for getting most recent feed
 
 
@@ -90,7 +90,7 @@ class Playlist_rating(models.Model):
     )  # ID of playlist which this rating corresponds to
     rating_type = models.BooleanField(null=True)  # True = Upvote, False = Downvote
     date = (
-        models.TextField()
+        models.DateField(null=True)
     )  # date that the rating was given. Helpful for getting most recent feed
 
 # User relevant tables
