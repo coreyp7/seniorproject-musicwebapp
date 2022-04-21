@@ -59,6 +59,20 @@
 </div>
 
 {% endfor %}
+<h3>organized feed:</h3>
+{% for item in feed %}
+{% if item.post_type == "friend_rating" %}
+{% if item.item_type == "song" %}
+<a href="{% url 'songinfo' item.item_id %}">{{item}}</a><br>
+{% elif item.item_type == "playlist" %}
+<a href="{% url 'addsongs_view' item.item_id %}">{{item}}</a><br>
+{% endif %}
+{% else %}
+{{item}}<br>
+{% endif %}
+{% endfor %}
+
+<h1>Individual unorganized feed down here:</h1>
 
 <h3>ratings:</h3>
 {% for rating_post in ratings %}
