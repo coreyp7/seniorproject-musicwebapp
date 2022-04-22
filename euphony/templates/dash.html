@@ -57,22 +57,100 @@
       <a href="{% url 'songinfo' post.song.id  %}" class="btn btn-primary">Comments</a>
   </div>
 </div>
-
 {% endfor %}
+
+
 <h3>organized feed:</h3>
 {% for item in feed %}
+
 {% if item.post_type == "friend_rating" %}
+
 {% if item.item_type == "song" %}
-<a href="{% url 'songinfo' item.item_id %}">{{item}}</a><br>
+<a href="{% url 'show_user' item.friend_id %}"> 
+  {{item.friend_name}}
+</a>
+rated the song
+<a href="{% url 'songinfo' item.item_id %}">
+  "{{item.item_name}}"
+</a>
+ as {{item.rating_type}} on {{item.date}} .
+<br>
+
 {% elif item.item_type == "playlist" %}
-<a href="{% url 'addsongs_view' item.item_id %}">{{item}}</a><br>
+<a href="{% url 'show_user' item.friend_id %}"> 
+  {{item.friend_name}}
+</a>
+rated the playlist
+<a href="{% url 'addsongs_view' item.item_id %}">
+  "{{item.item_name}}"
+</a>
+ as {{item.rating_type}} on {{item.date}} .
+<br>
+{% elif item.item_type == 'album' %}
+<a href="{% url 'show_user' item.friend_id %}"> 
+  {{item.friend_name}}
+</a>
+rated the album
+<a href="{% url 'album_info' item.item_id %}">
+  "{{item.item_name}}"
+</a>
+ as {{item.rating_type}} on {{item.date}} .
+<br>
 {% endif %}
+
+{% elif item.post_type == "friend_comment" %}
+
+{% if item.item_type == "song" %}
+<a href="{% url 'show_user' item.friend_id %}"> 
+  {{item.friend_name}}
+</a>
+commented "{{item.comment_message}}" on 
+<a href="{% url 'songinfo' item.item_id %}">
+  "{{item.item_name}}"
+</a>
+ on {{item.date}} .
+<br>
+
+{% elif item.item_type == "playlist" %}
+<a href="{% url 'show_user' item.friend_id %}"> 
+  {{item.friend_name}}
+</a>
+commented "{{item.comment_message}}" on 
+<a href="{% url 'addsongs_view' item.item_id %}">
+  "{{item.item_name}}"
+</a>
+ on {{item.date}} .
+<br>
+{% elif item.item_type == 'album' %}
+<a href="{% url 'show_user' item.friend_id %}"> 
+  {{item.friend_name}}
+</a>
+commented "{{item.comment_message}}" on 
+<a href="{% url 'album_info' item.item_id %}">
+  "{{item.item_name}}"
+</a>
+ on {{item.date}} .
+<br>
+{% endif %}
+
+{% elif item.post_type == 'friend_playlist' %}
+
+<a href="{% url 'show_user' item.friend_id %}"> 
+  {{item.friend_name}}
+</a>
+created a new playlist called
+<a href="{% url 'addsongs_view' item.playlist_id %}">
+  "{{item.item_name}}"
+</a>
+on {{item.date}}.<br>
+
 {% else %}
-{{item}}<br>
+{{item}} <!-- Generic dictionary display for anything else.-->
 {% endif %}
 {% endfor %}
-
-<h1>Individual unorganized feed down here:</h1>
+<br>------------------------------------------------<br>
+<h5>Individual unorganized dictionaries down here for seeing 
+  what's going on:</h5>
 
 <h3>ratings:</h3>
 {% for rating_post in ratings %}

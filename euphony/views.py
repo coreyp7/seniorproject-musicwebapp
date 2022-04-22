@@ -271,7 +271,9 @@ def get_users_friend_playlist_activity(user_friends):
                 'post_type' : 'friend_playlist',
                 'friend_id' : friend.id,
                 'playlist_id' : playlist.id,
-                'date' : playlist.date_created
+                'date' : playlist.date_created,
+                'item_name' : playlist.name,
+                'friend_name': friend.username
             }
             playlists_dict.append(new_dict)
     
@@ -292,6 +294,7 @@ def get_users_friend_comment_activity(user_friends):
                 cover = Song.objects.get(id=comment.object_pk).album_id.cover
                 min = datetime.datetime.min.time()
                 formatted_date = datetime.datetime.combine(comment.submit_date,min)
+                song_ref = Song.objects.get(id=comment.object_pk)
                 new_dict = {
                     'post_type' : 'friend_comment',
                     'friend_id' : friend.id,
@@ -299,12 +302,15 @@ def get_users_friend_comment_activity(user_friends):
                     'item_id' : comment.object_pk,
                     'song_album_cover' : cover,
                     'comment_message' : comment.comment,
-                    'date' : comment.submit_date.date()
+                    'date' : comment.submit_date.date(),
+                    'item_name' : song_ref.name,
+                    'friend_name': friend.username
                 }
                 comments_dict.append(new_dict)
             elif str(comment.content_type) == "euphony | album":
                 cover = Album.objects.get(id=comment.object_pk).cover
                 min = datetime.datetime.min.time()
+                album_ref = Album.objects.get(id=comment.object_pk)
                 new_dict = {
                     'post_type' : 'friend_comment',
                     'friend_id' : friend.id,
@@ -312,18 +318,23 @@ def get_users_friend_comment_activity(user_friends):
                     'item_id' : comment.object_pk,
                     'song_album_cover' : cover,
                     'comment_message' : comment.comment,
-                    'date' : comment.submit_date.date()
+                    'date' : comment.submit_date.date(),
+                    'item_name' : album_ref.name,
+                    'friend_name': friend.username
                 }
                 comments_dict.append(new_dict)
             else: # playlist
                 min = datetime.datetime.min.time()
+                playlist_ref = Playlist.objects.get(id=comment.object_pk)
                 new_dict = {
                     'post_type' : 'friend_comment',
                     'friend_id' : friend.id,
                     'item_type' : "playlist",
                     'item_id' : comment.object_pk,
                     'comment_message' : comment.comment,
-                    'date' : comment.submit_date.date()
+                    'date' : comment.submit_date.date(),
+                    'item_name' : playlist_ref.name,
+                    'friend_name': friend.username
                 }
                 comments_dict.append(new_dict)
 
@@ -353,7 +364,9 @@ def get_users_friend_rating_activity(user_friends):
                     'item_id' : rating.song_id.id,
                     'song_album_cover' : rating.song_id.album_id.cover,
                     'rating_type' : rating.rating_type,
-                    'date' : rating.date.date()
+                    'date' : rating.date.date(),
+                    'friend_name' : friend.username,
+                    'item_name' : rating.song_id.name
                 }
                 ratings_dict.append(new_dict)
             
@@ -365,7 +378,9 @@ def get_users_friend_rating_activity(user_friends):
                     'item_id' : rating.album_id.id,
                     'song_album_cover' : rating.album_id.cover,
                     'rating_type' : rating.rating_type,
-                    'date' : rating.date.date()
+                    'date' : rating.date.date(),
+                    'friend_name' : friend.username,
+                    'item_name' : rating.album_id.name
                 }
                 ratings_dict.append(new_dict)
             
@@ -376,7 +391,9 @@ def get_users_friend_rating_activity(user_friends):
                     'item_type' : "playlist",
                     'item_id' : rating.playlist_id.id,
                     'rating_type' : rating.rating_type,
-                    'date' : rating.date.date()
+                    'date' : rating.date.date(),
+                    'friend_name' : friend.username,
+                    'item_name' : rating.playlist_id.name
                 }
                 ratings_dict.append(new_dict)
     return ratings_dict
