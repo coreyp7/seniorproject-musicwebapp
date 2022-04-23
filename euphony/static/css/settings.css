@@ -67,7 +67,7 @@ body{
 .settings_name{
     padding-top: 10px;
     position: absolute;
-    right: 47%;
+    right: 37%;
     text-align: center;
     /* border: 3px solid green; */
     font-weight: bold;
@@ -86,21 +86,22 @@ body{
     padding-top: 80px;
     margin-bottom: 10px;
     position: absolute;
-    right: 49%;
+    right: 39%;
     text-align: center;
 }
 
 .info-general{
     padding-top: 80px;
     position: absolute;
-    right: 54%;
+    right: 44%;
     text-align: center;
 }
 
 .main_content {
-  position: relative;
+  position: static;
   left: 200px;
-  /* border: 3px solid #73AD21; */
+  height: 100%;
+  border: 3px solid #73AD21; 
 }
 
 .form-control{

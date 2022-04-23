@@ -171,23 +171,108 @@ body{
   border: none;
 }
 
-.spotify_container1{
-  max-width: 500px;
-}
 .spotify_container2{
-  left: 0; 
-  width: 100%; 
-  height: 0; 
+  margin: 0 auto;
+  width: 70%; 
+  height: 70%; 
   position: relative; 
-  padding-bottom: 100%; 
-  padding-top: 80px;
 }
 
 .spotify_embeded{
-  top: 0; 
-  left: 0; 
+  width: 370px; 
+  height: 450px;
+}
+
+.song_info_tags{
+  font-weight: bold;
+  text-align: ceter;
+  margin-bottom: 0px;
+}
+
+.song_info_album a{
+  color: red;
+  text-decoration: none;
+  font-weight: bold;
+}
+
+
+.song_infos{
+  font-size: 20px;
+  font-family: Comic Sans MS, Comic Sans, cursive;
+}
+
+.songinfo_container{
+  float: left;
+  left: 0;
+  width: 50%;
+  text-align: center;
+  /*background-color: grey;*/
+}
+
+.comments_div{
+  vertical-align:top;
+  float: left;
+  width: 49.2%;
+  /*background-color: green; */
+}
+
+.comments_section{
+  overflow-y:auto;
+   height: 280px;
+   outline: 2px solid grey;
+  /*background-color: #ababab; */
+}
+
+.comment_form_section{
+}
+
+.comments_text{
+  padding-top: 3px;
+}
+
+.comments_total{
+  padding-bottom: 5px;
+}
+
+.like_dislike_buttons{
+  margin: 0 auto;
+}
+
+.like_button{
+  display: inline-block;
+  padding-right: 30px;
+}
+
+.dislike_button{
+  display: inline-block;
+}
+
+@media only screen and (max-width: 880px) {
+  .songinfo_container{
+    float: none;
+  }
+
+  .comments_div{
+    margin: 0 auto;
+    width: 100%;
+  }
+
+  .songinfo_container{
+    width: 100%;
+  }
+}
+
+@media only screen and (max-width: 450px) {
+  .spotify_container2{
+  margin: 0 auto;
+  left: 0;
   width: 100%; 
-  height: 100%; 
-  position: absolute; 
-  border: 0;
+  height: 70%; 
+  position: relative; 
+  }
+
+  .spotify_embeded{
+  width: 270px; 
+  height: 350px;
+  }
 }
