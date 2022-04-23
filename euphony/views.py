@@ -204,8 +204,9 @@ def dash(request):
             #       'rating_type' : True or False, indicating type of rating
             # }
         else: # signed in, not connected to spotify
-            # get recommendations based off activity on site
-            # if not possible, random (get genres from spotify by looking in their preferred genres, not implemented yet)
+            # as it turns out the recommendation end point doesn't user permissions
+            # so gen_recomendation has been modifed to accept spotipy clients with out permissions\
+            # - nico 
             album_list = gen_recomendations(sp, user_friends, scope)
             song_list = get_song_list(sp, album_list)
             posts = prepare_post_dicts(song_list, user_friends)
