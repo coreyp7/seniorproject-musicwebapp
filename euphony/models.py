@@ -10,6 +10,7 @@ import re
 
 from django_comments_xtd.forms import XtdCommentForm
 from django_comments_xtd.models import TmpXtdComment
+from django_comments_xtd.models import XtdComment
 
 
 class Album(models.Model):
@@ -53,6 +54,13 @@ class Playlist(models.Model):
 
     def get_absolute_url(self):
         return reverse('addsongs_view', args=[str(self.id)])
+
+
+class CustomComment(XtdComment):
+    def save(self, *args, **kwargs):
+        if self.user:
+            self.user_name = self.user.display_name
+        super(CustomComment, self).save(*args, **kwargs)
 
 # Section dedicated towards each rating table for songs/albums/playlists.
 
