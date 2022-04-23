@@ -206,7 +206,9 @@ def dash(request):
         else: # signed in, not connected to spotify
             # get recommendations based off activity on site
             # if not possible, random (get genres from spotify by looking in their preferred genres, not implemented yet)
-            pass
+            album_list = gen_recomendations(sp, user_friends, scope)
+            song_list = get_song_list(sp, album_list)
+            posts = prepare_post_dicts(song_list, user_friends)
 
         # here we will get friends ratings, comments, and new playlists.
         # get the list of rows of all this users' friends.
@@ -219,12 +221,14 @@ def dash(request):
         friends_new_playlists = get_users_friend_playlist_activity(user_friends)
 
     else: # anonymous user
-        songs = Song.objects.all()
-        indexs = rng.choice(range(len(songs)), size=50, replace=False)
-        song_list = np.array(list(songs))[indexs]
-        posts = [{ "song" : item[0] , "ratings" : item[1], "friend_name" : None} for item in zip(song_list, get_song_rating_numbers(song_list)) ]
-        posts.sort(key = lambda item : item['ratings'], reverse=True )
-
+        try:
+            songs = Song.objects.all()
+            indexs = rng.choice(range(len(songs)), size=50, replace=False)
+            song_list = np.array(list(songs))[indexs]
+            posts = [{ "song" : item[0] , "ratings" : item[1], "friend_name" : None} for item in zip(song_list, get_song_rating_numbers(song_list)) ]
+            posts.sort(key = lambda item : item['ratings'], reverse=True )
+        except:
+            return HttpResponse(":( please sir/madam may I have some songs (for anonymous browings the database needs 50 songs. run the dash with a linked account one or twice for anon browsing to work right) ")
 
     all_dashboard_feed = list(itertools.chain(
         friends_ratings,
