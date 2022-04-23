@@ -270,7 +270,7 @@ def dash(request):
 
 def get_users_friend_playlist_activity(user_friends):
     today = datetime.now().utcnow().date() # today's date
-    week_ago = today - datetime.timedelta(7) # a week in the past
+    week_ago = today - timedelta(7) # a week in the past
     playlists_dict = []
 
     for friend in user_friends:
@@ -290,7 +290,7 @@ def get_users_friend_playlist_activity(user_friends):
 
 def get_users_friend_comment_activity(user_friends):
     today = datetime.now().utcnow().date() # today's date
-    week_ago = today - datetime.timedelta(7) # a week in the past
+    week_ago = today - timedelta(7) # a week in the past
     comments_dict = []
 
     for friend in user_friends:
@@ -351,7 +351,7 @@ def get_users_friend_comment_activity(user_friends):
 
 def get_users_friend_rating_activity(user_friends):
     today = datetime.now().utcnow().date() # today's date
-    week_ago = today - datetime.timedelta(7) # a week in the past
+    week_ago = today - timedelta(7) # a week in the past
     ratings_dict = [] # Our ratings list, containing formatted dicts.
     for friend in user_friends:
             friend_song_ratings = Song_rating.objects.filter(
