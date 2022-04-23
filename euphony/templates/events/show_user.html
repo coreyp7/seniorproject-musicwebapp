@@ -79,6 +79,57 @@
             {% endfor %}
         </tbody>
     </table>
+    <br>
+    <h1>Ratings:</h1>
+    <table class="table table-bordered">
+        <thead>
+            <tr>
+                <th scope="col">Rating Type</th>
+                <th scope="col">Ratings</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for rating in song_ratings %}
+            {% if rating.rating_type %}
+            <tr>
+                <td>Upvote</td>
+                <td><a href="{% url 'songinfo' rating.song_id.id %}">Song: {{ rating.song_id }}</a></td>
+            </tr>
+            {% else %}
+            <tr>
+                <td>Downvote</td>
+                <td><a href="{% url 'songinfo' rating.song_id.id %}">Song: {{ rating.song_id }}</a></td>
+            </tr>
+            {% endif %}
+            {% endfor %}
+            {% for rating in album_ratings %}
+            {% if rating.rating_type %}
+            <tr>
+                <td>Upvote</td>
+                <td><a href="{% url 'album_info' rating.album_id.id %}">Album: {{ rating.album_id }}</a></td>
+            </tr>
+            {% else %}
+            <tr>
+                <td>Downvote</td>
+                <td><a href="{% url 'album_info' rating.album_id.id %}">Album: {{ rating.album_id }}</a></td>
+            </tr>
+            {% endif %}
+            {% endfor %}
+            {% for rating in playlist_ratings %}
+            {% if rating.rating_type %}
+            <tr>
+                <td>Upvote</td>
+                <td><a href="{% url 'addsongs_view' rating.playlist_id.id %}">Playlist: {{ rating.playlist_id }}</a></td>
+            </tr>
+            {% else %}
+            <tr>
+                <td>Downvote</td>
+                <td><a href="{% url 'addsongs_view' rating.playlist_id.id %}">Playlist: {{ rating.playlist_id }}</a></td>
+            </tr>
+            {% endif %}
+            {% endfor %}
+        </tbody>
+    </table>
 </div>
 
 
