@@ -180,10 +180,13 @@ def dash(request):
 
     if str(request.user) != 'AnonymousUser' and ( user := User.objects.get(pk=int(request.user.id))):
         temp_client = gen_client(user, scope)
+        # here we will get friends ratings, comments, and new playlists.
+        # get the list of rows of all this users' friends.
+        user_friends = Friend.objects.friends(user)
+
         if temp_client != None:
             # signed in and connected to spotify
             # get recommendations from spotify for their connected account.
-            user_friends = Friend.objects.friends(user)
             #with friends list get a set of recommended ALBUMBS
             album_list = gen_recomendations(temp_client, user_friends, scope)
             #get the SONGS from those recommended albums from spotify
@@ -212,7 +215,7 @@ def dash(request):
         friends_ratings = get_users_friend_rating_activity(user_friends)
         # second, comments:
         friends_comments =  get_users_friend_comment_activity(user_friends)
-        # third, 
+        # third,
         friends_new_playlists = get_users_friend_playlist_activity(user_friends)
 
     else: # anonymous user
@@ -224,12 +227,12 @@ def dash(request):
 
 
     all_dashboard_feed = list(itertools.chain(
-        friends_ratings, 
+        friends_ratings,
         friends_comments,
         friends_new_playlists)) # NICO put recommendations in here
         # just assign each song a random date in the past week or something so that it
         # randomizes the recommendations: this is up to you how you wanna implement.
-    
+
     all_dashboard_feed.sort(key=lambda x: x["date"])
     print(all_dashboard_feed)
     return render(request, 'dash.html', {'recommendations' : posts,
@@ -243,7 +246,7 @@ def dash(request):
     # 3. DONE
     # 4. DONE
     # 5. 'generic' (just a text post) : we could use the comments extension for this, no idea. Ignore for now.
-    # 
+    #
     # Example dict for recommendation:
     # {
     #       'post_type' : "recommendation",
@@ -253,7 +256,7 @@ def dash(request):
     #       'song_album_cover' : cover link of the song/album, null if a playlist.
     # }
     # So process: filter out the results out of our tables,
-    # put it all into dictionaries formatted like this and 
+    # put it all into dictionaries formatted like this and
     # put it in a list organized by date (front end shouldnt have to do this at all)
 
     # NOW 4/21/22 12:55PM: Next, convert nicos shit into these dictionaries.
@@ -262,7 +265,7 @@ def dash(request):
 def get_users_friend_playlist_activity(user_friends):
     today = datetime.datetime.now().utcnow().date() # today's date
     week_ago = today - datetime.timedelta(7) # a week in the past
-    playlists_dict = []  
+    playlists_dict = []
 
     for friend in user_friends:
         friend_playlists = Playlist.objects.filter(user_id=friend, date_created__range=[week_ago,today])
@@ -276,14 +279,14 @@ def get_users_friend_playlist_activity(user_friends):
                 'friend_name': friend.username
             }
             playlists_dict.append(new_dict)
-    
+
     return playlists_dict
 
 def get_users_friend_comment_activity(user_friends):
     today = datetime.datetime.now().utcnow().date() # today's date
     week_ago = today - datetime.timedelta(7) # a week in the past
     comments_dict = []
-    
+
     for friend in user_friends:
         friend_comments = XtdComment.objects.filter(user=friend)
         print(friend_comments)
@@ -369,7 +372,7 @@ def get_users_friend_rating_activity(user_friends):
                     'item_name' : rating.song_id.name
                 }
                 ratings_dict.append(new_dict)
-            
+
             for rating in friend_album_ratings:
                 new_dict = {
                     'post_type' : "friend_rating",
@@ -383,7 +386,7 @@ def get_users_friend_rating_activity(user_friends):
                     'item_name' : rating.album_id.name
                 }
                 ratings_dict.append(new_dict)
-            
+
             for rating in friend_playlist_ratings:
                 new_dict = {
                     'post_type' : "friend_rating",
@@ -938,7 +941,7 @@ def songinfo(request, music_id):
         "id": album_info["id"]},
     "upvotes": upvotes, "downvotes": downvotes,
     "user_voted": user_upvoted, "user_downvoted": user_downvoted})
-    
+
 def songinfo_upvote(request, songid):
     song_instance = Song.objects.get(pk=songid)
 
@@ -1030,7 +1033,7 @@ def settings_general(request):
             User_Setting_Ext.objects.filter(user=request.user).update(dark_mode=True)
         else:
             User_Setting_Ext.objects.filter(user=request.user).update(dark_mode=False)
-        
+
         if id_explicit == 'on':
             User_Setting_Ext.objects.filter(user=request.user).update(explicit=True)
         else:
@@ -1366,7 +1369,7 @@ def accept_friend_request_profile(request, user_id):
     return render(request, 'events/show_user.html', {'user_to_show': user, 'allfriends':allfriends,
                                                      'not_same_user':not_same_user, 'self':self,
                                                      'already_friends':already_friends, 'saved_playlists': saved_playlists, 'playlists': playlists})
-    
+
 
 def deleteFriend(request, user_id):
     user = User.objects.get(pk=user_id)
@@ -1415,7 +1418,7 @@ def notifications(request):
     # Do not allow anonymous users to go to settings. Redirect to login.
     if not request.user.is_authenticated:
         return redirect('login', permanent=True)
-    
+
     incoming_requests = Friend.objects.unread_requests(user=request.user)
 
     return render(request, 'notifications.html', {"current_user": request.user,
@@ -1442,4 +1445,3 @@ def reject_friend_request_notifications(request, user_id):
 
     return render(request, 'notifications.html', {"current_user": request.user,
     "incoming_requests": incoming_requests})
-
