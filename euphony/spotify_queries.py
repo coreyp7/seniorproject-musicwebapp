@@ -60,7 +60,13 @@ def gen_seed(client, friends, scope):
 
     seeds = [[],[],[]]
 
-    my_tracks = client.current_user_saved_tracks()['items']
+    print(isinstance(client.auth_manager,spotipy.oauth2.SpotifyOAuth))
+
+
+    my_tracks = []
+    if isinstance(client.auth_manager,spotipy.oauth2.SpotifyOAuth):
+        my_tracks = client.current_user_saved_tracks()['items']
+
     friends_tracks = get_friend_saved_tracks(friends, scope)
 
     # if you have any liked songs use a song seed
@@ -80,7 +86,14 @@ def gen_seed(client, friends, scope):
     # if you have no liked songs use a genere seed
     else:
         # todo extend genric generes
-        seeds[1] = ['anime']
+        seeds[1] = ['anime', 'rap', 'blues']
+
+        seed_tracks = friends_tracks[:2]
+        track_urls = []
+        for track in seed_tracks:
+            track_urls.append(track['track']['href'])
+
+        seeds[2] = track_urls
 
     return seeds
 
