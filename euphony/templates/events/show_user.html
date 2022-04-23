@@ -19,6 +19,13 @@
                 {% csrf_token %}
                 <button class="btn btn-danger" type="submit">Unblock Friend</button>
             </form>
+            {% elif request_info.request_from_them %}
+            <form class="d-flex" method=POST action="{% url 'accept_friend_request_profile' user_to_show.id %}">
+                {% csrf_token %}
+                <button class="btn btn-primary" type="submit">Accept Friend Request</button>
+            </form>
+            {% elif request_info.request_to_them %}
+            <br> Friend request pending.. <br>
             {% else %}
             <form class="d-flex" method=POST action="{% url 'add_friend' user_to_show.id %}">
                 {% csrf_token %}
@@ -66,7 +73,8 @@
             {% for playlist in saved_playlists %}
             <tr>
                 <th scope="row">{{forloop.counter}}</th>
-                <td><a href="{% url 'addsongs_view' playlist.id %}"> {{ playlist.saved_playlist }}</a></td>
+                <td><a href="{% url 'addsongs_view' playlist.saved_playlist.id %}"> {{ playlist.saved_playlist }}</a>
+                </td>
             </tr>
             {% endfor %}
         </tbody>

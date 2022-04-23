@@ -11,6 +11,19 @@
 
 <h2> Artist(s): {{album.artists}} </h2>
 
+{% if user.is_authenticated %}
+
+<form method="post" action="upvote/{{album.id}}">
+  {% csrf_token %}
+  <button type="submit">Upvote</button> Upvotes: {{upvotes}}
+</form>
+<form method="post" action="downvote/{{album.id}}">
+  {% csrf_token %}
+  <button type="submit">Downvote</button> Downvotes: {{downvotes}}
+</form>
+{% endif %}
+
+
 <img src="{{album.cover}}">
 
 <div>

@@ -1,4 +1,5 @@
 
+from operator import truediv
 from django.db import models
 
 # Create your models here.
@@ -45,6 +46,7 @@ class Playlist(models.Model):
     songs = models.ManyToManyField(Song)
     user_id = models.ForeignKey(User, on_delete=models.CASCADE, blank=True, null=True)
     allow_comments = models.BooleanField('allow comments', default=True)
+    date_created = models.DateField(null=True)
 
     def __str__(self):
         return self.name
@@ -62,9 +64,9 @@ class Song_rating(models.Model):
     song_id = models.ForeignKey(
         Song, on_delete=models.CASCADE, default=None
     )  # ID of song which this rating corresponds to
-    rating_type = models.BooleanField()  # True = Upvote, False = Downvote
+    rating_type = models.BooleanField(null=True)  # True = Upvote, False = Downvote
     date = (
-        models.TextField()
+        models.DateTimeField(null=True)
     )  # date that the rating was given. Helpful for getting most recent feed
 
 
@@ -75,9 +77,9 @@ class Album_rating(models.Model):
     album_id = models.ForeignKey(
         Album, on_delete=models.CASCADE, default=None
     )  # ID of album which this rating corresponds to
-    rating_type = models.BooleanField()  # True = Upvote, False = Downvote
+    rating_type = models.BooleanField(null=True)  # True = Upvote, False = Downvote
     date = (
-        models.TextField()
+        models.DateTimeField(null=True)
     )  # date that the rating was given. Helpful for getting most recent feed
 
 
@@ -88,9 +90,9 @@ class Playlist_rating(models.Model):
     playlist_id = models.ForeignKey(
         Playlist, on_delete=models.CASCADE, default=None
     )  # ID of playlist which this rating corresponds to
-    rating_type = models.BooleanField()  # True = Upvote, False = Downvote
+    rating_type = models.BooleanField(null=True)  # True = Upvote, False = Downvote
     date = (
-        models.TextField()
+        models.DateTimeField(null=True)
     )  # date that the rating was given. Helpful for getting most recent feed
 
 # User relevant tables

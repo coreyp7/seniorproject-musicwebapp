@@ -7,52 +7,164 @@
 
   function vote(song_id, up_or_down) {
     $.ajax({
-        // Our sample url to make request
-        url: '{% url "vote" %}',
-        // Type of Request
-        type: "POST",
-        data : { 'vote' : up_or_down, 'song' : song_id ,'csrfmiddlewaretoken' : "{{ csrf_token }}" },
-        // Function to call when to
-        // request is ok
-        success: function(data) {
-            var x = data;
-            if(!(x === 'not logged in')){
-              ratings = document.getElementById(song_id + "-rating");
-              ratings.innerHTML =  parseInt(ratings.innerHTML) + parseInt(x);
-            }
-        },
-        // Error handling
-        error: function (error) {
-            console.log(`Error ${error}`);
+      // Our sample url to make request
+      url: '{% url "vote" %}',
+      // Type of Request
+      type: "POST",
+      data: { 'vote': up_or_down, 'song': song_id, 'csrfmiddlewaretoken': "{{ csrf_token }}" },
+      // Function to call when to
+      // request is ok
+      success: function (data) {
+        var x = data;
+        if (!(x === 'not logged in')) {
+          ratings = document.getElementById(song_id + "-rating");
+          ratings.innerHTML = parseInt(ratings.innerHTML) + parseInt(x);
         }
+      },
+      // Error handling
+      error: function (error) {
+        console.log(`Error ${error}`);
+      }
     });
   }
 
 </script>
 
 
-{% for item in recommendations %}
+{% for post in recommendations %}
 <div class="card dash_card">
   <div class="card-body">
-    <iframe class="dash_iframe" src="https://open.spotify.com/embed/track/{{item.song.id}}?utm_source=generator" width="100%" height="80"
-     frameBorder="0" allowfullscreen=""
-     allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture">
+    <iframe class="dash_iframe" src="https://open.spotify.com/embed/track/{{post.song.id}}?utm_source=generator"
+      width="100%" height="80" frameBorder="0" allowfullscreen=""
+      allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture">
     </iframe>
-    <p id="{{item.song.id}}-rating">
-      {{item.ratings}}
-    <p/>
+    <p id="{{post.song.id}}-rating">
+      {{post.ratings}}
+      <p />
 
-    {% if user.id %}
+      {% if post.friend_name %}
+    <p> {{post.friend_name}} has upvoted this
+      <p />
+      {% endif %}
 
-      <button class="btn btn-primary", onclick="vote('{{item.song.id}}', 1)">Upvote</button>
-      <button class="btn btn-primary", onclick="vote('{{item.song.id}}', 0)">Downvote</button>
+      {% if user.id %}
 
-    {% endif %}
+      <button class="btn btn-primary" , onclick="vote('{{post.song.id}}', 1)">Upvote</button>
+      <button class="btn btn-primary" , onclick="vote('{{post.song.id}}', 0)">Downvote</button>
 
-    <a href="{% url 'songinfo' item.song.id  %}" class="btn btn-primary">Comments</a>
+      {% endif %}
+
+      <a href="{% url 'songinfo' post.song.id  %}" class="btn btn-primary">Comments</a>
   </div>
 </div>
+{% endfor %}
 
+
+<h3>organized feed:</h3>
+{% for item in feed %}
+
+{% if item.post_type == "friend_rating" %}
+
+{% if item.item_type == "song" %}
+<a href="{% url 'show_user' item.friend_id %}"> 
+  {{item.friend_name}}
+</a>
+rated the song
+<a href="{% url 'songinfo' item.item_id %}">
+  "{{item.item_name}}"
+</a>
+ as {{item.rating_type}} on {{item.date}} .
+<br>
+
+{% elif item.item_type == "playlist" %}
+<a href="{% url 'show_user' item.friend_id %}"> 
+  {{item.friend_name}}
+</a>
+rated the playlist
+<a href="{% url 'addsongs_view' item.item_id %}">
+  "{{item.item_name}}"
+</a>
+ as {{item.rating_type}} on {{item.date}} .
+<br>
+{% elif item.item_type == 'album' %}
+<a href="{% url 'show_user' item.friend_id %}"> 
+  {{item.friend_name}}
+</a>
+rated the album
+<a href="{% url 'album_info' item.item_id %}">
+  "{{item.item_name}}"
+</a>
+ as {{item.rating_type}} on {{item.date}} .
+<br>
+{% endif %}
+
+{% elif item.post_type == "friend_comment" %}
+
+{% if item.item_type == "song" %}
+<a href="{% url 'show_user' item.friend_id %}"> 
+  {{item.friend_name}}
+</a>
+commented "{{item.comment_message}}" on 
+<a href="{% url 'songinfo' item.item_id %}">
+  "{{item.item_name}}"
+</a>
+ on {{item.date}} .
+<br>
+
+{% elif item.item_type == "playlist" %}
+<a href="{% url 'show_user' item.friend_id %}"> 
+  {{item.friend_name}}
+</a>
+commented "{{item.comment_message}}" on 
+<a href="{% url 'addsongs_view' item.item_id %}">
+  "{{item.item_name}}"
+</a>
+ on {{item.date}} .
+<br>
+{% elif item.item_type == 'album' %}
+<a href="{% url 'show_user' item.friend_id %}"> 
+  {{item.friend_name}}
+</a>
+commented "{{item.comment_message}}" on 
+<a href="{% url 'album_info' item.item_id %}">
+  "{{item.item_name}}"
+</a>
+ on {{item.date}} .
+<br>
+{% endif %}
+
+{% elif item.post_type == 'friend_playlist' %}
+
+<a href="{% url 'show_user' item.friend_id %}"> 
+  {{item.friend_name}}
+</a>
+created a new playlist called
+<a href="{% url 'addsongs_view' item.playlist_id %}">
+  "{{item.item_name}}"
+</a>
+on {{item.date}}.<br>
+
+{% else %}
+{{item}} <!-- Generic dictionary display for anything else.-->
+{% endif %}
+{% endfor %}
+<br>------------------------------------------------<br>
+<h5>Individual unorganized dictionaries down here for seeing 
+  what's going on:</h5>
+
+<h3>ratings:</h3>
+{% for rating_post in ratings %}
+{{rating_post}}<br>
+{% endfor %}
+
+<h3>comments:</h3>
+{% for comment_post in comments %}
+{{comment_post}}<br>
+{% endfor %}
+
+<h3>playlists:</h3>
+{% for playlist_post in playlists %}
+{{playlist_post}}<br>
 {% endfor %}
 
 {% endblock %}

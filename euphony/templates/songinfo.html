@@ -29,6 +29,22 @@
 
     </center>
   </form>
+
+  {% if user.is_authenticated %}
+
+  <form method="post" action="upvote/{{songid.id}}">
+    {% csrf_token %}
+    <button type="submit">Upvote</button>
+  </form>
+  <form method="post" action="downvote/{{songid.id}}">
+    {% csrf_token %}
+    <button type="submit">Downvote</button>
+  </form>
+  {% endif %}
+
+  Upvotes: {{upvotes}}<br>
+  Downvotes: {{downvotes}}<br>
+
   {% get_comment_count for songid as comment_count %}
   <div class="py-4 text-center">
     <a href="{% url 'search' %}">Back to search page</a>
