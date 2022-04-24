@@ -11,6 +11,8 @@ https://docs.djangoproject.com/en/4.0/ref/settings/
 """
 
 from pathlib import Path
+from django.urls import reverse_lazy
+from django.utils.translation import gettext_lazy as _
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -55,7 +57,19 @@ COMMENTS_XTD_MAX_THREAD_LEVEL = 3
 COMMENTS_XTD_LIST_ORDER = ("-thread_id", "order")
 
 COMMENTS_XTD_APP_MODEL_OPTIONS = {
-    'Default' : {
+    'euphony.song' : {
+        'allow_flagging': True,
+        'allow_feedback': True,
+        'show_feedback': True,
+        'who_can_post': 'all'  # Valid values: 'all', users'
+    },
+    'euphony.album' : {
+        'allow_flagging': True,
+        'allow_feedback': True,
+        'show_feedback': True,
+        'who_can_post': 'all'  # Valid values: 'all', users'
+    },
+    'euphony.playlist' : {
         'allow_flagging': True,
         'allow_feedback': True,
         'show_feedback': True,

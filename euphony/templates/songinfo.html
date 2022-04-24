@@ -39,18 +39,18 @@
 
   Upvotes: {{upvotes}}<br>
   Downvotes: {{downvotes}}<br>
-  <h1>{{request.user}}</h1>
+  
   {% get_comment_count for songid as comment_count %}
   <div class="py-4 text-center">
     {{ comment_count }} comment{{ comment_count|pluralize }}
     ha{{ comment_count|pluralize:"s,ve"}} been posted.
   </div>
 
-  {% if comment_count %}
+  
   <ul class="media-list">
-    {% render_xtdcomment_tree for songid %}
+    {% render_xtdcomment_tree for songid allow_flagging allow_feedback show_feedback%}
   </ul>
-  {% endif %}
+ 
 
   {% if songid.allow_comments %}
   <div class="comment mt-3 mb-5">

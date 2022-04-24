@@ -1,5 +1,5 @@
 from tkinter import X
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.models import User
 from django.views.decorators.http import require_POST, require_GET
 from django.http import HttpResponse
@@ -20,6 +20,12 @@ from django.contrib.contenttypes.models import ContentType
 import itertools
 from datetime import datetime, timedelta
 
+
+import django_comments
+from django_comments import signals
+from django_comments.views.utils import next_redirect, confirmation_view
+from django.contrib.sites.shortcuts import get_current_site
+from django_comments.views.moderation import delete, perform_delete
 
 import spotipy
 from spotipy.oauth2 import SpotifyClientCredentials, SpotifyOAuth
@@ -1460,3 +1466,28 @@ def reject_friend_request_notifications(request, user_id):
 
     return render(request, 'notifications.html', {"current_user": request.user,
     "incoming_requests": incoming_requests})
+
+def delete(request, comment_id, next=None):
+    """
+    Deletes a comment. Confirmation on GET, action on POST. Requires the "can
+    moderate comments" permission.
+    Templates: :template:`comments/delete.html`,
+    Context:
+        comment
+            the flagged `comments.comment` object
+    """
+    comment = get_object_or_404(django_comments.get_model(),
+                                pk=comment_id,
+                                site__pk=get_current_site(request).pk)
+
+    # Delete on POST
+    if request.method == 'POST':
+        # Flag the comment as deleted instead of actually deleting it.
+        #perform_delete(request, comment)
+        comment.delete()
+        return next_redirect(request, fallback=next or 'comments-delete-done',
+                             c=comment.pk)
+
+    # Render a form on GET
+    else:
+        return render(request, 'comments/delete.html', {'comment': comment, "next": next})
