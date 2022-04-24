@@ -12,6 +12,26 @@ body{
    background-color: #f3f5f9;
 }
 
+img {
+  padding-top: 8%; 
+  height: 50px;
+  width: 50px;
+ }
+
+ #logo {  
+  text-align: center;  
+  }  
+
+.hero{
+  position: fixed; 
+  top: 0; 
+  left: 0; 
+
+  min-width: 100%;
+  min-height: 100%;
+  background-image: linear-gradient(to bottom right, #552586, #B589D6);
+}
+
 .wrapper{
   display: flex;
   position: relative;

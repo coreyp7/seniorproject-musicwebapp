@@ -6,6 +6,7 @@ urlpatterns = [
     # Top section are the pages which the user can "officially click on" to access.
     path("", views.home, name="home"),
     path('dash', views.dash, name='dash'),
+    path('homepage', views.homepage, name='homepage'),
     path("link_account", views.link_account, name="link_account"),
     path("playlists/", views.allplaylists_view, name="playlists"),
     path('settings_general/', views.settings_general, name='settings_general'),
