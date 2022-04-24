@@ -130,6 +130,52 @@
             {% endfor %}
         </tbody>
     </table>
+    <br>
+    <h1>Comments:</h1>
+    <table class="table table-bordered">
+        <thead>
+            <tr>
+                <th scope="col">Content</th>
+                <th scope="col">Comment</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for comment in comments %}
+            {% if comment.content_type.name == 'song' %}
+            {% for song in song %}
+            {% if song.id == comment.object_pk %}
+            <tr>   
+                <td><a href="{% url 'songinfo' comment.object_pk %}">{{ song.name }}</a></td>
+                <td><a>{{ comment.comment }}</a></td>
+            </tr>
+            {% endif %}
+            {% endfor %}
+            {% endif %}
+            {% if comment.content_type.name == 'album' %}
+            {% for album in album %}
+            {% if album.id == comment.object_pk %}
+            <tr>   
+                <td><a href="{% url 'album_info' comment.object_pk %}">{{ album.name }}</a></td>
+                <td><a>{{ comment.comment }}</a></td>
+            </tr>
+            {% endif %}
+            {% endfor %}
+            {% endif %}
+            {% if comment.content_type.name == 'playlist' %}
+            {% for playlist in playlist %}
+            {% if playlist.id == comment.object_pk %}
+            <tr>   
+                <td><a href="{% url 'addsongs_view' comment.object_pk %}">{{ playlist.name }}</a></td>
+                <td><a>{{ comment.comment }}</a></td>
+            </tr>
+            {% endif %}
+            {% endfor %}
+            {% endif %}
+            {% endfor %}
+
+             
+        </tbody>
+    </table>
 </div>
 
 

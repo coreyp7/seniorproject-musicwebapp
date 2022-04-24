@@ -1,3 +1,4 @@
+{%include 'base.html'%}
 {% load static %}
     <head>
         <title>Euphony</title>
@@ -11,11 +12,10 @@
                 <center><h1>Euphony</h1></center>
             </div>
             <div id="logo">
-                <img src="{% static 'images/logo.png' %}" alt="logo" />
+                <img src="{% static 'images/logo.png' %}" alt="logo" class="music" />
             </div>
             <div class="info">
-                <center><h3>A Place to Shit Talk Your Favorite Artists:)</h3>
-                    <a class="btn btn-secondary" href="{% url 'register' %}" role="button">Get Started</a></center> 
+                <center><h3>Discover Numerous Tracks in a Matter of <a type="button" class="btn btn-outline-light btn-xs" data-mdb-ripple-color="dark" href="{% url 'register' %}" role="button">Clicks</a></h3></center> 
             </div>
         </div>
     </body>

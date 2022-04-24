@@ -32,6 +32,17 @@ img {
   background-image: linear-gradient(to bottom right, #552586, #B589D6);
 }
 
+.title{
+  color: white;
+  padding-top: 0%;
+  font-size: large;
+}
+
+.info{
+  color: white;
+  padding-top: 2%;
+}
+
 .wrapper{
   display: flex;
   position: relative;

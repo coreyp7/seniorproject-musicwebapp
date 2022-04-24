@@ -62,7 +62,6 @@ class Playlist(models.Model):
     def get_absolute_url(self):
         return reverse('addsongs_view', args=[str(self.id)])
 
-
 class CustomComment(XtdComment):
     def save(self, *args, **kwargs):
         if self.user:
