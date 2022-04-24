@@ -51,14 +51,15 @@
     {% render_xtdcomment_tree for songid allow_flagging allow_feedback show_feedback%}
   </ul>
  
-
-  {% if songid.allow_comments %}
+  {% if user.is_authenticated %}
+    {% if songid.allow_comments %}
   <div class="comment mt-3 mb-5">
     <h4 class="text-center mb-4">Post a Comment</h4>
     <div class="card pt-4">
       {% render_comment_form for songid %}
     </div>
   </div>
-  {% endif %}
+    {% endif %}
+  {% endif %}  
 
   {% endblock %}

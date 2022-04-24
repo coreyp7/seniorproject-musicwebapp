@@ -52,6 +52,7 @@
 </ul>
 {% endif %}
 
+{% if user.is_authenticated %}
 {% if albumid.allow_comments %}
 <div class="comment mt-3 mb-5">
   <h4 class="text-center mb-4">Post a Comment</h4>
@@ -59,5 +60,6 @@
     {% render_comment_form for albumid %}
   </div>
   {% endif %}
+{% endif %}
 
   {% endblock %}
