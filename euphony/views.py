@@ -213,14 +213,11 @@ def dash(request):
         else: # signed in, not connected to spotify
             # as it turns out the recommendation end point doesn't user permissions
             # so gen_recomendation has been modifed to accept spotipy clients with out permissions\
-            # - nico 
+            # - nico
             album_list = gen_recomendations(sp, user_friends, scope)
             song_list = get_song_list(sp, album_list)
             posts = prepare_post_dicts(song_list, user_friends)
 
-        # here we will get friends ratings, comments, and new playlists.
-        # get the list of rows of all this users' friends.
-        user_friends = Friend.objects.friends(request.user)
         # first, ratings:
         friends_ratings = get_users_friend_rating_activity(user_friends)
         # second, comments:
