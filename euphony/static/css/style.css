@@ -1,5 +1,5 @@
 body{
-  background-color: #B589D6;
+  background-color: #BDB5D5;
 }
 
 .music {
@@ -50,6 +50,26 @@ body{
     font-size: 18px;
     color: #fff;
     margin-right: 20px;
+  }
+
+  .search_btn {
+    border-color: #CC94F2 !important;
+    color: #CC94F2 !important;
+  }
+
+
+  .search_btn:hover {
+    background-color: #CC94F2;
+    border-color: #CC94F2;
+    color: white !important;
+  }
+
+  .btn_drop {
+    background-color: #CC94F2 !important;
+  }
+
+  .btn_logged {
+    background-color: #CC94F2 !important;
   }
 
 .user_card {
