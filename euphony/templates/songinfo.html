@@ -64,6 +64,10 @@
     <ul class="media-list comments_section">
       {% render_xtdcomment_tree for songid %}
     </ul>
+    {% else %}
+    <ul class=" song_no_comments_section">
+      <h5 class="song_no_comments">No Comments</h5>
+    </ul>
     {% endif %}
 
     {% if songid.allow_comments %}
