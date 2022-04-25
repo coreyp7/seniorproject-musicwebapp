@@ -10,6 +10,8 @@ import re
 
 from django_comments_xtd.forms import XtdCommentForm
 from django_comments_xtd.models import TmpXtdComment
+from datetime import datetime
+from django_comments_xtd.models import XtdComment
 
 
 class Album(models.Model):
@@ -20,6 +22,9 @@ class Album(models.Model):
     cover = models.URLField(max_length=200) # link to cover of album
     total_tracks = models.IntegerField()
     allow_comments = models.BooleanField('allow comments', default=True)
+
+    def __str__(self):
+        return self.name
 
     def get_absolute_url(self):
         return reverse('album_info', args=[str(self.id)])
@@ -35,6 +40,9 @@ class Song(models.Model):
     track_number = models.IntegerField()
     disc = models.IntegerField()
     allow_comments = models.BooleanField('allow comments', default=True)
+
+    def __str__(self):
+        return self.name
 
     def get_absolute_url(self):
         return reverse('songinfo', args=[str(self.id)])
@@ -54,6 +62,13 @@ class Playlist(models.Model):
     def get_absolute_url(self):
         return reverse('addsongs_view', args=[str(self.id)])
 
+
+class CustomComment(XtdComment):
+    def save(self, *args, **kwargs):
+        if self.user:
+            self.user_name = self.user.display_name
+        super(CustomComment, self).save(*args, **kwargs)
+
 # Section dedicated towards each rating table for songs/albums/playlists.
 
 
@@ -65,9 +80,7 @@ class Song_rating(models.Model):
         Song, on_delete=models.CASCADE, default=None
     )  # ID of song which this rating corresponds to
     rating_type = models.BooleanField(null=True)  # True = Upvote, False = Downvote
-    date = (
-        models.DateTimeField(null=True)
-    )  # date that the rating was given. Helpful for getting most recent feed
+    date = models.DateTimeField(default=datetime.now, null=True) # date that the rating was given. Helpful for getting most recent feed
 
 
 class Album_rating(models.Model):
@@ -78,9 +91,7 @@ class Album_rating(models.Model):
         Album, on_delete=models.CASCADE, default=None
     )  # ID of album which this rating corresponds to
     rating_type = models.BooleanField(null=True)  # True = Upvote, False = Downvote
-    date = (
-        models.DateTimeField(null=True)
-    )  # date that the rating was given. Helpful for getting most recent feed
+    date = models.DateTimeField(default=datetime.now, null=True)     # date that the rating was given. Helpful for getting most recent feed
 
 
 class Playlist_rating(models.Model):
@@ -91,9 +102,7 @@ class Playlist_rating(models.Model):
         Playlist, on_delete=models.CASCADE, default=None
     )  # ID of playlist which this rating corresponds to
     rating_type = models.BooleanField(null=True)  # True = Upvote, False = Downvote
-    date = (
-        models.DateTimeField(null=True)
-    )  # date that the rating was given. Helpful for getting most recent feed
+    date = models.DateTimeField(default=datetime.now, null=True)  # date that the rating was given. Helpful for getting most recent feed
 
 # User relevant tables
 

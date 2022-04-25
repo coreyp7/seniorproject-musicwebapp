@@ -1,5 +1,5 @@
 from tkinter import X
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.models import User
 from django.views.decorators.http import require_POST, require_GET
 from django.http import HttpResponse
@@ -14,11 +14,18 @@ from friendship.models import FriendshipRequest
 from django.contrib import messages
 from friendship.models import Friend, Follow, Block
 from django.contrib.auth import authenticate, login, logout
-import datetime
+#import datetime
 from django_comments_xtd.models import XtdComment
 from django.contrib.contenttypes.models import ContentType
 import itertools
+from datetime import datetime, timedelta
 
+
+import django_comments
+from django_comments import signals
+from django_comments.views.utils import next_redirect, confirmation_view
+from django.contrib.sites.shortcuts import get_current_site
+from django_comments.views.moderation import delete, perform_delete
 
 import spotipy
 from spotipy.oauth2 import SpotifyClientCredentials, SpotifyOAuth
@@ -180,10 +187,13 @@ def dash(request):
 
     if str(request.user) != 'AnonymousUser' and ( user := User.objects.get(pk=int(request.user.id))):
         temp_client = gen_client(user, scope)
+        # here we will get friends ratings, comments, and new playlists.
+        # get the list of rows of all this users' friends.
+        user_friends = Friend.objects.friends(user)
+
         if temp_client != None:
             # signed in and connected to spotify
             # get recommendations from spotify for their connected account.
-            user_friends = Friend.objects.friends(user)
             #with friends list get a set of recommended ALBUMBS
             album_list = gen_recomendations(temp_client, user_friends, scope)
             #get the SONGS from those recommended albums from spotify
@@ -201,9 +211,12 @@ def dash(request):
             #       'rating_type' : True or False, indicating type of rating
             # }
         else: # signed in, not connected to spotify
-            # get recommendations based off activity on site
-            # if not possible, random (get genres from spotify by looking in their preferred genres, not implemented yet)
-            pass
+            # as it turns out the recommendation end point doesn't user permissions
+            # so gen_recomendation has been modifed to accept spotipy clients with out permissions\
+            # - nico 
+            album_list = gen_recomendations(sp, user_friends, scope)
+            song_list = get_song_list(sp, album_list)
+            posts = prepare_post_dicts(song_list, user_friends)
 
         # here we will get friends ratings, comments, and new playlists.
         # get the list of rows of all this users' friends.
@@ -212,24 +225,26 @@ def dash(request):
         friends_ratings = get_users_friend_rating_activity(user_friends)
         # second, comments:
         friends_comments =  get_users_friend_comment_activity(user_friends)
-        # third, 
+        # third,
         friends_new_playlists = get_users_friend_playlist_activity(user_friends)
 
     else: # anonymous user
-        songs = Song.objects.all()
-        indexs = rng.choice(range(len(songs)), size=50, replace=False)
-        song_list = np.array(list(songs))[indexs]
-        posts = [{ "song" : item[0] , "ratings" : item[1], "friend_name" : None} for item in zip(song_list, get_song_rating_numbers(song_list)) ]
-        posts.sort(key = lambda item : item['ratings'], reverse=True )
-
+        try:
+            songs = Song.objects.all()
+            indexs = rng.choice(range(len(songs)), size=50, replace=False)
+            song_list = np.array(list(songs))[indexs]
+            posts = [{ "song" : item[0] , "ratings" : item[1], "friend_name" : None} for item in zip(song_list, get_song_rating_numbers(song_list)) ]
+            posts.sort(key = lambda item : item['ratings'], reverse=True )
+        except:
+            return HttpResponse(":( please sir/madam may I have some songs (for anonymous browings the database needs 50 songs. run the dash with a linked account one or twice for anon browsing to work right) ")
 
     all_dashboard_feed = list(itertools.chain(
-        friends_ratings, 
+        friends_ratings,
         friends_comments,
         friends_new_playlists)) # NICO put recommendations in here
         # just assign each song a random date in the past week or something so that it
         # randomizes the recommendations: this is up to you how you wanna implement.
-    
+
     all_dashboard_feed.sort(key=lambda x: x["date"])
     print(all_dashboard_feed)
     return render(request, 'dash.html', {'recommendations' : posts,
@@ -243,7 +258,7 @@ def dash(request):
     # 3. DONE
     # 4. DONE
     # 5. 'generic' (just a text post) : we could use the comments extension for this, no idea. Ignore for now.
-    # 
+    #
     # Example dict for recommendation:
     # {
     #       'post_type' : "recommendation",
@@ -253,16 +268,16 @@ def dash(request):
     #       'song_album_cover' : cover link of the song/album, null if a playlist.
     # }
     # So process: filter out the results out of our tables,
-    # put it all into dictionaries formatted like this and 
+    # put it all into dictionaries formatted like this and
     # put it in a list organized by date (front end shouldnt have to do this at all)
 
     # NOW 4/21/22 12:55PM: Next, convert nicos shit into these dictionaries.
     # Then created an organized list based on date.
 
 def get_users_friend_playlist_activity(user_friends):
-    today = datetime.datetime.now().utcnow().date() # today's date
-    week_ago = today - datetime.timedelta(7) # a week in the past
-    playlists_dict = []  
+    today = datetime.now().utcnow().date() # today's date
+    week_ago = today - timedelta(7) # a week in the past
+    playlists_dict = []
 
     for friend in user_friends:
         friend_playlists = Playlist.objects.filter(user_id=friend, date_created__range=[week_ago,today])
@@ -276,14 +291,14 @@ def get_users_friend_playlist_activity(user_friends):
                 'friend_name': friend.username
             }
             playlists_dict.append(new_dict)
-    
+
     return playlists_dict
 
 def get_users_friend_comment_activity(user_friends):
-    today = datetime.datetime.now().utcnow().date() # today's date
-    week_ago = today - datetime.timedelta(7) # a week in the past
+    today = datetime.now().utcnow().date() # today's date
+    week_ago = today - timedelta(7) # a week in the past
     comments_dict = []
-    
+
     for friend in user_friends:
         friend_comments = XtdComment.objects.filter(user=friend)
         print(friend_comments)
@@ -292,8 +307,8 @@ def get_users_friend_comment_activity(user_friends):
             print(str(comment.content_type))
             if str(comment.content_type) == "euphony | song":
                 cover = Song.objects.get(id=comment.object_pk).album_id.cover
-                min = datetime.datetime.min.time()
-                formatted_date = datetime.datetime.combine(comment.submit_date,min)
+                min = datetime.min.time()
+                formatted_date = datetime.combine(comment.submit_date,min)
                 song_ref = Song.objects.get(id=comment.object_pk)
                 new_dict = {
                     'post_type' : 'friend_comment',
@@ -309,7 +324,7 @@ def get_users_friend_comment_activity(user_friends):
                 comments_dict.append(new_dict)
             elif str(comment.content_type) == "euphony | album":
                 cover = Album.objects.get(id=comment.object_pk).cover
-                min = datetime.datetime.min.time()
+                min = datetime.min.time()
                 album_ref = Album.objects.get(id=comment.object_pk)
                 new_dict = {
                     'post_type' : 'friend_comment',
@@ -324,7 +339,7 @@ def get_users_friend_comment_activity(user_friends):
                 }
                 comments_dict.append(new_dict)
             else: # playlist
-                min = datetime.datetime.min.time()
+                min = datetime.min.time()
                 playlist_ref = Playlist.objects.get(id=comment.object_pk)
                 new_dict = {
                     'post_type' : 'friend_comment',
@@ -341,8 +356,8 @@ def get_users_friend_comment_activity(user_friends):
     return comments_dict
 
 def get_users_friend_rating_activity(user_friends):
-    today = datetime.datetime.now().utcnow().date() # today's date
-    week_ago = today - datetime.timedelta(7) # a week in the past
+    today = datetime.now().utcnow().date() # today's date
+    week_ago = today - timedelta(7) # a week in the past
     ratings_dict = [] # Our ratings list, containing formatted dicts.
     for friend in user_friends:
             friend_song_ratings = Song_rating.objects.filter(
@@ -369,7 +384,7 @@ def get_users_friend_rating_activity(user_friends):
                     'item_name' : rating.song_id.name
                 }
                 ratings_dict.append(new_dict)
-            
+
             for rating in friend_album_ratings:
                 new_dict = {
                     'post_type' : "friend_rating",
@@ -383,7 +398,7 @@ def get_users_friend_rating_activity(user_friends):
                     'item_name' : rating.album_id.name
                 }
                 ratings_dict.append(new_dict)
-            
+
             for rating in friend_playlist_ratings:
                 new_dict = {
                     'post_type' : "friend_rating",
@@ -643,8 +658,11 @@ def add_song(request, list_id, song_id):
 
 # Playlist Page functions
 def allplaylists_view(request):
-    playlists = Playlist.objects.filter(user_id=request.user)
-    return render(request,'playlists.html',{'playlists': playlists})
+    if request.user.is_authenticated:
+        playlists = Playlist.objects.filter(user_id=request.user)
+        return render(request,'playlists.html',{'playlists': playlists})
+    else:
+        return redirect('login')
 
 def create_playlist(request):
     submitted = False
@@ -653,7 +671,7 @@ def create_playlist(request):
         if form.is_valid():
             playlist = form.save(commit=False) # tells django "don't put into db"
             playlist.user_id = request.user
-            playlist.date_created = datetime.datetime.now().utcnow().date()
+            playlist.date_created = datetime.now().utcnow().date()
             playlist.save()
 
             messages.success(request, ('New Playlist Created!'))
@@ -835,13 +853,13 @@ def album_info_upvote(request, albumid):
         user_id=request.user,
         album_id=album_instance)
     if created: # If new, assign time right now and save.
-        object.date = datetime.datetime.now().utcnow().date()
+        object.date = datetime.now().utcnow().date()
         object.rating_type = True
         object.save()
     else: # If not new
         if not object.rating_type: # if its a downvote already, change it to be an upvote.
             object.rating_type = True
-            object.date = datetime.datetime.now().utcnow().date()
+            object.date = datetime.now().utcnow().date()
             object.save()
         else: # User is pressing upvote button when it was already pressed, get rid of upvote.
             object.delete()
@@ -854,13 +872,13 @@ def album_info_downvote(request, albumid):
         user_id=request.user,
         album_id=album_instance)
     if created: # If new, assign time right now and save.
-        object.date = datetime.datetime.now().utcnow().date()
+        object.date = datetime.now().utcnow().date()
         object.rating_type = False
         object.save()
     else: # If not new
         if object.rating_type: # if its a upvote already, change it to be an upvote.
             object.rating_type = False
-            object.date = datetime.datetime.now().utcnow().date()
+            object.date = datetime.now().utcnow().date()
             object.save()
         else: # User is pressing upvote button when it was already pressed, get rid of upvote.
             object.delete()
@@ -938,7 +956,7 @@ def songinfo(request, music_id):
         "id": album_info["id"]},
     "upvotes": upvotes, "downvotes": downvotes,
     "user_voted": user_upvoted, "user_downvoted": user_downvoted})
-    
+
 def songinfo_upvote(request, songid):
     song_instance = Song.objects.get(pk=songid)
 
@@ -946,13 +964,13 @@ def songinfo_upvote(request, songid):
         user_id=request.user,
         song_id=song_instance)
     if created: # If new, assign time right now and save.
-        object.date = datetime.datetime.now().utcnow().date()
+        object.date = datetime.now().utcnow().date()
         object.rating_type = True
         object.save()
     else: # If not new
         if not object.rating_type: # if its a downvote already, change it to be an upvote.
             object.rating_type = True
-            object.date = datetime.datetime.now().utcnow().date()
+            object.date = datetime.now().utcnow().date()
             object.save()
         else: # User is pressing upvote button when it was already pressed, get rid of upvote.
             object.delete()
@@ -965,13 +983,13 @@ def songinfo_downvote(request, songid):
         user_id=request.user,
         song_id=song_instance)
     if created: # If new, assign time right now and save.
-        object.date = datetime.datetime.now().utcnow().date()
+        object.date = datetime.now().utcnow().date()
         object.rating_type = False
         object.save()
     else: # If not new
         if object.rating_type: # if its a upvote already, change it to be an upvote.
             object.rating_type = False
-            object.date = datetime.datetime.now().utcnow().date()
+            object.date = datetime.now().utcnow().date()
             object.save()
         else: # User is pressing upvote button when it was already pressed, get rid of upvote.
             object.delete()
@@ -984,13 +1002,13 @@ def playlist_upvote(request, playlistid):
         user_id=request.user,
         playlist_id=playlist_instance)
     if created: # If new, assign time right now and save.
-        object.date = datetime.datetime.now().utcnow().date()
+        object.date = datetime.now().utcnow().date()
         object.rating_type = True
         object.save()
     else: # If not new
         if not object.rating_type: # if its a downvote already, change it to be an upvote.
             object.rating_type = True
-            object.date = datetime.datetime.now().utcnow().date()
+            object.date = datetime.now().utcnow().date()
             object.save()
         else: # User is pressing upvote button when it was already pressed, get rid of upvote.
             object.delete()
@@ -1003,13 +1021,13 @@ def playlist_downvote(request, playlistid):
         user_id=request.user,
         playlist_id=playlist_instance)
     if created: # If new, assign time right now and save.
-        object.date = datetime.datetime.now().utcnow().date()
+        object.date = datetime.now().utcnow().date()
         object.rating_type = False
         object.save()
     else: # If not new
         if object.rating_type: # if its a downvote already, change it to be an upvote.
             object.rating_type = False
-            object.date = datetime.datetime.now().utcnow().date()
+            object.date = datetime.now().utcnow().date()
             object.save()
         else: # User is pressing upvote button when it was already pressed, get rid of upvote.
             object.delete()
@@ -1030,7 +1048,7 @@ def settings_general(request):
             User_Setting_Ext.objects.filter(user=request.user).update(dark_mode=True)
         else:
             User_Setting_Ext.objects.filter(user=request.user).update(dark_mode=False)
-        
+
         if id_explicit == 'on':
             User_Setting_Ext.objects.filter(user=request.user).update(explicit=True)
         else:
@@ -1264,6 +1282,10 @@ def show_user(request, user_id):
     allfriends = Friend.objects.friends(user)
     saved_playlists = User_Profile.objects.filter(user=user_id)
     playlists = Playlist.objects.filter(user_id=user_id)
+    song_ratings = Song_rating.objects.filter(user_id=user_id, date__gte=datetime.now().date() - timedelta(days=7))
+    album_ratings = Album_rating.objects.filter(user_id=user_id, date__gte=datetime.now().date() - timedelta(days=7))
+    playlist_ratings = Playlist_rating.objects.filter(user_id=user_id, date__gte=datetime.now().date() - timedelta(days=7))
+
 
     # Used for checking if these two users have  requested each other already, and pass this to template.
     request_information = {
@@ -1287,8 +1309,10 @@ def show_user(request, user_id):
     #print(request.user, user)
     return render(request, 'events/show_user.html', {'user_to_show': user, 'allfriends':allfriends,
                                                      'not_same_user':not_same_user, 'self':self,
-                                                     'already_friends':already_friends, 'saved_playlists': saved_playlists, 'playlists': playlists,
-                                                     'request_info': request_information})
+                                                     'already_friends':already_friends, 'saved_playlists': saved_playlists,
+                                                     'playlists': playlists, 'song_ratings': song_ratings, 'album_ratings': album_ratings,
+                                                     'playlist_ratings': playlist_ratings, 'request_info': request_information})
+
 
 def addFriend(request, user_id):
     user = User.objects.get(pk=user_id)
@@ -1366,7 +1390,7 @@ def accept_friend_request_profile(request, user_id):
     return render(request, 'events/show_user.html', {'user_to_show': user, 'allfriends':allfriends,
                                                      'not_same_user':not_same_user, 'self':self,
                                                      'already_friends':already_friends, 'saved_playlists': saved_playlists, 'playlists': playlists})
-    
+
 
 def deleteFriend(request, user_id):
     user = User.objects.get(pk=user_id)
@@ -1415,7 +1439,7 @@ def notifications(request):
     # Do not allow anonymous users to go to settings. Redirect to login.
     if not request.user.is_authenticated:
         return redirect('login', permanent=True)
-    
+
     incoming_requests = Friend.objects.unread_requests(user=request.user)
 
     return render(request, 'notifications.html', {"current_user": request.user,
@@ -1443,3 +1467,27 @@ def reject_friend_request_notifications(request, user_id):
     return render(request, 'notifications.html', {"current_user": request.user,
     "incoming_requests": incoming_requests})
 
+def delete(request, comment_id, next=None):
+    """
+    Deletes a comment. Confirmation on GET, action on POST. Requires the "can
+    moderate comments" permission.
+    Templates: :template:`comments/delete.html`,
+    Context:
+        comment
+            the flagged `comments.comment` object
+    """
+    comment = get_object_or_404(django_comments.get_model(),
+                                pk=comment_id,
+                                site__pk=get_current_site(request).pk)
+
+    # Delete on POST
+    if request.method == 'POST':
+        # Flag the comment as deleted instead of actually deleting it.
+        #perform_delete(request, comment)
+        comment.delete()
+        return next_redirect(request, fallback=next or 'comments-delete-done',
+                             c=comment.pk)
+
+    # Render a form on GET
+    else:
+        return render(request, 'comments/delete.html', {'comment': comment, "next": next})
