@@ -6,6 +6,59 @@
 
 {% block content %}
 
+<h1> Album: {{album.name}} </h1>
+<h5> Amount of tracks: {{album.total_tracks}}</h5>
+<h2> Released: {{album.release_date}} </h2>
+
+<h2> Artist(s): {{album.artists}} </h2>
+
+{% if user.is_authenticated %}
+
+<form method="post" action="upvote/{{album.id}}">
+  {% csrf_token %}
+  <button type="submit">Upvote</button> Upvotes: {{upvotes}}
+</form>
+<form method="post" action="downvote/{{album.id}}">
+  {% csrf_token %}
+  <button type="submit">Downvote</button> Downvotes: {{downvotes}}
+</form>
+{% endif %}
+
+
+<img src="{{album.cover}}">
+
+<div>
+  {% if songs %}
+  {%for song in songs %}
+  {% if song.explicit %}
+  <a href="{% url 'songinfo' song.id %}">{{forloop.counter}}. {{song.name}} | {{song.duration}} <b>(Explicit)</b> </a>
+  {% else %}
+  <a href="{% url 'songinfo' song.id %}">{{forloop.counter}}. {{song.name}} | {{song.duration}}</a>
+  {% endif %}
+  <br>
+  {% endfor %}
+  {% endif %}
+</div>
+
+{% get_comment_count for albumid as comment_count %}
+<div class="py-4 text-center">
+  {{ comment_count }} comment{{ comment_count|pluralize }}
+  ha{{ comment_count|pluralize:"s,ve"}} been posted.
+</div>
+
+{% if comment_count %}
+<ul class="media-list">
+  {% render_xtdcomment_tree for albumid aallow_flagging allow_feedback show_feedback%}
+</ul>
+{% endif %}
+
+{% if albumid.allow_comments %}
+<div class="comment mt-3 mb-5">
+  <h4 class="text-center mb-4">Post a Comment</h4>
+  <div class="card pt-4">
+    {% render_comment_form for albumid %}
+  </div>
+  {% endif %}
 
  <div class="albuminfo_container">
   <div class="albuminfo_card">

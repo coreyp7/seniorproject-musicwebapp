@@ -22,10 +22,12 @@ from datetime import datetime, timedelta
 
 
 import django_comments
+from django_comments_xtd.models import XtdComment
 from django_comments import signals
 from django_comments.views.utils import next_redirect, confirmation_view
 from django.contrib.sites.shortcuts import get_current_site
 from django_comments.views.moderation import delete, perform_delete
+from django_comments.models import Comment
 
 import spotipy
 from spotipy.oauth2 import SpotifyClientCredentials, SpotifyOAuth
@@ -41,7 +43,7 @@ from .spotify_queries import *
 from .forms import SongForm, CreateUserForm
 from .models import *
 
-from .models import Song, UserToken, Song_rating
+from .models import Song, UserToken, Song_rating, CustomComment
 
 from django.contrib import messages
 from .forms import EditUserForm
@@ -55,6 +57,9 @@ sp = spotipy.Spotify(client_credentials_manager=SpotifyClientCredentials())
 
 def home(request):
     return render(request, "home.html", {})
+
+def homepage(request):
+    return render(request, "homepage.html", {})
 
 
 def link_account(request):
@@ -1192,7 +1197,7 @@ def loginPage(request):
 
         if user is not None:
             login(request, user)
-            return redirect('home')
+            return redirect('dash')
         else:
             messages.info(request, "Username OR Password is incorrect")
 
@@ -1285,7 +1290,11 @@ def show_user(request, user_id):
     song_ratings = Song_rating.objects.filter(user_id=user_id, date__gte=datetime.now().date() - timedelta(days=7))
     album_ratings = Album_rating.objects.filter(user_id=user_id, date__gte=datetime.now().date() - timedelta(days=7))
     playlist_ratings = Playlist_rating.objects.filter(user_id=user_id, date__gte=datetime.now().date() - timedelta(days=7))
-
+    
+    comments = Comment.objects.filter(user=user_id, submit_date__gte=datetime.now().date() - timedelta(days=7))
+    song = Song.objects.all()
+    album = Album.objects.all()
+    playlist = Playlist.objects.all()
 
     # Used for checking if these two users have  requested each other already, and pass this to template.
     request_information = {
@@ -1311,7 +1320,9 @@ def show_user(request, user_id):
                                                      'not_same_user':not_same_user, 'self':self,
                                                      'already_friends':already_friends, 'saved_playlists': saved_playlists,
                                                      'playlists': playlists, 'song_ratings': song_ratings, 'album_ratings': album_ratings,
-                                                     'playlist_ratings': playlist_ratings, 'request_info': request_information})
+                                                     'playlist_ratings': playlist_ratings, 
+                                                     'comments': comments, 'song': song, 'album': album, 'playlist': playlist, 
+                                                     'request_info': request_information})
 
 
 def addFriend(request, user_id):

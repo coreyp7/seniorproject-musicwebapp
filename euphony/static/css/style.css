@@ -1,5 +1,37 @@
 body{
-  background-color: #DEDCDE;
+  background-color: #B589D6;
+}
+
+.music {
+  padding-top: 3%; 
+  height: 25%;
+  width: 25%;
+  padding-right: 4%;
+ }
+
+ #logo {  
+  text-align: center;  
+  }  
+
+.hero{
+  position: fixed; 
+  top: 0; 
+  left: 0; 
+
+  min-width: 100%;
+  min-height: 100%;
+  background-image: linear-gradient(to bottom right, #552586, #B589D6);
+}
+
+.title{
+  color: white;
+  padding-top: 0%;
+  font-size: larger;
+}
+
+.info{
+  color: white;
+  padding-top: 2%;
 }
 
 .hello-msg{

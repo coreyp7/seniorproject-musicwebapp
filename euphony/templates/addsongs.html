@@ -92,7 +92,7 @@ Downvotes: {{downvotes}}<br>
 
 {% if comment_count %}
 <ul class="media-list">
-  {% render_xtdcomment_tree for playlist %}
+  {% render_xtdcomment_tree for playlist allow_flagging allow_feedback show_feedback %}
 </ul>
 {% endif %}
 

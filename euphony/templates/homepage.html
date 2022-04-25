@@ -1,0 +1,21 @@
+{%include 'base.html'%}
+{% load static %}
+    <head>
+        <title>Euphony</title>
+        <link rel="stylesheet" href="{% static 'css/style.css' %}">
+
+    </head>
+
+    <body>
+        <div class="hero">
+            <div class="title">
+                <center><h1>Euphony</h1></center>
+            </div>
+            <div id="logo">
+                <img src="{% static 'images/logo.png' %}" alt="logo" class="music" />
+            </div>
+            <div class="info">
+                <center><h3>Discover Numerous Tracks in a Matter of <a type="button" class="btn btn-outline-light btn-xs" data-mdb-ripple-color="dark" href="{% url 'register' %}" role="button">Clicks</a></h3></center> 
+            </div>
+        </div>
+    </body>
