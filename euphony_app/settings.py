@@ -47,7 +47,6 @@ INSTALLED_APPS = [
     "django_comments_xtd",
     "django_comments",
     "friendship",
-    'livereload',
 ]
 
 # comments settings
@@ -88,7 +87,6 @@ MIDDLEWARE = [
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
-    'livereload.middleware.LiveReloadScript',
 ]
 
 ROOT_URLCONF = "euphony_app.urls"
