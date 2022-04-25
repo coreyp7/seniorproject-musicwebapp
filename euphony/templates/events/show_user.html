@@ -1,23 +1,37 @@
 {% extends 'profile.html' %}
+{% load static %}
 
 {% block content %}
+{% load crispy_forms_tags %}
+<br><br>
 <div>
     <center>
         <h1>
-            User: {{ user_to_show }}
+            {% if user_to_show.profile.profile_pic %}
+                <img src="{{ user_to_show.profile.profile_pic.url }}" width=100 height=100 class="rounded-circle">
+            {% else %}
+                <img src="{% static 'images/Default_Pic.png' %}" width=100 height=100 class="rounded-circle">
+            {% endif %}
+            User: {{ user_to_show }} <br>
+            <h4>{{ user_to_show.profile.bio }}</h4>
+
             {% if not_same_user %}
+
+            {% if already_blocked %}
+            <form class="d-flex" method=POST action="{% url 'unblock_friend' user_to_show.id %}">
+                {% csrf_token %}
+                <button class="btn btn-danger" type="submit">Unblock User</button>
+            </form>
+            {% else %}
+            <form class="d-flex" method=POST action="{% url 'block_friend' user_to_show.id %}">
+                {% csrf_token %}
+                <button class="btn btn-danger" type="submit">Block User</button>
+            </form>
+
             {% if already_friends %}
             <form class="d-flex" method=POST action="{% url 'delete_friend' user_to_show.id %}">
                 {% csrf_token %}
                 <button class="btn btn-danger" type="submit">Remove Friend</button>
-            </form>
-            <form class="d-flex" method=POST action="{% url 'block_friend' user_to_show.id %}">
-                {% csrf_token %}
-                <button class="btn btn-danger" type="submit">Block Friend</button>
-            </form>
-            <form class="d-flex" method=POST action="{% url 'unblock_friend' user_to_show.id %}">
-                {% csrf_token %}
-                <button class="btn btn-danger" type="submit">Unblock Friend</button>
             </form>
             {% else %}
             <form class="d-flex" method=POST action="{% url 'add_friend' user_to_show.id %}">
@@ -25,7 +39,10 @@
                 <button class="btn btn-primary" type="submit">Add Friend</button>
             </form>
             {% endif %}
+
             {% endif %}
+            {% endif %}
+
         </h1>
         UserID: {{ user_to_show.id }} <br>
         {% load friendshiptags %}
@@ -73,6 +90,7 @@
     </table>
 </div>
 
-
+<br><br><br>
+<div class="container">
 
 {% endblock %}
