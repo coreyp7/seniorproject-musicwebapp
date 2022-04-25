@@ -21,6 +21,8 @@
       <!-- js lib needed to make dashboard upvote buttons to work -->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
 
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+
     <title>{% block title %}Euphony{% endblock %}</title>
 
 </head>
@@ -28,10 +30,10 @@
 <body>
 
     {%  include 'navbar.html' %}
-    <div class="container">
+
         {% block content %}
         {% endblock %}
-    </div>
+
 
 
 </body>
