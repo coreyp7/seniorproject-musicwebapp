@@ -26,7 +26,7 @@
       <div class="like_button">
         <form method="post" action="upvote/{{album.id}}">
           {% csrf_token %}
-          {% if user_upvoted %}
+          {% if user_voted %}
           <button type="submit" class="btn btn-success">Upvote</button>
           {% else %}
           <button type="submit" class="btn btn-outline-success">Upvote</button>
