@@ -33,7 +33,7 @@
       <div class="dislike_button">
         <form method="post" action="downvote/{{album.id}}">
           {% csrf_token %}
-          <button type="button" class="btn btn-light" data-mdb-ripple-color="dark">Downvote</button>
+          <button type="submit" class="btn btn-light" data-mdb-ripple-color="dark">Downvote</button>
           Downvotes: {{downvotes}}
         </form>
         {% endif %}
