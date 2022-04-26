@@ -40,16 +40,24 @@
 
 <form method="post" action="{% url 'playlist_upvote' playlist.id %}">
   {% csrf_token %}
-  <button type="submit">Upvote</button>
+  {% if user_upvoted %}
+  <button type="submit" class="btn btn-success">Upvote</button>
+  {% else %}
+  <button type="submit" class="btn btn-outline-success">Upvote</button>
+  {% endif %}
+  {{upvotes}}
 </form>
 <form method="post" action="{% url 'playlist_downvote' playlist.id %}">
   {% csrf_token %}
-  <button type="submit">Downvote</button>
+  {% if user_downvoted %}
+  <button type="submit" class="btn btn-danger" data-mdb-ripple-color="dark">Downvote</button>
+  {% else %}
+  <button type="submit" class="btn btn-outline-danger" data-mdb-ripple-color="dark">Downvote</button>
+  {% endif %}
+  {{downvotes}}
 </form>
 {% endif %}
 
-Upvotes: {{upvotes}}<br>
-Downvotes: {{downvotes}}<br>
 
 <br>
 <a class="btn btn-secondary addsong_button" href="{% url 'playlist_song' playlist.id %}"

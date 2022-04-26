@@ -726,7 +726,7 @@ def addsongs_view(request, list_id):
 
     if request.user.is_authenticated:
         try:
-            users_rating = Song_rating.objects.get(list_id=list_id.id, user_id=request.user)
+            users_rating = Playlist_rating.objects.get(playlist_id=list_id, user_id=request.user)
             if users_rating.rating_type == True:
                 user_upvoted = True
             elif users_rating.rating_type == False:
@@ -960,7 +960,7 @@ def songinfo(request, music_id):
         "name": album_info["name"],
         "id": album_info["id"]},
     "upvotes": upvotes, "downvotes": downvotes,
-    "user_voted": user_upvoted, "user_downvoted": user_downvoted})
+    "user_upvoted": user_upvoted, "user_downvoted": user_downvoted})
 
 def songinfo_upvote(request, songid):
     song_instance = Song.objects.get(pk=songid)
