@@ -9,6 +9,7 @@ from django.core.exceptions import ObjectDoesNotExist # for checking if row exis
 from euphony.models import Playlist, Album, User_Profile, User_Setting_Ext
 from .forms import PlaylistForm
 from .region_codes import region_codes
+from .forms import ProfileUpdateForm
     #ProfileForm
 from friendship.models import FriendshipRequest
 from django.contrib import messages
@@ -47,6 +48,8 @@ from .models import Song, UserToken, Song_rating, CustomComment
 
 from django.contrib import messages
 from .forms import EditUserForm
+
+from .forms import ProfileUpdateForm
 
 from django.contrib.auth.forms import PasswordChangeForm
 from django.contrib.auth import update_session_auth_hash
@@ -1107,7 +1110,8 @@ def settings_account(request):
         return render(request, 'settings_account.html', args)
 
 def profile(request):
-    return render(request, 'profile.html', {})
+    p_form = ProfileUpdateForm()
+    return render(request, 'profile.html', {'p_form': p_form})
 
 def my_view(request):
     # List of this user's friends
@@ -1180,6 +1184,12 @@ def registerPage(request):
                 user=user,
                 dark_mode=False,
                 explicit=False
+            )
+
+            Profile.objects.create(
+                user=user,
+                bio="",
+                profile_pic="Default_Pic.png"
             )
 
             return redirect('home')
@@ -1281,6 +1291,7 @@ def show_user(request, user_id):
         else:
             not_same_user = False
         already_friends = Friend.objects.are_friends(request.user, user)
+        already_blocked = Block.objects.is_blocked(request.user, user) #== True
     except:
         pass # False values already set
 
@@ -1322,7 +1333,8 @@ def show_user(request, user_id):
                                                      'playlists': playlists, 'song_ratings': song_ratings, 'album_ratings': album_ratings,
                                                      'playlist_ratings': playlist_ratings, 
                                                      'comments': comments, 'song': song, 'album': album, 'playlist': playlist, 
-                                                     'request_info': request_information})
+                                                     'request_info': request_information,
+                                                     'already_blocked':already_blocked})
 
 
 def addFriend(request, user_id):
@@ -1437,7 +1449,11 @@ def blockFriend(request, user_id):
     blocked = Block.objects.add_block(self, user)
     removed = Friend.objects.remove_friend(user, self)
     print("You :" , self, "Blocked: " , user , blocked)
-    return render(request, 'events/block_user.html', {'user':user, 'self':self, 'blocked':blocked})
+    already_friends = Friend.objects.are_friends(request.user, user)
+    if (already_friends):
+        removed = Friend.objects.remove_friend(user, self)
+    deleteFriend(request, user_id);
+    return render(request, 'events/block_user.html', {'user':user, 'self':self, 'blocked':blocked, 'removed':removed})
 
 def unblockFriend(request, user_id):
     user = User.objects.get(pk=user_id)
@@ -1502,3 +1518,20 @@ def delete(request, comment_id, next=None):
     # Render a form on GET
     else:
         return render(request, 'comments/delete.html', {'comment': comment, "next": next})
+def accountSettings(request):
+    user = request.user
+    user_profile = Profile.objects.get(user=user)
+
+    form = ProfileUpdateForm(instance=user)
+
+    pic_url = request.user.profile.profile_pic.url
+    print(pic_url)
+
+    if request.method == "POST":
+        form = ProfileUpdateForm(request.POST, request.FILES, instance=user_profile)
+        if form.is_valid():
+            form.save()
+            print("saved")
+
+    context = {'form':form, 'curr_pic_url': user_profile.profile_pic.url}
+    return render(request, 'events/account_settings.html', context)

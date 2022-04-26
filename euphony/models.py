@@ -121,4 +121,13 @@ class User_Setting_Ext(models.Model):
 
 class User_Profile(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, blank=True, null=True)
-    saved_playlist = models.ForeignKey(Playlist, on_delete=models.CASCADE) 
+    saved_playlist = models.ForeignKey(Playlist, on_delete=models.CASCADE)
+
+class Profile(models.Model):
+    user = models.OneToOneField(User, null=True, on_delete=models.CASCADE)
+    bio = models.TextField()
+    #You must install the python image library to see images. "pip install Pillow"
+    profile_pic = models.ImageField(null=True, upload_to="images/profile/", blank=True)
+
+    def __str__(self):
+        return str(self.user)
