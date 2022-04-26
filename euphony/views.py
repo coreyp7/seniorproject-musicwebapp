@@ -117,31 +117,15 @@ def prepare_post_dicts(song_list, user_friends):
     by the end of this proccess a post dict should be {song id, number of ratings, post weight, name of a friend or None if no friends}
     '''
 
-    posts = [{ "song" : item[0] , "ratings" : item[1]} for item in zip(song_list, get_song_rating_numbers(song_list)) ]
+    posts = [{ "song_id" : item[0]["id"], "cover" :  item[0]["cover"] , "ratings" : item[1]} for item in zip(song_list, get_song_rating_numbers(song_list))]
 
     #assign weights to posts based on friends upvotes
 
     for post in posts:
-
+        print(post['cover'])
         #give posts with friends likes a higher ranking
-        friend_ratings = list( Song_rating.objects.filter(user_id__in = user_friends, song_id=post["song"]) )
+        friend_ratings = list( Song_rating.objects.filter(user_id__in = user_friends, song_id=post["song_id"]) )
         post['weight'] = post['ratings'] + 2*len(friend_ratings)
-
-        # if possible get a friend's positve upvotes,
-        # and assign their user name to the post
-        if( len(friend_ratings) != 0 ):
-            friend_ratings
-            out_friend = None
-            friends_list = list(user_friends)
-            #get first friend with a postive upvote
-            for friend_rating in friend_ratings:
-                for friend in friends_list:
-                    if(friend_rating.id == friend_id and friend_ratings.rating_type):
-                        out_friend = friend_rating.username
-                        break
-            post['friend_name'] = out_friend
-        else:
-            post['friend_name'] = None
 
     shuffle(posts)
     posts = posts[:50]
@@ -221,14 +205,11 @@ def dash(request):
         else: # signed in, not connected to spotify
             # as it turns out the recommendation end point doesn't user permissions
             # so gen_recomendation has been modifed to accept spotipy clients with out permissions\
-            # - nico 
+            # - nico
             album_list = gen_recomendations(sp, user_friends, scope)
             song_list = get_song_list(sp, album_list)
             posts = prepare_post_dicts(song_list, user_friends)
 
-        # here we will get friends ratings, comments, and new playlists.
-        # get the list of rows of all this users' friends.
-        user_friends = Friend.objects.friends(request.user)
         # first, ratings:
         friends_ratings = get_users_friend_rating_activity(user_friends)
         # second, comments:
