@@ -109,14 +109,14 @@ def prepare_post_dicts(song_list, user_friends):
     by the end of this proccess a post dict should be {song id, number of ratings, post weight, name of a friend or None if no friends}
     '''
 
-    posts = [{ "song" : item[0] , "ratings" : item[1]} for item in zip(song_list, get_song_rating_numbers(song_list)) ]
+    posts = [{ "song_id" : item[0]["id"], "cover" :  item[0]["cover"] , "ratings" : item[1]} for item in zip(song_list, get_song_rating_numbers(song_list))]
 
     #assign weights to posts based on friends upvotes
 
     for post in posts:
-
+        print(post['cover'])
         #give posts with friends likes a higher ranking
-        friend_ratings = list( Song_rating.objects.filter(user_id__in = user_friends, song_id=post["song"]) )
+        friend_ratings = list( Song_rating.objects.filter(user_id__in = user_friends, song_id=post["song_id"]) )
         post['weight'] = post['ratings'] + 2*len(friend_ratings)
 
     shuffle(posts)

@@ -105,21 +105,9 @@ def get_song_list(client, album_list):
     songs_list = []
 
     for album in album_list:
-        for track in client.album_tracks(album.id)['items']:
+        for track in client.album_tracks(album['id'])['items']:
 
-
-            object, created = Song.objects.get_or_create(id=track['id'],
-                                                               album_id=album,
-                                                               name=track['name'],
-                                                               artists=track['artists'][0],
-                                                               duration_ms=track['duration_ms'],
-                                                               explicit = track['explicit'],
-                                                               release_date = album.release_date,
-                                                               track_number = track['track_number'],
-                                                               disc = track['disc_number'],
-                                                               allow_comments=True)
-
-            songs_list.append(object)
+            songs_list.append({"id" : track["id"], "cover" : album["cover"]})
 
     return songs_list
 
@@ -132,6 +120,8 @@ def gen_recomendations(client, friends, scope):
 
     album_list = []
     for item in client.recommendations(seed_artists=seeds[0], seed_genres=seeds[1], seed_tracks=seeds[2])['tracks']:
+
+        '''
         object, created = Album.objects.get_or_create(
                                                     id=item['album']["id"],
                                                     defaults = {
@@ -142,9 +132,9 @@ def gen_recomendations(client, friends, scope):
                                                     "cover" : item["album"]["images"][1]["url"]
                                                     }
                                                     )
+        '''
 
-        album_list.append(object)
-
+        album_list.append({"id" : item['album']["id"], "cover" : item["album"]["images"][1]["url"]})
     return album_list
 
 # Function for adding all of the songs of a specified album to our db.
