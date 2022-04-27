@@ -8,21 +8,54 @@
 <br><br>
 <div>
     <center>
-        <h1>
-            <div class="intro">
-                <div class="profile_header_container">
-                    <img src="{{ user_to_show.profile.profile_pic.url }}" alt="missing" class="profile_pic">
-                    <div class="profile_information">
-                        <h1 class="profile_name">{{ user_to_show }} </h1>
-                        <h2 class="profile_bio">{{ user_to_show.profile.bio }}</h2>
-                        <div class="profile_links_container">
-                            <a class="profile_link" href="">Friends</a>
-                            <a class="profile_link" href="">Saved Playlists</a>
-                        </div>
+        <div class="intro">
+            <div class="profile_header_container">
+                <img src="{{ user_to_show.profile.profile_pic.url }}" alt="missing" class="profile_pic">
+                <div class="profile_information">
+                    <h1 class="profile_name">{{ user_to_show }} </h1>
+                    <h2 class="profile_bio">{{ user_to_show.profile.bio }}</h2>
+                    <div class="profile_links_container">
+                        <a class="profile_link" href="">Friends</a>
+                        <a class="profile_link" href="">Saved Playlists</a>
                     </div>
+                    {% if not_same_user %}
+                    <div class="btn-group">
+                        {% if already_friends %}
+                        <form class="d-flex" method=POST action="{% url 'delete_friend' user_to_show.id %}">
+                            {% csrf_token %}
+                            <button class="btn mr-3 btn-danger" type="submit">Remove Friend</button>
+                        </form>
+                        {% elif request_info.request_from_them %}
+                        <form class="d-flex" method=POST
+                            action="{% url 'accept_friend_request_profile' user_to_show.id %}">
+                            {% csrf_token %}
+                            <button class="btn mr-3 btn-success" type="submit">Accept Friend Request</button>
+                        </form>
+                        {% elif request_info.request_to_them %}
+                        <button type="button" class="btn mr-3 btn-success" disabled>Request Pending</button>
+                        {% else %}
+                        <form class="d-flex" method=POST action="{% url 'add_friend' user_to_show.id %}">
+                            {% csrf_token %}
+                            <button class="btn mr-3 btn-success" type="submit">Add Friend</button>
+                        </form>
+                        {% endif %}
+
+                        {% if already_blocked %}
+                        <form class="d-flex" method=POST action="{% url 'unblock_friend' user_to_show.id %}">
+                            {% csrf_token %}
+                            <button class="btn mr-3 btn-danger" type="submit">Unblock User</button>
+                        </form>
+                        {% else %}
+                        <form class="d-flex" method=POST action="{% url 'block_friend' user_to_show.id %}">
+                            {% csrf_token %}
+                            <button class="btn mr-3 btn-danger" type="submit">Block User</button>
+                        </form>
+                        {% endif %}
+                    </div>
+                    {% endif %}
                 </div>
             </div>
-        </h1>
+        </div>
     </center>
 </div>
 
