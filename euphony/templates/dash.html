@@ -15,11 +15,18 @@
       // Function to call when to
       // request is ok
       success: function (data) {
-        var x = data;
-        if (!(x === 'not logged in')) {
-          ratings = document.getElementById(song_id + "-rating");
-          ratings.innerHTML = parseInt(ratings.innerHTML) + parseInt(x);
-        }
+        if (!(data === 'not logged in')) {
+
+            data = data.split(",");
+
+            upvotes = document.getElementById(song_id + "-upvotes");
+            upvotes.innerHTML = data[0];
+
+            downvotes = document.getElementById(song_id + "-downvotes");
+            downvotes.innerHTML = data[1];
+
+          }
+
       },
       // Error handling
       error: function (error) {
@@ -36,15 +43,19 @@
       {% for post in recommendations %}
       <div class="card">
         <a href="{% url 'songinfo' post.song_id  %}">
-          <img src="{{post.cover}}" class="card-img-top" alt="...">
+          <img src="{{post.song_cover}}" class="card-img-top" alt="...">
         </a>
         <div class="card-body">
-          <p id="{{post.song_id}}-rating">
-            {{post.ratings}}
+          <p id="{{post.song_id}}-upvotes">
+            {{post.upvotes}}
+          <p/>
+          <p id="{{post.song_id}}-downvotes">
+            {{post.downvotes}}
           <p/>
           <button class="btn btn-primary" , onclick="vote('{{post.song_id}}', 1)">Upvote</button>
           <button class="btn btn-primary" , onclick="vote('{{post.song_id}}', -1)">Downvote</button>
         </div>
+
       </div>
       {% endfor %}
     </div>

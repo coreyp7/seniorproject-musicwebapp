@@ -117,15 +117,17 @@ def prepare_post_dicts(song_list, user_friends):
     by the end of this proccess a post dict should be {song id, number of ratings, post weight, name of a friend or None if no friends}
     '''
 
-    posts = [{ "song_id" : item[0]["id"], "cover" :  item[0]["cover"] , "ratings" : item[1]} for item in zip(song_list, get_song_rating_numbers(song_list))]
+    posts = [{ "song_id" : item[0]["id"], "song_cover" :  item[0]["cover"],  "song_name" :  item[0]["name"] , "upvotes" : None, "downvotes" : None} for item in zip(song_list, get_song_rating_numbers(song_list))]
 
     #assign weights to posts based on friends upvotes
 
     for post in posts:
-        print(post['cover'])
+        print(post['song_cover'])
         #give posts with friends likes a higher ranking
-        friend_ratings = list( Song_rating.objects.filter(user_id__in = user_friends, song_id=post["song_id"]) )
-        post['weight'] = post['ratings'] + 2*len(friend_ratings)
+        post["upvotes"] = Song_rating.objects.filter(song_id=post["song_id"], rating_type=True).count()
+        post["downvotes"] = Song_rating.objects.filter(song_id=post["song_id"], rating_type=False).count()
+        friend_ratings = Song_rating.objects.filter(user_id__in = user_friends, song_id=post["song_id"], rating_type=True).count()
+        post['weight'] = post['upvotes'] - post["downvotes"] + 2*friend_ratings
 
     shuffle(posts)
     posts = posts[:50]
@@ -420,27 +422,26 @@ def proccess_vote(request):
         if len(rating) == 0:
             #if no votes for that user song pair make a new post object
             vote = Song_rating.objects.create(song_id=song, user_id=user, rating_type=new_vote, date=datetime.now().utcnow().date())
-            if(new_vote):
-                return HttpResponse(1)
-            else:
-                return HttpResponse(-1)
+            upvotes = Song_rating.objects.filter(song_id=song, rating_type=True).count()
+            downvotes = Song_rating.objects.filter(song_id=song, rating_type=False).count()
+            return HttpResponse("{},{}".format(upvotes,downvotes))
         else:
             vote = rating[0]
             old_vote = vote.rating_type
             #if old vote == new vote just delete that vote, otherwise modify the vote
             if(old_vote == new_vote):
                 vote.delete()
-                if(old_vote):
-                    return HttpResponse(-1)
-                else:
-                    return HttpResponse(1)
+                upvotes = Song_rating.objects.filter(song_id=song, rating_type=True).count()
+                downvotes = Song_rating.objects.filter(song_id=song, rating_type=False).count()
+                return HttpResponse("{},{}".format(upvotes,downvotes))
+
             else:
                 vote.delete()
                 Song_rating.objects.create(song_id=song, user_id=user, rating_type=new_vote, date=datetime.now().utcnow().date())
-                if(new_vote):
-                    return HttpResponse(2)
-                else:
-                    return HttpResponse(-2)
+                upvotes = Song_rating.objects.filter(song_id=song, rating_type=True).count()
+                downvotes = Song_rating.objects.filter(song_id=song, rating_type=False).count()
+                return HttpResponse("{},{}".format(upvotes,downvotes))
+
 
     return HttpResponse('not logged in')
 
@@ -1284,7 +1285,7 @@ def show_user(request, user_id):
     song_ratings = Song_rating.objects.filter(user_id=user_id, date__gte=datetime.now().date() - timedelta(days=7))
     album_ratings = Album_rating.objects.filter(user_id=user_id, date__gte=datetime.now().date() - timedelta(days=7))
     playlist_ratings = Playlist_rating.objects.filter(user_id=user_id, date__gte=datetime.now().date() - timedelta(days=7))
-    
+
     comments = Comment.objects.filter(user=user_id, submit_date__gte=datetime.now().date() - timedelta(days=7))
     song = Song.objects.all()
     album = Album.objects.all()
@@ -1314,8 +1315,8 @@ def show_user(request, user_id):
                                                      'not_same_user':not_same_user, 'self':self,
                                                      'already_friends':already_friends, 'saved_playlists': saved_playlists,
                                                      'playlists': playlists, 'song_ratings': song_ratings, 'album_ratings': album_ratings,
-                                                     'playlist_ratings': playlist_ratings, 
-                                                     'comments': comments, 'song': song, 'album': album, 'playlist': playlist, 
+                                                     'playlist_ratings': playlist_ratings,
+                                                     'comments': comments, 'song': song, 'album': album, 'playlist': playlist,
                                                      'request_info': request_information,
                                                      'already_blocked':already_blocked})
 

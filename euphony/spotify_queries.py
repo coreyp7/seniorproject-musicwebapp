@@ -107,7 +107,7 @@ def get_song_list(client, album_list):
     for album in album_list:
         for track in client.album_tracks(album['id'])['items']:
 
-            songs_list.append({"id" : track["id"], "cover" : album["cover"]})
+            songs_list.append({"id" : track["id"], "name" : track["name"], "cover" : album["cover"]})
 
     return songs_list
 
