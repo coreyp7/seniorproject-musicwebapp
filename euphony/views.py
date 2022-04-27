@@ -126,13 +126,12 @@ def prepare_post_dicts(song_list, user_friends):
         #give posts with friends likes a higher ranking
         post["upvotes"] = Song_rating.objects.filter(song_id=post["song_id"], rating_type=True).count()
         post["downvotes"] = Song_rating.objects.filter(song_id=post["song_id"], rating_type=False).count()
-        friend_ratings = Song_rating.objects.filter(user_id__in = user_friends, song_id=post["song_id"], rating_type=True).count()
+        friend_ratings = Song_rating.objects.filter(user_id__in=user_friends, song_id=post["song_id"], rating_type=True).count()
         post['weight'] = post['upvotes'] - post["downvotes"] + 2*friend_ratings
 
     shuffle(posts)
     posts = posts[:50]
     posts.sort(key = lambda item : item['weight'], reverse=True )
-
 
     return posts
 
@@ -224,8 +223,7 @@ def dash(request):
             songs = Song.objects.all()
             indexs = rng.choice(range(len(songs)), size=50, replace=False)
             song_list = np.array(list(songs))[indexs]
-            posts = [{ "song" : item[0] , "ratings" : item[1], "friend_name" : None} for item in zip(song_list, get_song_rating_numbers(song_list)) ]
-            posts.sort(key = lambda item : item['ratings'], reverse=True )
+            posts = prepare_post_dicts(song_list,[])
         except:
             return HttpResponse(":( please sir/madam may I have some songs (for anonymous browings the database needs 50 songs. run the dash with a linked account one or twice for anon browsing to work right) ")
 
