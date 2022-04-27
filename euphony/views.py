@@ -418,7 +418,8 @@ def proccess_vote(request):
         rating = list(Song_rating.objects.filter(user_id=user, song_id=song))
         new_vote = (int(request.POST['vote']) == 1)
         if len(rating) == 0:
-            vote = Song_rating.objects.create(song_id=song, user_id=user, rating_type=new_vote)
+            #if no votes for that user song pair make a new post object
+            vote = Song_rating.objects.create(song_id=song, user_id=user, rating_type=new_vote, date=datetime.now().utcnow().date())
             if(new_vote):
                 return HttpResponse(1)
             else:
@@ -426,6 +427,7 @@ def proccess_vote(request):
         else:
             vote = rating[0]
             old_vote = vote.rating_type
+            #if old vote == new vote just delete that vote, otherwise modify the vote
             if(old_vote == new_vote):
                 vote.delete()
                 if(old_vote):
@@ -433,12 +435,12 @@ def proccess_vote(request):
                 else:
                     return HttpResponse(1)
             else:
-                vote.rating_type=new_vote
-                vote.save()
+                vote.delete()
+                Song_rating.objects.create(song_id=song, user_id=user, rating_type=new_vote, date=datetime.now().utcnow().date())
                 if(new_vote):
-                    return HttpResponse(1)
+                    return HttpResponse(2)
                 else:
-                    return HttpResponse(-1)
+                    return HttpResponse(-2)
 
     return HttpResponse('not logged in')
 

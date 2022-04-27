@@ -43,7 +43,7 @@
             {{post.ratings}}
           <p/>
           <button class="btn btn-primary" , onclick="vote('{{post.song_id}}', 1)">Upvote</button>
-          <button class="btn btn-primary" , onclick="vote('{{post.song_id}}', 0)">Downvote</button>
+          <button class="btn btn-primary" , onclick="vote('{{post.song_id}}', -1)">Downvote</button>
         </div>
       </div>
       {% endfor %}
