@@ -1284,7 +1284,34 @@ def show_user(request, user_id):
     song_ratings = Song_rating.objects.filter(user_id=user_id, date__gte=datetime.now().date() - timedelta(days=7))
     album_ratings = Album_rating.objects.filter(user_id=user_id, date__gte=datetime.now().date() - timedelta(days=7))
     playlist_ratings = Playlist_rating.objects.filter(user_id=user_id, date__gte=datetime.now().date() - timedelta(days=7))
+    all_ratings = []
+    for rating in song_ratings:
+        all_ratings.append({
+            "type": "song",
+            "object": rating,
+            "date": rating.date
+        })
+
+    for rating in album_ratings:
+        all_ratings.append({
+            "type": "album",
+            "object": rating,
+            "date": rating.date
+        })
     
+    for rating in playlist_ratings:
+        all_ratings.append({
+            "type": "playlist",
+            "object": rating,
+            "date": rating.date,
+            "profile_pic": Profile.objects.get(user=rating.user_id).profile_pic
+        })
+
+    all_ratings.sort(key=lambda x: x["date"], reverse=True)
+
+    for rating in all_ratings:
+        rating["date"] = rating["date"].date()
+
     comments = Comment.objects.filter(user=user_id, submit_date__gte=datetime.now().date() - timedelta(days=7))
     song = Song.objects.all()
     album = Album.objects.all()
@@ -1309,7 +1336,7 @@ def show_user(request, user_id):
     except:
         pass
 
-    #print(request.user, user)
+    
     return render(request, 'events/show_user.html', {'user_to_show': user, 'allfriends':allfriends,
                                                      'not_same_user':not_same_user, 'self':self,
                                                      'already_friends':already_friends, 'saved_playlists': saved_playlists,
@@ -1317,7 +1344,8 @@ def show_user(request, user_id):
                                                      'playlist_ratings': playlist_ratings, 
                                                      'comments': comments, 'song': song, 'album': album, 'playlist': playlist, 
                                                      'request_info': request_information,
-                                                     'already_blocked':already_blocked})
+                                                     'already_blocked':already_blocked,
+                                                     'all_ratings': all_ratings})
 
 
 def addFriend(request, user_id):

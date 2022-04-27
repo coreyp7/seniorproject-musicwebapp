@@ -58,14 +58,14 @@
             </div>
         </div>
     </center>
-
+    {% if playlists %}
     <h2 class="playlists_header">Playlists:</h2>
     <div class="playlists_container">
 
         <div class="row">
             {% for playlist in playlists %}
             <div class="col-auto mb-3">
-                <div class="card" style="width: 22rem">
+                <div class="card" id="rating_card" style="width: 22rem">
                     <div class="card-body">
                         <a class="stretched-link" href="{% url 'addsongs_view' playlist.id %}">
                             <h5 class="card-title">{{ playlist.name }}</h5>
@@ -76,8 +76,54 @@
             </div>
             {% endfor %}
         </div>
-
     </div>
+    {% endif %}
+
+    <h2 class="ratings_header">Recent Ratings:</h2>
+    <div class="ratings_container">
+        {% for rating in all_ratings %}
+        <div class="col-auto mb-3">
+            {% if rating.object.rating_type %}
+            <div class="card text-white bg-success" id="rating_card" style="width: 22rem">
+                {% else %}
+                <div class="card text-white bg-danger" id="rating_card" style="width: 22rem">
+                    {% endif %}
+                    <!-- Second, find out the type of item this rating is on and provide appropriate link and info.-->
+                    <div class="card_container">
+                        {% if rating.type == "song" %}
+                        <img src="{{rating.object.song_id.album_id.cover}}" class="card_album_cover">
+                        <div class="card_info_container">
+                            <a href="{% url 'songinfo' rating.object.song_id.id %}" id="rating_card_link"
+                                class="stretched-link">
+                                {{rating.object.song_id.name }}
+                            </a>
+                            {{rating.date}} <i>(song)</i>
+                        </div>
+                        {% elif rating.type == "album" %}
+                        <img src="{{rating.object.album_id.cover}}" class="card_album_cover">
+                        <div class="card_info_container">
+                            <a href="{% url 'album_info' rating.object.album_id.id %}" id="rating_card_link"
+                                class="stretched-link">
+                                {{rating.object.album_id.name }}
+                            </a>
+                            {{rating.date}} <i>(album)</i>
+                        </div>
+                        {% elif rating.type == "playlist" %}
+                        <div class="card_info_container">
+                            <img src="{{rating.profile_pic.profile_pic}}" class="card_album_cover">
+                            <a href="{% url 'addsongs_view' rating.object.playlist_id.id %}" id="rating_card_link"
+                                class="stretched-link">
+                                Playlist: '{{rating.object.playlist_id.name }}'
+                            </a>
+                            User: {{rating.object.playlist_id.user_id.username}}<br>
+                            {{rating.date}}
+                        </div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+
 </body>
 
 {% endblock %}

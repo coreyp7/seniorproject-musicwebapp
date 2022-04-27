@@ -700,3 +700,48 @@ body {
   overflow-x: hidden;
   /* Hide horizontal scrollbar */
 }
+
+.ratings_container {
+  padding-left: 10px;
+}
+
+.ratings_header {
+  padding-left: 30px;
+}
+
+#rating_card:hover {
+  transform: scale(1.1);
+}
+
+.upvote_card {
+  text-decoration: none;
+}
+
+.card_album_cover {
+  width: 100px;
+  height: 100px;
+  padding: 5px;
+}
+
+.card_container {
+  display: flex;
+  flex-direction: row;
+  justify-content: left;
+  align-items: center;
+}
+
+.card_info_container {
+  display: flex;
+  flex-direction: column;
+  font-size: 20px;
+}
+
+#rating_card_link {
+  text-decoration: none;
+  color: white;
+}
+
+.stretched-link .song_card_link {
+  text-decoration: none;
+  color: rgb(149, 149, 149);
+}
