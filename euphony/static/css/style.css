@@ -650,7 +650,7 @@ body {
 
 .profile_pic {
   border-radius: 50%;
-  width: 220px;
+  width: 180px;
   float: left;
   border-style: solid;
   border-width: 3px;
@@ -684,5 +684,19 @@ body {
 }
 
 .profile_information {
+  padding-left: 5px;
+}
+
+.playlists_container {
   padding-left: 10px;
+}
+
+.playlists_header {
+  padding-left: 30px;
+}
+
+.profile_body {
+  background-color: #b4b4bc;
+  overflow-x: hidden;
+  /* Hide horizontal scrollbar */
 }

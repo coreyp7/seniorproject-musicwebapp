@@ -6,7 +6,8 @@
 <link rel="stylesheet" href="{% static 'css/style.css' %}">
 
 <br><br>
-<div>
+
+<body class="profile_body">
     <center>
         <div class="intro">
             <div class="profile_header_container">
@@ -57,6 +58,26 @@
             </div>
         </div>
     </center>
-</div>
+
+    <h2 class="playlists_header">Playlists:</h2>
+    <div class="playlists_container">
+
+        <div class="row">
+            {% for playlist in playlists %}
+            <div class="col-auto mb-3">
+                <div class="card" style="width: 22rem">
+                    <div class="card-body">
+                        <a class="stretched-link" href="{% url 'addsongs_view' playlist.id %}">
+                            <h5 class="card-title">{{ playlist.name }}</h5>
+                        </a>
+                        <h6 class="card-subtitle mb-2 text-muted">Created on {{playlist.date_created}}</h6>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+
+    </div>
+</body>
 
 {% endblock %}
