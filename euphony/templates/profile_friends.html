@@ -1,0 +1,21 @@
+{% include 'base.html' %}
+{% load static %}
+
+
+{% block content %}
+
+<body>
+    {% if friends %}
+    {% for friend in friends %}
+    <ul class="list-group">
+        <li class="list-group-item">
+            <img src="{{friend.profile_pic}}" style="width: 75px;
+            height: 75px; border-radius: 50%;">
+            <a href="{% url 'show_user' friend.id %}" class="stretched-link">{{friend.name}}</a>
+        </li>
+    </ul>
+    {% endfor %}
+    {% endif %}
+</body>
+
+{% endblock %}
