@@ -1279,8 +1279,8 @@ def show_user(request, user_id):
         pass # False values already set
 
     allfriends = Friend.objects.friends(user)
-    saved_playlists = User_Profile.objects.filter(user=user_id)
-    playlists = Playlist.objects.filter(user_id=user_id)
+    saved_playlists = User_Profile.objects.filter(user_id=user)
+    playlists = Playlist.objects.filter(user_id=user)
     song_ratings = Song_rating.objects.filter(user_id=user_id, date__gte=datetime.now().date() - timedelta(days=7))
     album_ratings = Album_rating.objects.filter(user_id=user_id, date__gte=datetime.now().date() - timedelta(days=7))
     playlist_ratings = Playlist_rating.objects.filter(user_id=user_id, date__gte=datetime.now().date() - timedelta(days=7))
@@ -1317,7 +1317,7 @@ def show_user(request, user_id):
     comments = Comment.objects.filter(user=user_id, submit_date__gte=datetime.now().date() - timedelta(days=7))
     songs = Song.objects.all()
     albums = Album.objects.all()
-    playlists = Playlist.objects.all()
+    playlists_all = Playlist.objects.all()
     all_comments = []
     for comment in comments:
         for song in songs:
@@ -1340,7 +1340,7 @@ def show_user(request, user_id):
                 })
                 break
         
-        for playlist in playlists:
+        for playlist in playlists_all:
             if comment.object_pk == playlist.id:
                 profile = Profile.objects.get(user=playlist.user_id)
                 all_comments.append({
