@@ -613,6 +613,10 @@ body {
   }
 }
 
+.navbar{
+  outline: 3px solid #CC94F2;
+}
+
 /* for the comment section on pages */
 .comment-form {
   width: 800px;
