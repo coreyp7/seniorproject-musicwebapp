@@ -8,10 +8,6 @@
   text-decoration: none;
 }
 
-body{
-   background-color: #f3f5f9;
-}
-
 img {
   padding-top: 8%; 
   height: 50px;
@@ -64,7 +60,7 @@ img {
 }
 
 .wrapper .sidebar .base_setting_ul .base_setting_li{
-  padding: 15px;
+  padding: 8%;
   border-bottom: 1px solid #bdb8d7;
   border-bottom: 1px solid rgba(0,0,0,0.05);
   border-top: 1px solid rgba(255,255,255,0.05);
@@ -121,6 +117,10 @@ img {
     text-align: center;
 }
 
+.username_spacing{
+  padding-top: 50px;
+}
+
 .info-general{
     padding-top: 80px;
     position: absolute;
@@ -129,10 +129,8 @@ img {
 }
 
 .main_content {
-  position: static;
-  left: 200px;
+  position: relative;
   height: 100%;
-  border: 3px solid #73AD21; 
 }
 
 .form-control{
@@ -194,4 +192,38 @@ img {
 
 .general_settings_switch {
   padding-bottom: 20px;
+}
+
+@media only screen and (max-width: 880px) {
+
+  .base_setting_h2{
+  font-size: 10px;
+  }
+
+  .sidebar{
+    max-width: 70px;
+  }  
+
+  .base_setting_ul{
+    margin: 0 auto;
+    padding-left: 1px;
+  }
+
+  .info{
+    left: 120px;
+  }
+
+  .settings_name{
+    left: 35%;
+  }
+
+  .info-general{
+    padding-top: 130px;
+    right: 35%;
+  }
+
+  .username_spacing{
+    padding-top: 140px;
+  }
+
 }
