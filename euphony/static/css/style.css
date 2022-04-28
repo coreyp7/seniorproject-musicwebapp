@@ -702,7 +702,7 @@ body {
 }
 
 .ratings_container {
-  padding-left: 10px;
+  padding-left: 35px;
 }
 
 .ratings_header {
@@ -710,7 +710,7 @@ body {
 }
 
 #rating_card:hover {
-  transform: scale(1.1);
+  transform: scale(1.05);
 }
 
 .upvote_card {
@@ -726,19 +726,20 @@ body {
 .card_container {
   display: flex;
   flex-direction: row;
-  justify-content: left;
   align-items: center;
 }
 
 .card_info_container {
   display: flex;
   flex-direction: column;
-  font-size: 20px;
+  font-size: 16px;
 }
 
 #rating_card_link {
   text-decoration: none;
   color: white;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .stretched-link .song_card_link {
