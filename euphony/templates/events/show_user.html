@@ -79,6 +79,7 @@
     </div>
     {% endif %}
 
+    {% if all_ratings %}
     <h2 class="ratings_header">Recent Ratings:</h2>
     <div class="ratings_container">
         <div class="row">
@@ -110,14 +111,13 @@
                                 {{rating.date}} <i>(album)</i>
                             </div>
                             {% elif rating.type == "playlist" %}
+                            <img src="{{rating.profile.profile_pic.url}}" class="card_playlist_user_image">
                             <div class="card_info_container">
-                                <img src="{{rating.profile_pic.profile_pic}}" class="card_album_cover">
                                 <a href="{% url 'addsongs_view' rating.object.playlist_id.id %}" id="rating_card_link"
                                     class="stretched-link">
-                                    Playlist: '{{rating.object.playlist_id.name }}'
+                                    '{{rating.object.playlist_id.name }}'
                                 </a>
-                                User: {{rating.object.playlist_id.user_id.username}}<br>
-                                {{rating.date}}
+                                User: {{rating.object.playlist_id.user_id.username}}<br><i>(playlist)</i>
                             </div>
                             {% endif %}
                         </div>
@@ -125,7 +125,7 @@
                 </div>
                 {% endfor %}
             </div>
-
+            {% endif %}
 </body>
 
 {% endblock %}

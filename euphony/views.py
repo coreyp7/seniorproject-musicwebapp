@@ -20,7 +20,7 @@ from django_comments_xtd.models import XtdComment
 from django.contrib.contenttypes.models import ContentType
 import itertools
 from datetime import datetime, timedelta
-
+import os
 
 import django_comments
 from django_comments_xtd.models import XtdComment
@@ -1298,16 +1298,18 @@ def show_user(request, user_id):
             "object": rating,
             "date": rating.date
         })
-    
+
     for rating in playlist_ratings:
+        curr_user_profile = Profile.objects.get(user=rating.playlist_id.user_id)
         all_ratings.append({
             "type": "playlist",
             "object": rating,
             "date": rating.date,
-            "profile_pic": Profile.objects.get(user=rating.user_id).profile_pic
+            "profile": curr_user_profile
         })
 
     all_ratings.sort(key=lambda x: x["date"], reverse=True)
+    all_ratings = all_ratings[:16]
 
     for rating in all_ratings:
         rating["date"] = rating["date"].date()

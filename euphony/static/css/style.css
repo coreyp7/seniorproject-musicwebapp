@@ -746,3 +746,10 @@ body {
   text-decoration: none;
   color: rgb(149, 149, 149);
 }
+
+.card_playlist_user_image {
+  width: 100px;
+  height: 100px;
+  padding: 5px;
+  border-radius: 50%;
+}
