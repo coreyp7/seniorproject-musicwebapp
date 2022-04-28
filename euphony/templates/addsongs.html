@@ -36,8 +36,7 @@
 {% endif %}
 <h5>Created by: <a href="{% url 'show_user' playlist.user_id.id %}">{{playlist.user_id}}</a></h5>
 
-
-
+{% if request.user.id != playlist.user_id.id %}
 <form method="post" action="{% url 'playlist_upvote' playlist.id %}">
   {% csrf_token %}
   {% if user_upvoted %}
@@ -56,6 +55,7 @@
   {% endif %}
   {{downvotes}}
 </form>
+{% endif %}
 {% endif %}
 
 
