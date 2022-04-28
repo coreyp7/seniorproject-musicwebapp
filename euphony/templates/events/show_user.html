@@ -160,15 +160,14 @@
                                 {{comment.date}} <i>(album)</i>
                             </div>
                             {% elif comment.type == "playlist" %}
-                            <img src="{{comment.profile.profile_pic.url}}"
-                                class="card_playlist_user_image text-truncate">
-                            <div class="card_info_container">
+                            <img src="{{comment.profile.profile_pic.url}}" class="card_album_cover text-truncate">
+                            <div class="card_info_container text-truncate">
                                 <p class="comment_message">'{{comment.comment_message}}'</p>
                                 <a href="{% url 'addsongs_view' comment.object.id %}" id="rating_card_link"
                                     class="stretched-link">
-                                    '{{comment.object.playlist_id.name }}'
+                                    '{{comment.object.playlist_id.name}}'
                                 </a>
-                                User: {{comment.object.playlist_id.user_id.username}}<br><i>(playlist)</i>
+                                User: {{comment.object.playlist_id.user_id.username}}<i>(playlist)</i>
                             </div>
                             {% endif %}
                         </div>

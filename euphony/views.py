@@ -1339,7 +1339,7 @@ def show_user(request, user_id):
                 break
         
         for playlist in playlists_all:
-            if comment.object_pk == playlist.id:
+            if str(comment.object_pk) == str(playlist.id):
                 profile = Profile.objects.get(user=playlist.user_id)
                 all_comments.append({
                     "type": "playlist",

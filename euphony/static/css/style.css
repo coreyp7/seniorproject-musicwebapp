@@ -53,6 +53,11 @@ body {
   background-color: #CC94F2 !important;
 }
 
+.profile-image-thumbnail {
+  height: 48px;
+  width: 48px;
+}
+
 .hello-msg {
   font-size: 18px;
   color: #fff;
