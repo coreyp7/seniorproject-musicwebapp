@@ -1285,6 +1285,7 @@ def show_user(request, user_id):
     playlist_ratings = Playlist_rating.objects.filter(user_id=user_id, date__gte=datetime.now().date() - timedelta(days=7))
 
     comments = Comment.objects.filter(user=user_id, submit_date__gte=datetime.now().date() - timedelta(days=7))
+    
     song = Song.objects.all()
     album = Album.objects.all()
     playlist = Playlist.objects.all()

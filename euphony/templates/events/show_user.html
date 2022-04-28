@@ -182,7 +182,7 @@
             {% endif %}
             {% if comment.content_type.name == 'playlist' %}
             {% for playlist in playlist %}
-            {% if playlist.id == comment.object_pk %}
+            {% if playlist.id == comment.object_pk|add:"0" %}
             <tr>
                 <td><a href="{% url 'addsongs_view' comment.object_pk %}">{{ playlist.name }}</a></td>
                 <td><a>{{ comment.comment }}</a></td>
