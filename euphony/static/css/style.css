@@ -776,3 +776,13 @@ body {
   text-overflow: ellipsis;
   font-size: 12px;
 }
+
+.friend_element_container {
+  display: flex;
+  flex-direction: row;
+}
+
+.friend_element_info {
+  display: flex;
+  flex-direction: column;
+}

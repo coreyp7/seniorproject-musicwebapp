@@ -1373,7 +1373,7 @@ def show_user(request, user_id):
     
 
     
-    return render(request, 'events/show_user.html', {'user_to_show': user, 'allfriends':allfriends,
+    return render(request, 'events/show_user.html', {'user_to_show': user, 'userid': user_id, 'allfriends':allfriends,
                                                      'not_same_user':not_same_user, 'self':self,
                                                      'already_friends':already_friends, 'saved_playlists': saved_playlists,
                                                      'playlists': playlists, 'song_ratings': song_ratings, 'album_ratings': album_ratings,
@@ -1385,15 +1385,20 @@ def show_user(request, user_id):
                                                      "all_comments": all_comments})
 
 def profile_friends(request, user_to_show):
-    all_friends = Friend.objects.friends(request.user)
+    user = User.objects.get(id=user_to_show)
+    all_friends = Friend.objects.friends(user=user)
     all_friends_formatted = []
     
     for friend in all_friends:
         profile = Profile.objects.get(user=friend)
+        friend_query = Friend.objects.get(to_user=friend, from_user=user).created
+
         new_friend = {
             "name": friend.username,
             'id': friend.id,
-            "profile_pic": profile.profile_pic.url
+            "profile_pic": profile.profile_pic.url,
+            "bio": profile.bio,
+            "since": friend_query
         }
         all_friends_formatted.append(new_friend)
 

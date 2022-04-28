@@ -8,11 +8,17 @@
     {% if friends %}
     {% for friend in friends %}
     <ul class="list-group">
-        <li class="list-group-item">
-            <img src="{{friend.profile_pic}}" style="width: 75px;
-            height: 75px; border-radius: 50%;">
-            <a href="{% url 'show_user' friend.id %}" class="stretched-link">{{friend.name}}</a>
-        </li>
+        <a href="{% url 'show_user' friend.id %}" class="list-group-item list-group-item-action flex-row">
+            <img src="{{friend.profile_pic}}" style="width: 150px;
+            height: 150px; border-radius: 50%;">
+            <div>
+                <div class="d-flex w-100 justify-content-between">
+                    <h5 class="mb-1">{{friend.name}}</h5>
+                    <small class="text-muted">Friends since {{friend.since}}</small>
+                </div>
+                <p class="mb-1">{{friend.bio}}</p>
+            </div>
+        </a>
     </ul>
     {% endfor %}
     {% endif %}

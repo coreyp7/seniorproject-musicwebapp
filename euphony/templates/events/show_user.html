@@ -16,7 +16,7 @@
                     <h1 class="profile_name">{{ user_to_show }} </h1>
                     <h2 class="profile_bio">{{ user_to_show.profile.bio }}</h2>
                     <div class="profile_links_container">
-                        <a class="profile_link" href="{% url 'profile_friends' user_to_show %}">Friends</a>
+                        <a class="profile_link" href="{% url 'profile_friends' userid %}">Friends</a>
                         <a class="profile_link" href="{% url 'profile_saved_playlists'  %}">
                             Saved Playlists</a>
                     </div>
