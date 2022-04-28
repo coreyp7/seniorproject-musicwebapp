@@ -145,35 +145,7 @@ def dash(request):
 
     id_list = []
     posts = []
-    '''
-    #check if user is logged in
-    if str(request.user) != 'AnonymousUser' and ( user := User.objects.get(pk=int(request.user.id))):
 
-        #get spotify client with user specific permissions
-        temp_client = gen_client(user, scope)
-        if temp_client != None:
-            user_friends = Friend.objects.friends(user)
-            #with friends list get a set of recommended ALBUMBS
-            album_list = gen_recomendations(temp_client, user_friends, scope)
-            #get the SONGS from those recommended albums from spotify
-            song_list = get_song_list(temp_client, album_list)
-            #prepare, and rank a list of post dicts
-            posts = prepare_post_dicts(song_list, user_friends)
-        # if user is logged in but not connected to spotify
-        else:
-            # Here we'll create a list of recommended songs from the user's upvotes.
-            # If no upvotes are available, then recommend based off their initial picked genres.
-            # (Get similar stuff ala spotify)
-            pass
-
-    else: # if it's an anonymous user, just get 50 random songs from our database.
-        #when not logged in get 50 songs from the database and rank them
-        songs = Song.objects.all()
-        indexs = rng.choice(range(len(songs)), size=50, replace=False)
-        song_list = np.array(list(songs))[indexs]
-        posts = [{ "song" : item[0] , "ratings" : item[1], "friend_name" : None} for item in zip(song_list, get_song_rating_numbers(song_list)) ]
-        posts.sort(key = lambda item : item['ratings'], reverse=True )
-    '''
     friends_ratings = []
     friends_comments = []
     friends_new_playlists = []
@@ -188,7 +160,7 @@ def dash(request):
             # signed in and connected to spotify
             # get recommendations from spotify for their connected account.
             #with friends list get a set of recommended ALBUMBS
-            album_list = gen_recomendations(temp_client, user_friends, scope)
+            album_list = gen_recomendations(temp_client, scope, user)
             #get the SONGS from those recommended albums from spotify
             song_list = get_song_list(temp_client, album_list)
             #prepare, and rank a list of post dicts
@@ -207,7 +179,7 @@ def dash(request):
             # as it turns out the recommendation end point doesn't user permissions
             # so gen_recomendation has been modifed to accept spotipy clients with out permissions\
             # - nico
-            album_list = gen_recomendations(sp, user_friends, scope)
+            album_list = gen_recomendations(sp, scope)
             song_list = get_song_list(sp, album_list)
             posts = prepare_post_dicts(song_list, user_friends)
 
