@@ -688,11 +688,18 @@ body {
 }
 
 .playlists_container {
-  padding-left: 10px;
+  padding-left: 35px;
 }
 
 .playlists_header {
   padding-left: 30px;
+}
+
+#playlist_link {
+  text-decoration: none;
+  color: rgb(0, 0, 0);
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .profile_body {
@@ -752,4 +759,20 @@ body {
   height: 100px;
   padding: 5px;
   border-radius: 50%;
+}
+
+.comment_card_container {
+  padding-left: 35px;
+}
+
+.comment_header {
+  padding-left: 30px;
+}
+
+.comment_message {
+  text-decoration: none;
+  color: white;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  font-size: 12px;
 }

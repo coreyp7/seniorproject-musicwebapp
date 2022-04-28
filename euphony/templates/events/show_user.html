@@ -65,9 +65,9 @@
         <div class="row">
             {% for playlist in playlists %}
             <div class="col-auto mb-3">
-                <div class="card" id="rating_card" style="width: 22rem">
+                <div class="card" id="rating_card" style="width: 20rem">
                     <div class="card-body">
-                        <a class="stretched-link" href="{% url 'addsongs_view' playlist.id %}">
+                        <a class="stretched-link" href="{% url 'addsongs_view' playlist.id %}" id="playlist_link">
                             <h5 class="card-title">{{ playlist.name }}</h5>
                         </a>
                         <h6 class="card-subtitle mb-2 text-muted">Created on {{playlist.date_created}}</h6>
@@ -126,6 +126,59 @@
                 {% endfor %}
             </div>
             {% endif %}
+        </div>
+
+
+        {% if all_comments %}
+        <h2 class="comment_header">Recent Comments:</h2>
+        <div class="comment_card_container">
+            <div class="row">
+                {% for comment in all_comments %}
+                <div class="col-auto mb-3">
+                    <div class="card text-white bg-secondary" id="rating_card" style="width: 20rem;">
+                        <!-- Second, find out the type of item this rating is on and provide appropriate link and info.-->
+                        <div class="card_container">
+                            {% if comment.type == "song" %}
+                            <img src="{{comment.object.album_id.cover}}" class="card_album_cover">
+                            <div class="card_info_container text-truncate">
+                                <p class="comment_message">'{{comment.comment_message}}'</p>
+                                <a href="{% url 'songinfo' comment.object.id %}" id="rating_card_link"
+                                    class="stretched-link">
+                                    {{comment.object.song_id.name }}
+                                </a>
+                                {{comment.date}} <i>(song)</i>
+                            </div>
+                            {% elif comment.type == "album" %}
+                            <img src="{{comment.object.cover}}" class="card_album_cover text-truncate">
+                            <div class="card_info_container text-truncate">
+                                <p class="comment_message">'{{comment.comment_message}}'</p>
+                                <a href="{% url 'album_info' comment.object.id %}" id="rating_card_link"
+                                    class="stretched-link">
+                                    {{comment.object.album_id.name }}
+                                </a>
+                                {{comment.date}} <i>(album)</i>
+                            </div>
+                            {% elif comment.type == "playlist" %}
+                            <img src="{{comment.profile.profile_pic.url}}"
+                                class="card_playlist_user_image text-truncate">
+                            <div class="card_info_container">
+                                <p class="comment_message">'{{comment.comment_message}}'</p>
+                                <a href="{% url 'addsongs_view' comment.object.id %}" id="rating_card_link"
+                                    class="stretched-link">
+                                    '{{comment.object.playlist_id.name }}'
+                                </a>
+                                User: {{comment.object.playlist_id.user_id.username}}<br><i>(playlist)</i>
+                            </div>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+        {% endif %}
+
+
 </body>
 
 {% endblock %}

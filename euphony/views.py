@@ -1315,9 +1315,42 @@ def show_user(request, user_id):
         rating["date"] = rating["date"].date()
 
     comments = Comment.objects.filter(user=user_id, submit_date__gte=datetime.now().date() - timedelta(days=7))
-    song = Song.objects.all()
-    album = Album.objects.all()
-    playlist = Playlist.objects.all()
+    songs = Song.objects.all()
+    albums = Album.objects.all()
+    playlists = Playlist.objects.all()
+    all_comments = []
+    for comment in comments:
+        for song in songs:
+            if comment.object_pk == song.id:
+                all_comments.append({
+                    "type": "song",
+                    "object": song,
+                    "date": comment.submit_date,
+                    "comment_message": comment.comment
+                })
+                break
+        
+        for album in albums:
+            if comment.object_pk == album.id:
+                all_comments.append({
+                    "type": "album",
+                    "object": album,
+                    "date": comment.submit_date,
+                    "comment_message": comment.comment
+                })
+                break
+        
+        for playlist in playlists:
+            if comment.object_pk == playlist.id:
+                profile = Profile.objects.get(user=playlist.user_id)
+                all_comments.append({
+                    "type": "playlist",
+                    "object": playlist,
+                    "date": comment.submit_date,
+                    "comment_message": comment.comment,
+                    "profile": profile
+                })
+                break
 
     # Used for checking if these two users have  requested each other already, and pass this to template.
     request_information = {
@@ -1338,16 +1371,17 @@ def show_user(request, user_id):
     except:
         pass
 
-    
+    print(all_comments)
     return render(request, 'events/show_user.html', {'user_to_show': user, 'allfriends':allfriends,
                                                      'not_same_user':not_same_user, 'self':self,
                                                      'already_friends':already_friends, 'saved_playlists': saved_playlists,
                                                      'playlists': playlists, 'song_ratings': song_ratings, 'album_ratings': album_ratings,
                                                      'playlist_ratings': playlist_ratings, 
-                                                     'comments': comments, 'song': song, 'album': album, 'playlist': playlist, 
+                                                     'comments': comments, 
                                                      'request_info': request_information,
                                                      'already_blocked':already_blocked,
-                                                     'all_ratings': all_ratings})
+                                                     'all_ratings': all_ratings,
+                                                     "all_comments": all_comments})
 
 
 def addFriend(request, user_id):
