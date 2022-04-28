@@ -676,10 +676,11 @@ body {
 .profile_link {
   padding: 10px;
   text-decoration: none;
+  color: #ac43f1;
 }
 
 .profile_link:hover {
-  color: green;
+  color: #980af7;
   text-decoration: none;
 }
 

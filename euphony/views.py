@@ -1406,8 +1406,24 @@ def profile_friends(request, user_to_show):
         "friends": all_friends_formatted
     })
 
-def saved_playlists(request):
-    pass
+def saved_playlists(request, user_to_show):
+    user = User.objects.get(id=user_to_show)
+    saved_playlists = User_Profile.objects.filter(user_id=user)
+    all_saved_playlists = []
+    for playlist in saved_playlists:
+        curr_prof_pic = Profile.objects.get(user=playlist.saved_playlist.user_id).profile_pic.url
+        new_playlist = {
+            "name": playlist.saved_playlist.name,
+            "profile_pic": curr_prof_pic,
+            "playlist_id": playlist.saved_playlist.id,
+            "username": playlist.saved_playlist.user_id.username,
+        }
+        all_saved_playlists.append(new_playlist)
+
+    return render(request, 'profile_saved_playlists.html', {
+        "saved_playlists":all_saved_playlists
+    })
+
 
 def addFriend(request, user_id):
     user = User.objects.get(pk=user_id)
@@ -1416,6 +1432,7 @@ def addFriend(request, user_id):
 
     print("You :" , self, "Added: " , user, "Were they added:" , added)
     # duplicate code because I don't get why it wont redirect properly
+    user = User.objects.get(pk=user_id)
     not_same_user = False
     already_friends = False
     self = None
@@ -1426,12 +1443,83 @@ def addFriend(request, user_id):
         else:
             not_same_user = False
         already_friends = Friend.objects.are_friends(request.user, user)
+        already_blocked = Block.objects.is_blocked(request.user, user) #== True
     except:
         pass # False values already set
 
     allfriends = Friend.objects.friends(user)
-    saved_playlists = User_Profile.objects.filter(user=user_id)
-    playlists = Playlist.objects.filter(user_id=user_id)
+    saved_playlists = User_Profile.objects.filter(user_id=user)
+    playlists = Playlist.objects.filter(user_id=user)
+    song_ratings = Song_rating.objects.filter(user_id=user_id, date__gte=datetime.now().date() - timedelta(days=7))
+    album_ratings = Album_rating.objects.filter(user_id=user_id, date__gte=datetime.now().date() - timedelta(days=7))
+    playlist_ratings = Playlist_rating.objects.filter(user_id=user_id, date__gte=datetime.now().date() - timedelta(days=7))
+    all_ratings = []
+    for rating in song_ratings:
+        all_ratings.append({
+            "type": "song",
+            "object": rating,
+            "date": rating.date
+        })
+
+    for rating in album_ratings:
+        all_ratings.append({
+            "type": "album",
+            "object": rating,
+            "date": rating.date
+        })
+
+    for rating in playlist_ratings:
+        curr_user_profile = Profile.objects.get(user=rating.playlist_id.user_id)
+        all_ratings.append({
+            "type": "playlist",
+            "object": rating,
+            "date": rating.date,
+            "profile": curr_user_profile
+        })
+
+    all_ratings.sort(key=lambda x: x["date"], reverse=True)
+    all_ratings = all_ratings[:16]
+
+    for rating in all_ratings:
+        rating["date"] = rating["date"].date()
+
+    comments = Comment.objects.filter(user=user_id, submit_date__gte=datetime.now().date() - timedelta(days=7))
+    songs = Song.objects.all()
+    albums = Album.objects.all()
+    playlists_all = Playlist.objects.all()
+    all_comments = []
+    for comment in comments:
+        for song in songs:
+            if comment.object_pk == song.id:
+                all_comments.append({
+                    "type": "song",
+                    "object": song,
+                    "date": comment.submit_date,
+                    "comment_message": comment.comment
+                })
+                break
+        
+        for album in albums:
+            if comment.object_pk == album.id:
+                all_comments.append({
+                    "type": "album",
+                    "object": album,
+                    "date": comment.submit_date,
+                    "comment_message": comment.comment
+                })
+                break
+        
+        for playlist in playlists_all:
+            if comment.object_pk == playlist.id:
+                profile = Profile.objects.get(user=playlist.user_id)
+                all_comments.append({
+                    "type": "playlist",
+                    "object": playlist,
+                    "date": comment.submit_date,
+                    "comment_message": comment.comment,
+                    "profile": profile
+                })
+                break
 
     # Used for checking if these two users have  requested each other already, and pass this to template.
     request_information = {
@@ -1451,12 +1539,17 @@ def addFriend(request, user_id):
         request_information["request_to_them"] = True
     except:
         pass
-
     #print(request.user, user)
-    return render(request, 'events/show_user.html', {'user_to_show': user, 'allfriends':allfriends,
+    return render(request, 'events/show_user.html', {'user_to_show': user, 'userid': user_id, 'allfriends':allfriends,
                                                      'not_same_user':not_same_user, 'self':self,
-                                                     'already_friends':already_friends, 'saved_playlists': saved_playlists, 'playlists': playlists,
-                                                     'request_info': request_information})
+                                                     'already_friends':already_friends, 'saved_playlists': saved_playlists,
+                                                     'playlists': playlists, 'song_ratings': song_ratings, 'album_ratings': album_ratings,
+                                                     'playlist_ratings': playlist_ratings, 
+                                                     'comments': comments, 
+                                                     'request_info': request_information,
+                                                     'already_blocked':already_blocked,
+                                                     'all_ratings': all_ratings,
+                                                     "all_comments": all_comments})
 
 def accept_friend_request_profile(request, user_id):
     user = User.objects.get(pk=user_id)
@@ -1464,6 +1557,7 @@ def accept_friend_request_profile(request, user_id):
     friend_request = FriendshipRequest.objects.get(from_user=user, to_user=self)
     friend_request.accept()
     # duplicate code because I don't get why it wont redirect properly
+    user = User.objects.get(pk=user_id)
     not_same_user = False
     already_friends = False
     self = None
@@ -1474,17 +1568,113 @@ def accept_friend_request_profile(request, user_id):
         else:
             not_same_user = False
         already_friends = Friend.objects.are_friends(request.user, user)
+        already_blocked = Block.objects.is_blocked(request.user, user) #== True
     except:
         pass # False values already set
 
     allfriends = Friend.objects.friends(user)
-    saved_playlists = User_Profile.objects.filter(user=user_id)
-    playlists = Playlist.objects.filter(user_id=user_id)
+    saved_playlists = User_Profile.objects.filter(user_id=user)
+    playlists = Playlist.objects.filter(user_id=user)
+    song_ratings = Song_rating.objects.filter(user_id=user_id, date__gte=datetime.now().date() - timedelta(days=7))
+    album_ratings = Album_rating.objects.filter(user_id=user_id, date__gte=datetime.now().date() - timedelta(days=7))
+    playlist_ratings = Playlist_rating.objects.filter(user_id=user_id, date__gte=datetime.now().date() - timedelta(days=7))
+    all_ratings = []
+    for rating in song_ratings:
+        all_ratings.append({
+            "type": "song",
+            "object": rating,
+            "date": rating.date
+        })
 
+    for rating in album_ratings:
+        all_ratings.append({
+            "type": "album",
+            "object": rating,
+            "date": rating.date
+        })
+
+    for rating in playlist_ratings:
+        curr_user_profile = Profile.objects.get(user=rating.playlist_id.user_id)
+        all_ratings.append({
+            "type": "playlist",
+            "object": rating,
+            "date": rating.date,
+            "profile": curr_user_profile
+        })
+
+    all_ratings.sort(key=lambda x: x["date"], reverse=True)
+    all_ratings = all_ratings[:16]
+
+    for rating in all_ratings:
+        rating["date"] = rating["date"].date()
+
+    comments = Comment.objects.filter(user=user_id, submit_date__gte=datetime.now().date() - timedelta(days=7))
+    songs = Song.objects.all()
+    albums = Album.objects.all()
+    playlists_all = Playlist.objects.all()
+    all_comments = []
+    for comment in comments:
+        for song in songs:
+            if comment.object_pk == song.id:
+                all_comments.append({
+                    "type": "song",
+                    "object": song,
+                    "date": comment.submit_date,
+                    "comment_message": comment.comment
+                })
+                break
+        
+        for album in albums:
+            if comment.object_pk == album.id:
+                all_comments.append({
+                    "type": "album",
+                    "object": album,
+                    "date": comment.submit_date,
+                    "comment_message": comment.comment
+                })
+                break
+        
+        for playlist in playlists_all:
+            if comment.object_pk == playlist.id:
+                profile = Profile.objects.get(user=playlist.user_id)
+                all_comments.append({
+                    "type": "playlist",
+                    "object": playlist,
+                    "date": comment.submit_date,
+                    "comment_message": comment.comment,
+                    "profile": profile
+                })
+                break
+
+    # Used for checking if these two users have  requested each other already, and pass this to template.
+    request_information = {
+        "request_from_them": False,
+        "request_to_them": False
+    }
+    # Very ugly: checks if a request is available and changes dict accordingly.
+    # Is then passed to template to let it know what button to show.
+    try:
+        FriendshipRequest.objects.get(from_user=user, to_user=request.user)
+        request_information["request_from_them"] = True
+    except:
+        pass
+
+    try:
+        FriendshipRequest.objects.get(from_user=request.user, to_user=user)
+        request_information["request_to_them"] = True
+    except:
+        pass
     #print(request.user, user)
-    return render(request, 'events/show_user.html', {'user_to_show': user, 'allfriends':allfriends,
+    return render(request, 'events/show_user.html', {'user_to_show': user, 'userid': user_id, 'allfriends':allfriends,
                                                      'not_same_user':not_same_user, 'self':self,
-                                                     'already_friends':already_friends, 'saved_playlists': saved_playlists, 'playlists': playlists})
+                                                     'already_friends':already_friends, 'saved_playlists': saved_playlists,
+                                                     'playlists': playlists, 'song_ratings': song_ratings, 'album_ratings': album_ratings,
+                                                     'playlist_ratings': playlist_ratings, 
+                                                     'comments': comments, 
+                                                     'request_info': request_information,
+                                                     'already_blocked':already_blocked,
+                                                     'all_ratings': all_ratings,
+                                                     "all_comments": all_comments})
 
 
 def deleteFriend(request, user_id):
@@ -1506,14 +1696,129 @@ def deleteFriend(request, user_id):
     except:
         pass # False values already set
 
+    user = User.objects.get(pk=user_id)
+    not_same_user = False
+    already_friends = False
+    self = None
+    try:
+        self = User.objects.get(pk=request.user.id)
+        if user != self:
+            not_same_user = True
+        else:
+            not_same_user = False
+        already_friends = Friend.objects.are_friends(request.user, user)
+        already_blocked = Block.objects.is_blocked(request.user, user) #== True
+    except:
+        pass # False values already set
+
+    allfriends = Friend.objects.friends(user)
+    saved_playlists = User_Profile.objects.filter(user_id=user)
+    playlists = Playlist.objects.filter(user_id=user)
+    song_ratings = Song_rating.objects.filter(user_id=user_id, date__gte=datetime.now().date() - timedelta(days=7))
+    album_ratings = Album_rating.objects.filter(user_id=user_id, date__gte=datetime.now().date() - timedelta(days=7))
+    playlist_ratings = Playlist_rating.objects.filter(user_id=user_id, date__gte=datetime.now().date() - timedelta(days=7))
+    all_ratings = []
+    for rating in song_ratings:
+        all_ratings.append({
+            "type": "song",
+            "object": rating,
+            "date": rating.date
+        })
+
+    for rating in album_ratings:
+        all_ratings.append({
+            "type": "album",
+            "object": rating,
+            "date": rating.date
+        })
+
+    for rating in playlist_ratings:
+        curr_user_profile = Profile.objects.get(user=rating.playlist_id.user_id)
+        all_ratings.append({
+            "type": "playlist",
+            "object": rating,
+            "date": rating.date,
+            "profile": curr_user_profile
+        })
+
+    all_ratings.sort(key=lambda x: x["date"], reverse=True)
+    all_ratings = all_ratings[:16]
+
+    for rating in all_ratings:
+        rating["date"] = rating["date"].date()
+
+    comments = Comment.objects.filter(user=user_id, submit_date__gte=datetime.now().date() - timedelta(days=7))
+    songs = Song.objects.all()
+    albums = Album.objects.all()
+    playlists_all = Playlist.objects.all()
+    all_comments = []
+    for comment in comments:
+        for song in songs:
+            if comment.object_pk == song.id:
+                all_comments.append({
+                    "type": "song",
+                    "object": song,
+                    "date": comment.submit_date,
+                    "comment_message": comment.comment
+                })
+                break
+        
+        for album in albums:
+            if comment.object_pk == album.id:
+                all_comments.append({
+                    "type": "album",
+                    "object": album,
+                    "date": comment.submit_date,
+                    "comment_message": comment.comment
+                })
+                break
+        
+        for playlist in playlists_all:
+            if comment.object_pk == playlist.id:
+                profile = Profile.objects.get(user=playlist.user_id)
+                all_comments.append({
+                    "type": "playlist",
+                    "object": playlist,
+                    "date": comment.submit_date,
+                    "comment_message": comment.comment,
+                    "profile": profile
+                })
+                break
+
+    # Used for checking if these two users have  requested each other already, and pass this to template.
+    request_information = {
+        "request_from_them": False,
+        "request_to_them": False
+    }
+    # Very ugly: checks if a request is available and changes dict accordingly.
+    # Is then passed to template to let it know what button to show.
+    try:
+        FriendshipRequest.objects.get(from_user=user, to_user=request.user)
+        request_information["request_from_them"] = True
+    except:
+        pass
+
+    try:
+        FriendshipRequest.objects.get(from_user=request.user, to_user=user)
+        request_information["request_to_them"] = True
+    except:
+        pass
+
     allfriends = Friend.objects.friends(user)
     saved_playlists = User_Profile.objects.filter(user=user_id)
     playlists = Playlist.objects.filter(user_id=user_id)
 
     #print(request.user, user)
-    return render(request, 'events/show_user.html', {'user_to_show': user, 'allfriends':allfriends,
+    return render(request, 'events/show_user.html', {'user_to_show': user, 'userid': user_id, 'allfriends':allfriends,
                                                      'not_same_user':not_same_user, 'self':self,
-                                                     'already_friends':already_friends, 'saved_playlists': saved_playlists, 'playlists': playlists})
+                                                     'already_friends':already_friends, 'saved_playlists': saved_playlists,
+                                                     'playlists': playlists, 'song_ratings': song_ratings, 'album_ratings': album_ratings,
+                                                     'playlist_ratings': playlist_ratings, 
+                                                     'comments': comments, 
+                                                     'request_info': request_information,
+                                                     'already_blocked':already_blocked,
+                                                     'all_ratings': all_ratings,
+                                                     "all_comments": all_comments})
 
 def blockFriend(request, user_id):
     user = User.objects.get(pk=user_id)
