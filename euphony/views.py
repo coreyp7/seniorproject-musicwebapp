@@ -56,6 +56,8 @@ scope = "user-library-read user-top-read"
 sp = spotipy.Spotify(client_credentials_manager=SpotifyClientCredentials())
 
 def home(request):
+    if request.user.userExt.music_prefs == "":
+        return render(request, "register2.html")
     return render(request, "home.html", {})
 
 def homepage(request):
@@ -1179,7 +1181,9 @@ def registerPage(request):
             User_Setting_Ext.objects.create( # defaults
                 user=user,
                 dark_mode=False,
-                explicit=False
+                explicit=False, 
+                music_prefs=""
+
             )
 
             return redirect('home')

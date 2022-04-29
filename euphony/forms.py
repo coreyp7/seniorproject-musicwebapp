@@ -36,6 +36,7 @@ class EditGeneralForm(forms.ModelForm):
         fields = (
           'dark_mode',
           'explicit',
+          'music_prefs',
         )
 
 class CreateUserForm(UserCreationForm):
