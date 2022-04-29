@@ -38,7 +38,14 @@
 			{% csrf_token %}
 
 			<div class="info">
+				<div class="username_spacing"></div>
 
+				<div>
+				<img class="profile-pic" src="{{request.user.profile.profile_pic.url}}" >
+					&nbsp;&nbsp;
+					<a href="{% url 'change_profile_picture' %}">Change Profile Picture </a>
+				</div>
+				<br>
 				<div>
 					<label class="settingsInfo" for="Uname">UserName:</label>
 					<input class="settingsInput" id="Uname" name="username" type="text" placeholder="UserName"
@@ -59,20 +66,6 @@
 					<input class="settingsInput" id="email" name="email" type="email" placeholder="Email"
 						value="{{ user.email }}" autofocus />
 				</div>
-				<div>
-				<style>
-					.profile-pic{
-						max-width: 100px;
-						max-height:100px;
-						margin: 0 auto;
-						border-radius: 50%;
-					}
-				</style>
-				<img class="profile-pic" src="{{request.user.profile.profile_pic.url}}" >
-					&nbsp;&nbsp;
-					<a href="{% url 'change_profile_picture' %}">Change Profile Picture </a>
-				</div>
-				<br>
 				<div>
 					<!-- TODO: Need to check if they already have connected their account. -->
 					<a href="{% url 'link_account' %}"> Connect Spotify Account </a>

@@ -8,16 +8,6 @@
   text-decoration: none;
 }
 
-body{
-   background-color: #f3f5f9;
-}
-
-img {
-  padding-top: 8%; 
-  height: 50px;
-  width: 50px;
- }
-
  #logo {  
   text-align: center;  
   }  
@@ -64,7 +54,7 @@ img {
 }
 
 .wrapper .sidebar .base_setting_ul .base_setting_li{
-  padding: 15px;
+  padding: 8%;
   border-bottom: 1px solid #bdb8d7;
   border-bottom: 1px solid rgba(0,0,0,0.05);
   border-top: 1px solid rgba(255,255,255,0.05);
@@ -93,6 +83,10 @@ img {
   left: 50%;
   transform: translateX(-50%);
   display: flex;
+}
+
+.username_spacing{
+  padding-top: 50px;
 }
 
 .settings_name{
@@ -129,10 +123,8 @@ img {
 }
 
 .main_content {
-  position: static;
-  left: 200px;
+  position: relative;
   height: 100%;
-  border: 3px solid #73AD21; 
 }
 
 .form-control{
@@ -141,7 +133,7 @@ img {
 
 .account_settings_save{
   position: absolute;
-  right: 37%;
+  right: 26%;
 }
 
 .password_reset_save{
@@ -195,3 +187,42 @@ img {
 .general_settings_switch {
   padding-bottom: 20px;
 }
+
+.profile-pic{
+  max-width: 100px;
+  max-height:100px;
+  margin: 0 auto;
+  border-radius: 50%;
+}
+
+@media only screen and (max-width: 880px) {
+
+  .base_setting_h2{
+  font-size: 10px;
+  }
+
+  .sidebar{
+    max-width: 70px;
+  }  
+
+  .base_setting_ul{
+    margin: 0 auto;
+    padding-left: 1px;
+  }
+
+  .info{
+    left: 120px;
+  }
+
+  .settings_name{
+    left: 35%;
+  }
+
+  .info-general{
+    padding-top: 130px;
+    right: 35%;
+  }
+
+  .username_spacing{
+    padding-top: 140px;
+  }
