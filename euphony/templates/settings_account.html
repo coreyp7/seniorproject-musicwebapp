@@ -68,8 +68,11 @@
 						border-radius: 50%;
 					}
 				</style>
-				<img class="profile-pic" src="{{request.user.profile.profile_pic.url}}" >
-					&nbsp;&nbsp;
+					{% if user.profile.profile_pic %}
+						<img src="{{ user.profile.profile_pic.url }}"  id="imagesize" class="rounded-circle">
+                    {% else %}
+                    	<img src="{% static 'images/Default_Pic.png' %}"  id="imagesize" class="rounded-circle">
+                    {% endif %}
 					<a href="{% url 'change_profile_picture' %}">Change Profile Picture </a>
 				</div>
 				<br>

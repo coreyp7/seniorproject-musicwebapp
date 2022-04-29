@@ -11,7 +11,12 @@
     <center>
         <div class="intro">
             <div class="profile_header_container">
-                <img src="{{ user_to_show.profile.profile_pic.url }}" alt="missing" class="profile_pic">
+
+                {% if user_to_show.profile.profile_pic %}
+                    <img src="{{ user_to_show.profile.profile_pic.url }}" alt="missing" class="profile_pic">
+                {% else %}
+                    <img src="{% static 'images/Default_Pic.png' %}" height="175" width="100" alt="missing" class="profile_pic">
+                {% endif %}
                 <div class="profile_information">
                     <h1 class="profile_name">{{ user_to_show }} </h1>
                     <h2 class="profile_bio">{{ user_to_show.profile.bio }}</h2>

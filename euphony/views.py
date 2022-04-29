@@ -1229,7 +1229,8 @@ def topChart_post(request, region_name):
             "album_id" : album_id,
             "album_name" : album_json["name"],
             "album_release_date" : album_json["release_date"],
-            "album_cover" : album_json["images"][2]["url"]
+            "album_cover" : album_json["images"][2]["url"],
+            "album_cover_big": album_json["images"][0]["url"],
             # IN "album_cover", change to 0 for bigger pic, 2 for smaller pic
         }
 
@@ -1895,7 +1896,6 @@ def accountSettings(request):
     user_profile = Profile.objects.get(user=user)
 
     form = ProfileUpdateForm(instance=user)
-
     pic_url = request.user.profile.profile_pic.url
     print(pic_url)
 
