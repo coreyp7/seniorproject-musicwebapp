@@ -115,9 +115,11 @@ class UserToken(models.Model):
     token = models.TextField()
 
 class User_Setting_Ext(models.Model):
-    user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='userExt')
+    user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='userExt', primary_key=True)
     dark_mode = models.BooleanField(default=False) #Color mode: dark/white toggle
     explicit = models.BooleanField(default=False) #Explicit content toggle
+    music_prefs = models.TextField(default="")
+
 
 class User_Profile(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, blank=True, null=True)
@@ -131,3 +133,4 @@ class Profile(models.Model):
 
     def __str__(self):
         return str(self.user)
+

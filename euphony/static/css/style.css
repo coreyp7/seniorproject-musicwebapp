@@ -624,6 +624,7 @@ body {
   border: 1px solid lightgrey;
   margin-bottom: 10px;
   padding: 5px;
+
 }
 
 
@@ -791,4 +792,3 @@ body {
 .friend_element_info {
   display: flex;
   flex-direction: column;
-}

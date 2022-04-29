@@ -13,6 +13,7 @@ urlpatterns = [
     path("search", views.search, name="search"),
     # Bottom section are pages which we redirect the user to.
     # Extensions of the pages above. (hope that makes sense)
+    path('handel_prefrences',views.handel_prefrences, name="handel_prefrences"),
     path("search_results", views.search_results, name="search_results"),
     path("create_playlist", views.create_playlist, name="create_playlist"),
     path('delete_playlist/<list_id>', views.delete_playlist, name='delete_playlist'),
@@ -60,4 +61,5 @@ urlpatterns = [
     path('change_profile_picture', views.accountSettings, name="change_profile_picture"),
     path('profile_friends/<user_to_show>', views.profile_friends, name="profile_friends"),
     path('profile_saved_playlists/<user_to_show>', views.saved_playlists, name="profile_saved_playlists")
+
 ]

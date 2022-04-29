@@ -58,6 +58,8 @@ scope = "user-library-read user-top-read"
 sp = spotipy.Spotify(client_credentials_manager=SpotifyClientCredentials())
 
 def home(request):
+    if request.user.userExt.music_prefs == "":
+        return render(request, "register2.html")
     return render(request, "home.html", {})
 
 def homepage(request):
@@ -1136,7 +1138,9 @@ def registerPage(request):
             User_Setting_Ext.objects.create( # defaults
                 user=user,
                 dark_mode=False,
-                explicit=False
+                explicit=False,
+                music_prefs=""
+
             )
 
             Profile.objects.create(
@@ -1172,7 +1176,24 @@ def logoutUser(request):
     return redirect('login')
 
 
+def handel_prefrences(request):
 
+    settings_objects = User_Setting_Ext.objects.filter( # defaults
+        user=request.user,
+    )
+
+    for settings_object in settings_objects:
+        settings_object.delete()
+
+    User_Setting_Ext.objects.create( # defaults
+        user=request.user,
+        dark_mode= (request.POST['dark_mode'] == ''),
+        explicit=(request.POST['explicit'] == ''),
+        music_prefs=request.POST['music_prefs']
+
+    )
+
+    return HttpResponse(1)
 
 def topChart(request):
     return render(request, 'topcharts.html')
@@ -1393,6 +1414,7 @@ def saved_playlists(request, user_to_show):
     return render(request, 'profile_saved_playlists.html', {
         "saved_playlists":all_saved_playlists
     })
+
 
 
 def addFriend(request, user_id):
