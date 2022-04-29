@@ -331,6 +331,11 @@ body {
   padding-bottom: 20px;
 }
 
+.album_no_like_dislike{
+  padding-top: 20px;
+  padding-bottom: 20px;
+}
+
 .albuminfo_container {
   padding-top: 20px;
   float: left;
