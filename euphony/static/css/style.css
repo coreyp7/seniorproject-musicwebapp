@@ -792,3 +792,39 @@ body {
   display: flex;
   flex-direction: column;
 }
+
+/* Dashboard section */
+
+.dash_body {}
+
+.activity_feed_header {
+  font-size: 20px;
+}
+
+.feed_container {
+  padding-left: 35px;
+}
+
+.feed_card_image {
+  width: 250px;
+  height: 250px;
+  padding: 2px;
+}
+
+
+
+#feed_card:hover {
+  transform: scale(1.05);
+}
+
+.dash_card_user {
+  text-decoration: none;
+  color: white;
+}
+
+.dash_header_profile_pic {
+  width: 45px;
+  height: 45px;
+  padding: 2px;
+  border-radius: 50%;
+}
