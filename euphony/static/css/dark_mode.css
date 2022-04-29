@@ -2,3 +2,12 @@ body {
 	background-color: #343a40;
 	color: white;
 }
+
+.playlist_card {
+	background-color: rgb(165, 186, 208);
+	outline: 3px solid black;
+}
+
+.custom_playlist {
+	outline: 3px solid black;
+}

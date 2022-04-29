@@ -19,29 +19,31 @@
 </div>
 {% endfor%}
 {% endif %}
-
 <body>
-    <h1 class="display-6"><strong>Playlists</strong>
+    <h1 class="display-6 playlist_name"><strong>Playlists</strong>
         <a class="btn btn-secondary" href="{% url 'create_playlist' %}" role="button">+ Create new playlist...</a>
     </h1>
+    <br>
 </body>
-<br>
-<table class="table playlist_table">
-    <thead>
-        <tr>
-            <th scope="col">#</th>
-            <th scope="col">Playlist Name</th>
-            <th scope="col">Delete Playlist</th>
-        </tr>
-    </thead>
-    <tbody>
-        {% for instance in playlists %}
-        <tr>
-            <th scope="row">{{forloop.counter}}</th>
-            <td><a href="{% url 'addsongs_view' instance.id %}">{{ instance.name }}</a></td>
-            <td><a href="{% url 'delete_playlist' instance.id %}">Delete</a></td>
-        </tr>
+
+{% if playlist.has_cover %}
+{% for playlist in output_list %}
+    <div class="playlist_group">
+        {% for p in playlist %}
+        {{p.has_cover}}
+        <div class="card playlist_card">
+            <a href="{% url 'addsongs_view' p.playlist_id %}">
+                <img src="{{p.cover}}" class="custom_playlist">
+            </a>
+                <div class="card-body">
+                    <div>
+                    <h5 class="card-title">{{p.playlist_name}} <a class="btn btn-secondary" href="{% url 'delete_playlist' p.playlist_id %}" role="button">Delete</a></h5>
+                    </div>
+                </div>
+        </div>
         {% endfor %}
-    </tbody>
-</table>
+    </div>
+{% endfor %}
+{% endif %}
+<br>
 {% endblock %}
