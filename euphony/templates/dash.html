@@ -136,6 +136,19 @@
           </div>
         </div>
 
+        {% elif item.post_type == "recommendation" %}
+        <div class="card text-white bg-light mb-3" id="feed_card" style="width: 17.7rem;">
+          <div class="card-header dash_card_header" style="color: black;">
+            A song recommendation.
+          </div>
+
+          <div class="card-body">
+            <a href="{% url 'songinfo' item.song_id %}" class="playlist_dash_card_name">
+              <img src="{{item.song_cover}}" class="feed_card_image">
+              <h5 class="card-body dash_card_name" style="color: black;">{{item.song_name}}</h5>
+            </a>
+          </div>
+        </div>
         {% endif %}
       </div>
       {% endfor %}

@@ -116,12 +116,12 @@ def prepare_post_dicts(song_list, user_friends):
     by the end of this proccess a post dict should be {song id, number of ratings, post weight, name of a friend or None if no friends}
     '''
 
-    posts = [{ "song_id" : item[0]["id"], "song_cover" :  item[0]["cover"],  "song_name" :  item[0]["name"] , "upvotes" : None, "downvotes" : None} for item in zip(song_list, get_song_rating_numbers(song_list))]
+    posts = [{ "post_type": "recommendation", "item_type": "song", "song_id" : item[0]["id"], "song_cover" :  item[0]["cover"],  "song_name" :  item[0]["name"] , "upvotes" : None, "downvotes" : None} for item in zip(song_list, get_song_rating_numbers(song_list))]
 
     #assign weights to posts based on friends upvotes
 
     for post in posts:
-        print(post['song_cover'])
+        #print(post['song_cover'])
         #give posts with friends likes a higher ranking
         post["upvotes"] = Song_rating.objects.filter(song_id=post["song_id"], rating_type=True).count()
         post["downvotes"] = Song_rating.objects.filter(song_id=post["song_id"], rating_type=False).count()
@@ -233,8 +233,21 @@ def dash(request):
         # just assign each song a random date in the past week or something so that it
         # randomizes the recommendations: this is up to you how you wanna implement.
 
-    all_dashboard_feed.sort(key=lambda x: x["date"])
-    print(all_dashboard_feed)
+    all_dashboard_feed.sort(key=lambda x: x["date"], reverse=True)
+
+    i = 0
+    j = 0
+    for entry in range(len(all_dashboard_feed)):
+        if i < len(all_dashboard_feed) and i % 7 == 0 and i != 0:
+            all_dashboard_feed.insert(i, posts[j])
+            j=j+1
+            i=i+1
+            print("inserted")
+        else:
+            i=i+1
+
+
+    #print(all_dashboard_feed)
     return render(request, 'dash.html', {'recommendations' : posts,
     'ratings': friends_ratings, 'comments': friends_comments, 'playlists': friends_new_playlists,
     'feed': all_dashboard_feed})
