@@ -220,7 +220,7 @@ def dash(request):
         else: # signed in, not connected to spotify
             # as it turns out the recommendation end point doesn't user permissions
             # so gen_recomendation has been modifed to accept spotipy clients with out permissions\
-            # - nico 
+            # - nico
             album_list = gen_recomendations(sp, user_friends, scope)
             song_list = get_song_list(sp, album_list)
             posts = prepare_post_dicts(song_list, user_friends)
@@ -1181,7 +1181,7 @@ def registerPage(request):
             User_Setting_Ext.objects.create( # defaults
                 user=user,
                 dark_mode=False,
-                explicit=False, 
+                explicit=False,
                 music_prefs=""
 
             )
@@ -1213,7 +1213,24 @@ def logoutUser(request):
     return redirect('login')
 
 
+def handel_prefrences(request):
 
+    settings_objects = User_Setting_Ext.objects.filter( # defaults
+        user=request.user,
+    )
+
+    for settings_object in settings_objects:
+        settings_object.delete()
+
+    User_Setting_Ext.objects.create( # defaults
+        user=request.user,
+        dark_mode= (request.POST['dark_mode'] == ''),
+        explicit=(request.POST['explicit'] == ''),
+        music_prefs=request.POST['music_prefs']
+
+    )
+
+    return HttpResponse(1)
 
 def topChart(request):
     return render(request, 'topcharts.html')
@@ -1294,7 +1311,7 @@ def show_user(request, user_id):
     song_ratings = Song_rating.objects.filter(user_id=user_id, date__gte=datetime.now().date() - timedelta(days=7))
     album_ratings = Album_rating.objects.filter(user_id=user_id, date__gte=datetime.now().date() - timedelta(days=7))
     playlist_ratings = Playlist_rating.objects.filter(user_id=user_id, date__gte=datetime.now().date() - timedelta(days=7))
-    
+
     comments = Comment.objects.filter(user=user_id, submit_date__gte=datetime.now().date() - timedelta(days=7))
     song = Song.objects.all()
     album = Album.objects.all()
@@ -1324,8 +1341,8 @@ def show_user(request, user_id):
                                                      'not_same_user':not_same_user, 'self':self,
                                                      'already_friends':already_friends, 'saved_playlists': saved_playlists,
                                                      'playlists': playlists, 'song_ratings': song_ratings, 'album_ratings': album_ratings,
-                                                     'playlist_ratings': playlist_ratings, 
-                                                     'comments': comments, 'song': song, 'album': album, 'playlist': playlist, 
+                                                     'playlist_ratings': playlist_ratings,
+                                                     'comments': comments, 'song': song, 'album': album, 'playlist': playlist,
                                                      'request_info': request_information})
 
 
