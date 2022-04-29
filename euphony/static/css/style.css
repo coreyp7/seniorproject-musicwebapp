@@ -9,6 +9,16 @@ body {
   padding-right: 4%;
 }
 
+.icon-play{
+  background-size: cover;
+  display: inline-block;
+  margin-right: 10px;
+}
+
+.navbar_added_item{
+  margin-left: 10px;
+}
+
 #logo {
   text-align: center;
 }
@@ -710,7 +720,6 @@ body {
 }
 
 .profile_body {
-  background-color: #b4b4bc;
   overflow-x: hidden;
   /* Hide horizontal scrollbar */
 }
@@ -878,4 +887,8 @@ body {
 
 .dash_card_footer {
   font-size: 12px;
+}
+
+.navbar{
+  outline: 3px solid #CC94F2;
 }
