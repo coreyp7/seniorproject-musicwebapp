@@ -69,7 +69,7 @@
 
   {% if comment_count %}
   <ul class="media-list comments_section">
-    {% render_xtdcomment_tree for songid %}
+    {% render_xtdcomment_tree for songid allow_flagging allow_feedback show_feedback %}
   </ul>
   {% else %}
   <ul class=" song_no_comments_section">

@@ -110,7 +110,7 @@
 
   {% if comment_count %}
   <ul class="media-list album_comments_section">
-    {% render_xtdcomment_tree for albumid %}
+    {% render_xtdcomment_tree for albumid allow_flagging allow_feedback show_feedback %}
   </ul>
 
   {% else %}

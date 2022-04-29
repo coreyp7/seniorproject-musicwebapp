@@ -792,3 +792,7 @@ body {
   display: flex;
   flex-direction: column;
 }
+
+.navbar{
+  outline: 3px solid #CC94F2;
+}
