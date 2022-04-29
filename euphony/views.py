@@ -59,8 +59,10 @@ sp = spotipy.Spotify(client_credentials_manager=SpotifyClientCredentials())
 
 def home(request):
     #print(User_Setting_Ext.objects.filter(user=request.user).count())
-    if User_Setting_Ext.objects.filter(user=request.user).count() == 0:
-        return render(request, "register2.html", {})
+
+    if request.user.is_authenticated:
+        if User_Setting_Ext.objects.filter(user=request.user).count() == 0:
+            return render(request, "register2.html", {})
 
     return render(request, "home.html", {})
 

@@ -96,7 +96,7 @@
             </a>
             {% elif item.item_type == "album" %}
             <a href="{% url 'album_info' item.item_id %}" class="card-title dash_card_name">
-              <img src="{{item.cover}}" class="feed_card_image_user">
+              <img src="{{item.cover}}" class="feed_card_image">
               <h5 class="card-body">{{item.item_name}}</h5>
             </a>
             {% elif item.item_type == "playlist" %}
