@@ -37,16 +37,18 @@
 
 </script>
 
+
+
 <body class="dash_body">
   {% if feed %}
-  <h2 class="activity_feed_header">Feed:</h2>
+  <h1></h1>
   <div class="feed_container">
     <div class="row modify_row">
       {% for item in feed %}
       <div class="col-auto mb-3">
         {% if item.post_type == "friend_rating" %}
         <div class="card text-white bg-{{item.rating_color}} mb-3" id="feed_card" style="width: 17.7rem;">
-          <div class="card-header">
+          <div class="card-header dash_card_header">
             <img src="{{item.friend_pic}}" class="dash_header_profile_pic">
             <a href="{% url 'show_user' item.friend_id %}" class="dash_card_user">{{item.friend_name}}</a>
             {% if item.rating_type %}
@@ -75,57 +77,61 @@
             </a>
             {% endif %}
           </div>
-          <div class="card-footer">
+          <div class="card-footer dash_card_footer">
             {{item.date}}
           </div>
         </div>
         {% elif item.post_type == "friend_comment" %}
         <div class="card text-white bg-secondary mb-3" id="feed_card" style="width: 17.7rem;">
-          <div class="card-header">
+          <div class="card-header dash_card_header">
             <img src="{{item.friend_pic}}" class="dash_header_profile_pic">
             <a href="{% url 'show_user' item.friend_id %}" class="dash_card_user">{{item.friend_name}}</a>
             commented on this {{item.item_type}}.
           </div>
           <div class="card-body">
             {% if item.item_type == "song" %}
-            <a href="{% url 'songinfo' item.item_id %}" class="dash_card_name">
+            <a href="{% url 'songinfo' item.item_id %}" class="card-title dash_card_name">
               <img src="{{item.cover}}" class="feed_card_image">
-              <h5 class="card-body dash_card_name">{{item.item_name}}</h5>
+              <h5 class="card-body">{{item.item_name}}</h5>
             </a>
             {% elif item.item_type == "album" %}
-            <a href="{% url 'album_info' item.item_id %}" class="dash_card_name">
+            <a href="{% url 'album_info' item.item_id %}" class="card-title dash_card_name">
               <img src="{{item.cover}}" class="feed_card_image_user">
-              <h5 class="card-body dash_card_name">{{item.item_name}}</h5>
+              <h5 class="card-body">{{item.item_name}}</h5>
             </a>
             {% elif item.item_type == "playlist" %}
-            <a href="{% url 'addsongs_view' item.item_id %}" class="dash_card_name">
+            <a href="{% url 'addsongs_view' item.item_id %}" class="card-title dash_card_name">
               <img src="{{item.cover}}" class="feed_card_image_user">
-              <h5 class="card-body dash_card_name">{{item.item_name}}</h5>
+              <h5 class="card-body">{{item.item_name}}</h5>
             </a>
             {% endif %}
+            <p class="card-text dash_card_comment_message">
+              "{{item.comment_message}}"
+            </p>
+
           </div>
-          <div class="card-footer">
+          <div class="card-footer dash_card_footer">
             {{item.date}}
           </div>
         </div>
 
         {% elif item.post_type == "friend_playlist" %}
         <div class="card text-white bg-light mb-3" id="feed_card" style="width: 17.7rem;">
-          <div class="card-header" style="color: black;">
+          <div class="card-header dash_card_header" style="color: black;">
             <img src="{{item.friend_pic}}" class="dash_header_profile_pic">
-            <a href="{% url 'show_user' item.friend_id %}" class="dash_card_user">
+            <a href="{% url 'show_user' item.friend_id %}" class="dash_card_user" style="color: black;">
               {{item.friend_name}}</a>
             created a new playlist.
           </div>
 
           <div class="card-body">
-            <a href="{% url 'addsongs_view' item.playlist_id %}" class="dash_card_name">
+            <a href="{% url 'addsongs_view' item.playlist_id %}" class="playlist_dash_card_name">
               <img src="{{item.friend_pic}}" class="feed_card_image_user">
               <h5 class="card-body dash_card_name" style="color: black;">{{item.item_name}}</h5>
             </a>
           </div>
 
-          <div class="card-footer">
+          <div class="card-footer dash_card_footer" style="color: black;">
             {{item.date}}
           </div>
         </div>
@@ -135,8 +141,13 @@
       {% endfor %}
     </div>
   </div>
+  {% else %}
+  <h1>You have no activity to show. </h1>
   {% endif %}
 </body>
+
+
+
 
 
 {% endblock %}
