@@ -64,6 +64,14 @@ def get_ids_from_activity(user):
 
     return out_list
 
+def get_upvoted_tracks(user):
+    out_list = []
+    upvotes = Song_rating.object.filter(user_id=user, rating_type=True)
+    for vote in upvotes:
+        out_list.append(vote.song_id)
+
+    return out_list
+
 def gen_seed(client, scope, user=None):
     '''
     takes in a client object with user account permissions
