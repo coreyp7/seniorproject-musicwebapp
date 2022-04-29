@@ -118,7 +118,7 @@ img {
 }
 
 .username_spacing{
-  padding-top: 50px;
+  padding-top: 35px;
 }
 
 .info-general{
@@ -192,6 +192,12 @@ img {
 
 .general_settings_switch {
   padding-bottom: 20px;
+}
+
+.settings_profilepic{
+  right: 10px;
+  padding-bottom: 10px;
+  padding-left: 10px;
 }
 
 @media only screen and (max-width: 880px) {

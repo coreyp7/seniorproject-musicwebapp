@@ -63,7 +63,7 @@
     <h2 class="playlists_header">Playlists:</h2>
     <div class="playlists_container">
 
-        <div class="row">
+        <div class="row modify_row">
             {% for playlist in playlists %}
             <div class="col-auto mb-3">
                 <div class="card" id="rating_card" style="width: 20rem">
@@ -83,7 +83,7 @@
     {% if all_ratings %}
     <h2 class="ratings_header">Recent Ratings:</h2>
     <div class="ratings_container">
-        <div class="row">
+        <div class="row modify_row">
             {% for rating in all_ratings %}
             <div class="col-auto mb-3">
                 {% if rating.object.rating_type %}
@@ -133,7 +133,7 @@
         {% if all_comments %}
         <h2 class="comment_header">Recent Comments:</h2>
         <div class="comment_card_container">
-            <div class="row">
+            <div class="row modify_row">
                 {% for comment in all_comments %}
                 <div class="col-auto mb-3">
                     <div class="card text-white bg-secondary" id="rating_card" style="width: 20rem;">

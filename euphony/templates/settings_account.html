@@ -39,11 +39,16 @@
 
 			<div class="info">
 
-				<div class="username_spacing">
+				<div class="username_spacing"></div>
+				<div class="settings_profilepic">
+					<img class="profile-pic" src="{{request.user.profile.profile_pic.url}}" >
+						<div class="profile_pic_link"></div>
+						<a href="{% url 'change_profile_picture' %}">Change Profile Picture </a>
+				</div>
+
 					<label class="settingsInfo" for="Uname">UserName:</label>
 					<input class="settingsInput" id="Uname" name="username" type="text" placeholder="UserName"
 						value="{{ user }}" autofocus />
-				</div>
 				<div>
 					<label class="settingsInfo" for="firstname">First Name:</label>
 					<input class="settingsInput" id="firstname" name="first_name" type="text" placeholder="FirstName"
@@ -59,20 +64,6 @@
 					<input class="settingsInput" id="email" name="email" type="email" placeholder="Email"
 						value="{{ user.email }}" autofocus />
 				</div>
-				<div>
-				<style>
-					.profile-pic{
-						max-width: 100px;
-						max-height:100px;
-						margin: 0 auto;
-						border-radius: 50%;
-					}
-				</style>
-				<img class="profile-pic" src="{{request.user.profile.profile_pic.url}}" >
-					&nbsp;&nbsp;
-					<a href="{% url 'change_profile_picture' %}">Change Profile Picture </a>
-				</div>
-				<br>
 				<div>
 					<!-- TODO: Need to check if they already have connected their account. -->
 					<a href="{% url 'link_account' %}"> Connect Spotify Account </a>

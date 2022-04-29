@@ -719,8 +719,11 @@ body {
 
 .profile_body {
   background-color: #b4b4bc;
-  overflow-x: hidden;
   /* Hide horizontal scrollbar */
+}
+
+.modify_row{
+  margin-right: 10px;
 }
 
 .ratings_container {
