@@ -657,20 +657,21 @@ def allplaylists_view(request):
         count = 0
         for playlist in playlists:
             cover = None
-            #print(playlist.songs.all())
-            if not playlist.songs.all():
-                cover = "Default_Pic.png"
-            else:
-                for song in playlist.songs.all():
-                    if cover == None:
-                        cover = song.album_id.cover
+            has_cover = False
+            cover = "Default_Pic.png"
+            for song in playlist.songs.all():
+                if cover == None:
+                    cover = song.album_id.cover
+                    has_cover = True
+                    break
+
             new_playlist_dict = {
                 "cover": cover,
                 "playlist_id": playlist.id,
                 "playlist_name": playlist.name,
-                "has_cover" : True
+                "has_cover": has_cover
             }
-            
+
             playlist_dicts.append(new_playlist_dict)
 
             temp_list.append(new_playlist_dict)
@@ -687,7 +688,6 @@ def allplaylists_view(request):
         return redirect('login')
 
 def create_playlist(request):
-    submitted = False
     if request.method == "POST":
         form = PlaylistForm(request.POST)
         if form.is_valid():
@@ -696,18 +696,14 @@ def create_playlist(request):
             playlist.date_created = datetime.now().utcnow().date()
             playlist.save()
 
-            messages.success(request, ('New Playlist Created!'))
             return redirect('playlists')
     else:
         form = PlaylistForm
-        if 'submitted' in request.GET:
-            submitted = True
-        return render(request,'createplaylist.html',{'form': form, 'submitted': submitted})
+    return render(request,'playlists.html',{'form': form})
 
 def delete_playlist(request, list_id):
     item = Playlist.objects.get(pk=list_id)
     item.delete()
-    messages.success(request, ('Playlist Has Been Deleted!'))
     return redirect('playlists')
 
 def delete_song(request, list_id, song_id):

@@ -659,3 +659,21 @@ body{
   position: relative;
 }
 
+.modal-dialog {
+ 
+  width: 600px;
+  height: 900x;
+ 
+}
+ 
+.modal-header {
+ 
+  padding:16px 16px;
+ 
+ }
+
+ .create_button {
+   background-color: #B589D6;
+   color: white;
+ }
+

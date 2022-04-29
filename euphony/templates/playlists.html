@@ -9,31 +9,54 @@
 
 <body></body>
 <br>
-{% if messages %}
-{% for message in messages %}
-<div class="alert alert-secondary alert-dismissable" role="alert">
-    <span type="button" class="close float-end" data-bs-dismiss="alert">
-        <sup>X</sup>
-    </span>
-    {{ message }}
-</div>
-{% endfor%}
-{% endif %}
 <body>
+    <div id="playlistMod">
     <h1 class="display-6 playlist_name"><strong>Playlists</strong>
-        <a class="btn btn-secondary" href="{% url 'create_playlist' %}" role="button">+ Create new playlist...</a>
+        <button type="button" class="btn btn-secondary" data-toggle="modal" 
+        data-get="{% url 'create_playlist' %}" data-target="#playlistModal"
+        id="submit">
+        + Create new playlist...</button>
     </h1>
+</div>
     <br>
+
+    <div class="modal" id="playlistModal" tabindex="-1" role="dialog">
+        <div class="modal-dialog" role="document">
+          <div class="modal-content">
+            <form id="playlistModalForm" method="POST" action="{% url 'create_playlist' %}" autocomplete="off">
+                {% csrf_token %}
+            <div class="modal-header">
+              <h5 class="modal-title">New Playlist</h5>
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+            <div class="modal-body" id="modal-body">
+                        <label for="name">Playlist Name:</label>
+                        <input type="text" id="name" name="name">
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                            <input type="submit" value="Create Playlist" class="btn create_button">
+                        </div>
+            </form>
+            </div>
+          </div>
+        </div>
+      </div>
 </body>
 
-{% if playlist.has_cover %}
 {% for playlist in output_list %}
     <div class="playlist_group">
         {% for p in playlist %}
-        {{p.has_cover}}
+
         <div class="card playlist_card">
+
             <a href="{% url 'addsongs_view' p.playlist_id %}">
-                <img src="{{p.cover}}" class="custom_playlist">
+                {% if p.has_cover %}
+                    <img src="{{p.cover}}" class="custom_playlist">
+                {% else %}
+                    <img src="{% static 'images/Default_Pic.png' %}" class="custom_playlist">
+                {% endif %}
             </a>
                 <div class="card-body">
                     <div>
@@ -44,6 +67,5 @@
         {% endfor %}
     </div>
 {% endfor %}
-{% endif %}
 <br>
 {% endblock %}
