@@ -792,3 +792,90 @@ body {
 .friend_element_info {
   display: flex;
   flex-direction: column;
+}
+
+/* Dashboard section */
+
+.dash_body {}
+
+.activity_feed_header {
+  font-size: 20px;
+}
+
+.feed_container {
+  padding-left: 35px;
+}
+
+.feed_card_image {
+  width: 250px;
+  height: 250px;
+  padding: 2px;
+}
+
+.feed_card_image_user {
+  width: 250px;
+  height: 250px;
+  padding: 2px;
+  border-radius: 50%;
+}
+
+#feed_card:hover {
+  transform: scale(1.05);
+}
+
+.dash_card_user {
+  text-decoration: none;
+  color: rgb(255, 255, 255);
+}
+
+.dash_card_user:hover {
+  text-decoration: underline;
+  color: rgb(255, 255, 255);
+}
+
+.dash_card_name {
+  text-decoration: none;
+  color: rgb(232, 232, 232);
+}
+
+.dash_card_name:hover {
+  color: white;
+  text-decoration: underline;
+}
+
+.dash_header_profile_pic {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+}
+
+.modify_row {
+  margin-right: 10px;
+}
+
+.dash_column {
+  float: left;
+  width: 85%;
+}
+
+.playlist_dash_card_name {
+  text-decoration: none;
+  color: rgb(34, 34, 34);
+}
+
+.playlist_dash_card_name:hover {
+  text-decoration: underline;
+  color: rgb(0, 0, 0);
+}
+
+.dash_card_header {
+  font-size: 12px;
+}
+
+.dash_card_comment_message {
+  font-size: 14px;
+}
+
+.dash_card_footer {
+  font-size: 12px;
+}

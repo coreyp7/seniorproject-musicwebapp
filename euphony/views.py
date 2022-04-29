@@ -120,12 +120,12 @@ def prepare_post_dicts(song_list, user_friends):
     by the end of this proccess a post dict should be {song id, number of ratings, post weight, name of a friend or None if no friends}
     '''
 
-    posts = [{ "song_id" : item[0]["id"], "song_cover" :  item[0]["cover"],  "song_name" :  item[0]["name"] , "upvotes" : None, "downvotes" : None} for item in zip(song_list, get_song_rating_numbers(song_list))]
+    posts = [{ "post_type": "recommendation", "item_type": "song", "song_id" : item[0]["id"], "song_cover" :  item[0]["cover"],  "song_name" :  item[0]["name"] , "upvotes" : None, "downvotes" : None} for item in zip(song_list, get_song_rating_numbers(song_list))]
 
     #assign weights to posts based on friends upvotes
 
     for post in posts:
-        print(post['song_cover'])
+        #print(post['song_cover'])
         #give posts with friends likes a higher ranking
         post["upvotes"] = Song_rating.objects.filter(song_id=post["song_id"], rating_type=True).count()
         post["downvotes"] = Song_rating.objects.filter(song_id=post["song_id"], rating_type=False).count()
@@ -209,8 +209,21 @@ def dash(request):
         # just assign each song a random date in the past week or something so that it
         # randomizes the recommendations: this is up to you how you wanna implement.
 
-    all_dashboard_feed.sort(key=lambda x: x["date"])
-    print(all_dashboard_feed)
+    all_dashboard_feed.sort(key=lambda x: x["date"], reverse=True)
+
+    i = 0
+    j = 0
+    for entry in range(len(all_dashboard_feed)):
+        if i < len(all_dashboard_feed) and i % 7 == 0 and i != 0:
+            all_dashboard_feed.insert(i, posts[j])
+            j=j+1
+            i=i+1
+            print("inserted")
+        else:
+            i=i+1
+
+
+    #print(all_dashboard_feed)
     return render(request, 'dash.html', {'recommendations' : posts,
     'ratings': friends_ratings, 'comments': friends_comments, 'playlists': friends_new_playlists,
     'feed': all_dashboard_feed})
@@ -246,13 +259,15 @@ def get_users_friend_playlist_activity(user_friends):
     for friend in user_friends:
         friend_playlists = Playlist.objects.filter(user_id=friend, date_created__range=[week_ago,today])
         for playlist in friend_playlists:
+            profile_pic = Profile.objects.get(user=friend).profile_pic.url
             new_dict = {
                 'post_type' : 'friend_playlist',
                 'friend_id' : friend.id,
                 'playlist_id' : playlist.id,
                 'date' : playlist.date_created,
                 'item_name' : playlist.name,
-                'friend_name': friend.username
+                'friend_name': friend.username,
+                'friend_pic':profile_pic,
             }
             playlists_dict.append(new_dict)
 
@@ -267,44 +282,48 @@ def get_users_friend_comment_activity(user_friends):
         friend_comments = XtdComment.objects.filter(user=friend)
         print(friend_comments)
         for comment in friend_comments:
-            print(comment._meta.get_fields())
-            print(str(comment.content_type))
             if str(comment.content_type) == "euphony | song":
                 cover = Song.objects.get(id=comment.object_pk).album_id.cover
                 min = datetime.min.time()
                 formatted_date = datetime.combine(comment.submit_date,min)
                 song_ref = Song.objects.get(id=comment.object_pk)
+                profile_pic = Profile.objects.get(user=friend).profile_pic.url
                 new_dict = {
                     'post_type' : 'friend_comment',
                     'friend_id' : friend.id,
                     'item_type' : "song",
                     'item_id' : comment.object_pk,
-                    'song_album_cover' : cover,
+                    'cover' : cover,
                     'comment_message' : comment.comment,
                     'date' : comment.submit_date.date(),
                     'item_name' : song_ref.name,
-                    'friend_name': friend.username
+                    'friend_name': friend.username,
+                    'friend_pic': profile_pic
                 }
                 comments_dict.append(new_dict)
             elif str(comment.content_type) == "euphony | album":
                 cover = Album.objects.get(id=comment.object_pk).cover
                 min = datetime.min.time()
                 album_ref = Album.objects.get(id=comment.object_pk)
+                profile_pic = Profile.objects.get(user=friend).profile_pic.url
                 new_dict = {
                     'post_type' : 'friend_comment',
                     'friend_id' : friend.id,
                     'item_type' : "album",
                     'item_id' : comment.object_pk,
-                    'song_album_cover' : cover,
+                    'cover' : cover,
                     'comment_message' : comment.comment,
                     'date' : comment.submit_date.date(),
                     'item_name' : album_ref.name,
-                    'friend_name': friend.username
+                    'friend_name': friend.username,
+                    'friend_pic': profile_pic
                 }
                 comments_dict.append(new_dict)
             else: # playlist
                 min = datetime.min.time()
                 playlist_ref = Playlist.objects.get(id=comment.object_pk)
+                playlist_pic = Profile.objects.get(user=playlist_ref.user_id).profile_pic.url
+                profile_pic = Profile.objects.get(user=friend).profile_pic.url
                 new_dict = {
                     'post_type' : 'friend_comment',
                     'friend_id' : friend.id,
@@ -313,7 +332,9 @@ def get_users_friend_comment_activity(user_friends):
                     'comment_message' : comment.comment,
                     'date' : comment.submit_date.date(),
                     'item_name' : playlist_ref.name,
-                    'friend_name': friend.username
+                    'friend_name': friend.username,
+                    'friend_pic': profile_pic,
+                    "cover": playlist_pic
                 }
                 comments_dict.append(new_dict)
 
@@ -335,35 +356,53 @@ def get_users_friend_rating_activity(user_friends):
                 date__range=[week_ago, today])
 
             for rating in friend_song_ratings:
-
+                rating_color = 'danger'
+                if rating.rating_type:
+                    rating_color = 'success'
+                profile_pic = Profile.objects.get(user=friend).profile_pic.url
                 new_dict = {
                     'post_type' : "friend_rating",
                     'friend_id' : friend.id,
                     'item_type' : "song",
                     'item_id' : rating.song_id.id,
-                    'song_album_cover' : rating.song_id.album_id.cover,
+                    'cover' : rating.song_id.album_id.cover,
                     'rating_type' : rating.rating_type,
                     'date' : rating.date.date(),
                     'friend_name' : friend.username,
-                    'item_name' : rating.song_id.name
+                    'item_name' : rating.song_id.name,
+                    'rating_color' : rating_color,
+                    'friend_pic': profile_pic
                 }
                 ratings_dict.append(new_dict)
 
             for rating in friend_album_ratings:
+                rating_color = 'danger'
+                if rating.rating_type:
+                    rating_color = 'success'
+                profile_pic = Profile.objects.get(user=friend).profile_pic.url
                 new_dict = {
                     'post_type' : "friend_rating",
                     'friend_id' : friend.id,
                     'item_type' : "album",
                     'item_id' : rating.album_id.id,
-                    'song_album_cover' : rating.album_id.cover,
+                    'cover' : rating.album_id.cover,
                     'rating_type' : rating.rating_type,
                     'date' : rating.date.date(),
                     'friend_name' : friend.username,
-                    'item_name' : rating.album_id.name
+                    'item_name' : rating.album_id.name,
+                    'rating_color' : rating_color,
+                    'cover': rating.album_id.cover,
+                    'friend_pic': profile_pic
                 }
                 ratings_dict.append(new_dict)
 
             for rating in friend_playlist_ratings:
+                rating_color = 'danger'
+                if rating.rating_type:
+                    rating_color = 'success'
+                profile_pic = Profile.objects.get(user=friend).profile_pic.url
+                playlist_ref = Playlist.objects.get(id=rating.playlist_id.id)
+                playlist_pic = Profile.objects.get(user=playlist_ref.user_id).profile_pic.url
                 new_dict = {
                     'post_type' : "friend_rating",
                     'friend_id' : friend.id,
@@ -372,7 +411,11 @@ def get_users_friend_rating_activity(user_friends):
                     'rating_type' : rating.rating_type,
                     'date' : rating.date.date(),
                     'friend_name' : friend.username,
-                    'item_name' : rating.playlist_id.name
+                    'item_name' : rating.playlist_id.name,
+                    'rating_color' : rating_color,
+                    'cover': playlist_pic,
+                    'friend_pic': profile_pic,
+                    'playlist_pic': playlist_pic
                 }
                 ratings_dict.append(new_dict)
     return ratings_dict
