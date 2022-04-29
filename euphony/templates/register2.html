@@ -22,7 +22,7 @@
                <h3 id="form-title">REGISTER ACCOUNT</h3>
             </div>
             <div class="d-flex justify-content-center form_container">
-               <form method="POST" action="/dash">
+               <form>
                {% csrf_token %}
                <div class="d-flex justify-content-center">
                   <select class="selectpicker" id="genre" multiple  data-dropup-auto="false" multiple data-max-options="5" multiple data-selected-text-format="count > 2" >
@@ -52,19 +52,49 @@
                      <option>work-out</option>
                   </select>
                </div>
-               <div class="form-check form-switch general_settings_switch justify-content-center">
-                  <input class="form-check-input" onclick="myFunction()" type="checkbox" id="dark_mode" name="dark_mode" {% if user.userExt.dark_mode %}checked{% endif %}>
+               <div id='dark_mode' class="form-check form-switch general_settings_switch justify-content-center">
+                  <input class="form-check-input" type="checkbox" id="dark_mode" name="dark_mode" {% if user.userExt.dark_mode %}checked{% endif %}>
                   <label class="form-check-label" for="dark_mode">Dark Mode</label>
                </div>
-               <div class="form-check form-switch general_settings_switch ">
+               <div id='explicit' class="form-check form-switch general_settings_switch ">
                   <input class="form-check-input" type="checkbox" id="explicit" name="explicit" {% if user.userExt.explicit %}checked{% endif %}>
                   <label class="form-check-label" for="explicit">Explicit</label>
                </div>
-               <button id="submit">Submit</button>
+               <a href="{% url 'dash' %}" onclick="handel_prefrences()">Submit</a>
                <script>
                   $('#submit').click(function(){
                     console.log($('#genre').val())
-                    })  
+                    })
+
+                    function handel_prefrences() {
+
+                      var prefs = $('#genre').val().toString();
+                      var dark_mode = $('#dark_mode').val();
+                      var explicit = $('#explicit').val();
+
+                      console.log(dark_mode, explicit);
+
+                      var output = { 'music_prefs': prefs, 'dark_mode': dark_mode, 'explicit' : explicit, 'csrfmiddlewaretoken': "{{ csrf_token }}" };
+
+                      $.ajax({
+                        // Our sample url to make request
+                        url: '{% url "handel_prefrences" %}',
+                        // Type of Request
+                        type: "POST",
+                        data: output,
+                        // Function to call when to
+                        // request is ok
+                        success: function (data) {
+                          console.log('works');
+                        },
+                        // Error handling
+                        error: function (error) {
+                          console.log(`Error ${error}`);
+                        }
+                      });
+                    }
+
+
                </script>
                {{form.errors}}
                <div class="mt-4">

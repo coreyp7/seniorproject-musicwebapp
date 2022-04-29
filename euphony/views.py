@@ -58,11 +58,10 @@ scope = "user-library-read user-top-read"
 sp = spotipy.Spotify(client_credentials_manager=SpotifyClientCredentials())
 
 def home(request):
-    settings_objects = User_Setting_Ext.objects.filter( # defaults
-        user=request.user,
-    )
-    if settings_objects.count() == 0:
-        return render(request, "register2.html")
+    #print(User_Setting_Ext.objects.filter(user=request.user).count())
+    if User_Setting_Ext.objects.filter(user=request.user).count() == 0:
+        return render(request, "register2.html", {})
+
     return render(request, "home.html", {})
 
 def homepage(request):
@@ -1138,13 +1137,6 @@ def registerPage(request):
             messages.success(request, 'Account was created for ' + username)
 
             #Create appropriate rows in our user tables.
-            User_Setting_Ext.objects.create( # defaults
-                user=user,
-                dark_mode=False,
-                explicit=False,
-                music_prefs=""
-
-            )
 
             Profile.objects.create(
                 user=user,
