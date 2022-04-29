@@ -58,17 +58,19 @@
             {{item.item_type}}.
           </div>
           <div class="card-body">
-            <img src="{{item.cover}}" class="feed_card_image">
             {% if item.item_type == "song" %}
-            <a href="{% url 'songinfo' item.item_id %}">
+            <img src="{{item.cover}}" class="feed_card_image">
+            <a href="{% url 'songinfo' item.item_id %}" class="dash_card_name">
               <h5 class="card-body">{{item.item_name}}</h5>
             </a>
             {% elif item.item_type == "album" %}
-            <a href="{% url 'album_info' item.item_id %}">
+            <img src="{{item.cover}}" class="feed_card_image">
+            <a href="{% url 'album_info' item.item_id %}" class="dash_card_name">
               <h5 class="card-body">{{item.item_name}}</h5>
             </a>
             {% elif item.item_type == "playlist" %}
-            <a href="{% url 'addsongs_view' item.item_id %}">
+            <img src="{{item.cover}}" class="feed_card_image_user">
+            <a href="{% url 'addsongs_view' item.item_id %}" class="dash_card_name">
               <h5 class="card-body">{{item.item_name}}</h5>
             </a>
             {% endif %}
@@ -78,7 +80,34 @@
           </div>
         </div>
         {% elif item.post_type == "friend_comment" %}
-        a comment exists lol
+        <div class="card text-white bg-secondary mb-3" id="feed_card" style="width: 17.7rem;">
+          <div class="card-header">
+            <img src="{{item.friend_pic}}" class="dash_header_profile_pic">
+            <a href="{% url 'show_user' item.friend_id %}" class="dash_card_user">{{item.friend_name}}</a>
+            commented on this {{item.item_type}}.
+          </div>
+          <div class="card-body">
+            {% if item.item_type == "song" %}
+            <img src="{{item.cover}}" class="feed_card_image">
+            <a href="{% url 'songinfo' item.item_id %}" class="dash_card_name">
+              <h5 class="card-body dash_card_name">{{item.item_name}}</h5>
+            </a>
+            {% elif item.item_type == "album" %}
+            <img src="{{item.cover}}" class="feed_card_image" class="dash_card_name">
+            <a href="{% url 'album_info' item.item_id %}" class="dash_card_name">
+              <h5 class="card-body dash_card_name">{{item.item_name}}</h5>
+            </a>
+            {% elif item.item_type == "playlist" %}
+            <img src="{{item.cover}}" class="feed_card_image_user">
+            <a href="{% url 'addsongs_view' item.item_id %}" class="dash_card_name">
+              <h5 class="card-body dash_card_name">{{item.item_name}}</h5>
+            </a>
+            {% endif %}
+          </div>
+          <div class="card-footer">
+            {{item.date}}
+          </div>
+        </div>
 
         {% elif item.post_type == "friend_playlist" %}
         a new playlist exists lol

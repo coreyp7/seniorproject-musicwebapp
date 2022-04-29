@@ -811,13 +811,23 @@ body {
   padding: 2px;
 }
 
-
+.feed_card_image_user {
+  width: 250px;
+  height: 250px;
+  padding: 2px;
+  border-radius: 50%;
+}
 
 #feed_card:hover {
   transform: scale(1.05);
 }
 
 .dash_card_user {
+  text-decoration: none;
+  color: white;
+}
+
+.dash_card_name {
   text-decoration: none;
   color: white;
 }

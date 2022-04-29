@@ -291,44 +291,48 @@ def get_users_friend_comment_activity(user_friends):
         friend_comments = XtdComment.objects.filter(user=friend)
         print(friend_comments)
         for comment in friend_comments:
-            print(comment._meta.get_fields())
-            print(str(comment.content_type))
             if str(comment.content_type) == "euphony | song":
                 cover = Song.objects.get(id=comment.object_pk).album_id.cover
                 min = datetime.min.time()
                 formatted_date = datetime.combine(comment.submit_date,min)
                 song_ref = Song.objects.get(id=comment.object_pk)
+                profile_pic = Profile.objects.get(user=friend).profile_pic.url
                 new_dict = {
                     'post_type' : 'friend_comment',
                     'friend_id' : friend.id,
                     'item_type' : "song",
                     'item_id' : comment.object_pk,
-                    'song_album_cover' : cover,
+                    'cover' : cover,
                     'comment_message' : comment.comment,
                     'date' : comment.submit_date.date(),
                     'item_name' : song_ref.name,
-                    'friend_name': friend.username
+                    'friend_name': friend.username,
+                    'friend_pic': profile_pic
                 }
                 comments_dict.append(new_dict)
             elif str(comment.content_type) == "euphony | album":
                 cover = Album.objects.get(id=comment.object_pk).cover
                 min = datetime.min.time()
                 album_ref = Album.objects.get(id=comment.object_pk)
+                profile_pic = Profile.objects.get(user=friend).profile_pic.url
                 new_dict = {
                     'post_type' : 'friend_comment',
                     'friend_id' : friend.id,
                     'item_type' : "album",
                     'item_id' : comment.object_pk,
-                    'song_album_cover' : cover,
+                    'cover' : cover,
                     'comment_message' : comment.comment,
                     'date' : comment.submit_date.date(),
                     'item_name' : album_ref.name,
-                    'friend_name': friend.username
+                    'friend_name': friend.username,
+                    'friend_pic': profile_pic
                 }
                 comments_dict.append(new_dict)
             else: # playlist
                 min = datetime.min.time()
                 playlist_ref = Playlist.objects.get(id=comment.object_pk)
+                playlist_pic = Profile.objects.get(user=playlist_ref.user_id).profile_pic.url
+                profile_pic = Profile.objects.get(user=friend).profile_pic.url
                 new_dict = {
                     'post_type' : 'friend_comment',
                     'friend_id' : friend.id,
@@ -337,7 +341,9 @@ def get_users_friend_comment_activity(user_friends):
                     'comment_message' : comment.comment,
                     'date' : comment.submit_date.date(),
                     'item_name' : playlist_ref.name,
-                    'friend_name': friend.username
+                    'friend_name': friend.username,
+                    'friend_pic': profile_pic,
+                    "cover": playlist_pic
                 }
                 comments_dict.append(new_dict)
 
@@ -404,6 +410,8 @@ def get_users_friend_rating_activity(user_friends):
                 if rating.rating_type:
                     rating_color = 'success'
                 profile_pic = Profile.objects.get(user=friend).profile_pic.url
+                playlist_ref = Playlist.objects.get(id=rating.playlist_id.id)
+                playlist_pic = Profile.objects.get(user=playlist_ref.user_id).profile_pic.url
                 new_dict = {
                     'post_type' : "friend_rating",
                     'friend_id' : friend.id,
@@ -414,8 +422,9 @@ def get_users_friend_rating_activity(user_friends):
                     'friend_name' : friend.username,
                     'item_name' : rating.playlist_id.name,
                     'rating_color' : rating_color,
-                    'cover': profile_pic,
-                    'friend_pic': profile_pic
+                    'cover': playlist_pic,
+                    'friend_pic': profile_pic,
+                    'playlist_pic': playlist_pic
                 }
                 ratings_dict.append(new_dict)
     return ratings_dict
