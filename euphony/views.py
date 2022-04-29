@@ -58,7 +58,10 @@ scope = "user-library-read user-top-read"
 sp = spotipy.Spotify(client_credentials_manager=SpotifyClientCredentials())
 
 def home(request):
-    if request.user.userExt.music_prefs == "":
+    settings_objects = User_Setting_Ext.objects.filter( # defaults
+        user=request.user,
+    )
+    if settings_objects.count() == 0:
         return render(request, "register2.html")
     return render(request, "home.html", {})
 
