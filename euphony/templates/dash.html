@@ -41,7 +41,7 @@
   {% if feed %}
   <h2 class="activity_feed_header">Feed:</h2>
   <div class="feed_container">
-    <div class="row">
+    <div class="row modify_row">
       {% for item in feed %}
       <div class="col-auto mb-3">
         {% if item.post_type == "friend_rating" %}
@@ -59,18 +59,18 @@
           </div>
           <div class="card-body">
             {% if item.item_type == "song" %}
-            <img src="{{item.cover}}" class="feed_card_image">
             <a href="{% url 'songinfo' item.item_id %}" class="dash_card_name">
+              <img src="{{item.cover}}" class="feed_card_image">
               <h5 class="card-body">{{item.item_name}}</h5>
             </a>
             {% elif item.item_type == "album" %}
-            <img src="{{item.cover}}" class="feed_card_image">
             <a href="{% url 'album_info' item.item_id %}" class="dash_card_name">
+              <img src="{{item.cover}}" class="feed_card_image">
               <h5 class="card-body">{{item.item_name}}</h5>
             </a>
             {% elif item.item_type == "playlist" %}
-            <img src="{{item.cover}}" class="feed_card_image_user">
             <a href="{% url 'addsongs_view' item.item_id %}" class="dash_card_name">
+              <img src="{{item.cover}}" class="feed_card_image">
               <h5 class="card-body">{{item.item_name}}</h5>
             </a>
             {% endif %}
@@ -88,18 +88,18 @@
           </div>
           <div class="card-body">
             {% if item.item_type == "song" %}
-            <img src="{{item.cover}}" class="feed_card_image">
             <a href="{% url 'songinfo' item.item_id %}" class="dash_card_name">
+              <img src="{{item.cover}}" class="feed_card_image">
               <h5 class="card-body dash_card_name">{{item.item_name}}</h5>
             </a>
             {% elif item.item_type == "album" %}
-            <img src="{{item.cover}}" class="feed_card_image" class="dash_card_name">
             <a href="{% url 'album_info' item.item_id %}" class="dash_card_name">
+              <img src="{{item.cover}}" class="feed_card_image_user">
               <h5 class="card-body dash_card_name">{{item.item_name}}</h5>
             </a>
             {% elif item.item_type == "playlist" %}
-            <img src="{{item.cover}}" class="feed_card_image_user">
             <a href="{% url 'addsongs_view' item.item_id %}" class="dash_card_name">
+              <img src="{{item.cover}}" class="feed_card_image_user">
               <h5 class="card-body dash_card_name">{{item.item_name}}</h5>
             </a>
             {% endif %}
@@ -110,7 +110,25 @@
         </div>
 
         {% elif item.post_type == "friend_playlist" %}
-        a new playlist exists lol
+        <div class="card text-white bg-light mb-3" id="feed_card" style="width: 17.7rem;">
+          <div class="card-header" style="color: black;">
+            <img src="{{item.friend_pic}}" class="dash_header_profile_pic">
+            <a href="{% url 'show_user' item.friend_id %}" class="dash_card_user">
+              {{item.friend_name}}</a>
+            created a new playlist.
+          </div>
+
+          <div class="card-body">
+            <a href="{% url 'addsongs_view' item.playlist_id %}" class="dash_card_name">
+              <img src="{{item.friend_pic}}" class="feed_card_image_user">
+              <h5 class="card-body dash_card_name" style="color: black;">{{item.item_name}}</h5>
+            </a>
+          </div>
+
+          <div class="card-footer">
+            {{item.date}}
+          </div>
+        </div>
 
         {% endif %}
       </div>

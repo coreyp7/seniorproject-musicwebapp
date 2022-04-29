@@ -270,13 +270,15 @@ def get_users_friend_playlist_activity(user_friends):
     for friend in user_friends:
         friend_playlists = Playlist.objects.filter(user_id=friend, date_created__range=[week_ago,today])
         for playlist in friend_playlists:
+            profile_pic = Profile.objects.get(user=friend).profile_pic.url
             new_dict = {
                 'post_type' : 'friend_playlist',
                 'friend_id' : friend.id,
                 'playlist_id' : playlist.id,
                 'date' : playlist.date_created,
                 'item_name' : playlist.name,
-                'friend_name': friend.username
+                'friend_name': friend.username,
+                'friend_pic':profile_pic,
             }
             playlists_dict.append(new_dict)
 

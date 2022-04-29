@@ -824,7 +824,7 @@ body {
 
 .dash_card_user {
   text-decoration: none;
-  color: white;
+  color: rgb(0, 0, 0);
 }
 
 .dash_card_name {
@@ -837,4 +837,8 @@ body {
   height: 45px;
   padding: 2px;
   border-radius: 50%;
+}
+
+.modify_row {
+  margin-right: 10px;
 }
