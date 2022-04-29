@@ -657,27 +657,27 @@ def allplaylists_view(request):
         count = 0
         for playlist in playlists:
             cover = None
-            #print(playlist.songs.all())
-            if not playlist.songs.all():
-                cover = "Default_Pic.png"
-            else:
-                for song in playlist.songs.all():
-                    if cover == None:
-                        cover = song.album_id.cover
+            has_cover = False
+            cover = "Default_Pic.png"
+            for song in playlist.songs.all():
+                cover = song.album_id.cover
+                has_cover = True
+                break
+
             new_playlist_dict = {
                 "cover": cover,
                 "playlist_id": playlist.id,
                 "playlist_name": playlist.name,
-                "has_cover" : True
+                "has_cover" : has_cover
             }
-            
+
             playlist_dicts.append(new_playlist_dict)
 
             temp_list.append(new_playlist_dict)
             if (count % 4) == 3:
                 output_list.append(temp_list)
                 temp_list = []
-      
+
             count += 1
         if len(temp_list) != 0:
               output_list.append(temp_list)

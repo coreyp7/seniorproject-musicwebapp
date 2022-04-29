@@ -26,14 +26,18 @@
     <br>
 </body>
 
-{% if playlist.has_cover %}
 {% for playlist in output_list %}
     <div class="playlist_group">
         {% for p in playlist %}
-        {{p.has_cover}}
+
         <div class="card playlist_card">
+
             <a href="{% url 'addsongs_view' p.playlist_id %}">
-                <img src="{{p.cover}}" class="custom_playlist">
+                {% if p.has_cover %}
+                    <img src="{{p.cover}}" class="custom_playlist">
+                {% else %}
+                    <img src="{% static 'images/Default_Pic.png' %}" class="custom_playlist">
+                {% endif %}
             </a>
                 <div class="card-body">
                     <div>
@@ -44,6 +48,5 @@
         {% endfor %}
     </div>
 {% endfor %}
-{% endif %}
 <br>
 {% endblock %}
