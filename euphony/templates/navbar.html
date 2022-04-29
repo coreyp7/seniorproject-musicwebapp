@@ -25,7 +25,8 @@
 
   <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
     <div class="container-fluid">
-      <a class="navbar-brand navbar_items" href="{% url 'home' %}">Euphony</a>
+      <a class="navbar-brand navbar_items" href="{% url 'dash' %}">Euphony</a>
+      <a class="navbar-brand navbar_items navbar_playlist_item" href="{% url 'playlists' %}">PlayList</a>
 
       <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent"
         aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
@@ -33,14 +34,6 @@
       </button>
       <div class="collapse navbar-collapse" id="navbarSupportedContent">
         <ul class="navbar-nav me-auto mb-2 mb-lg-0 mr-auto ml-auto">
-          <!--
-          <form class="form-inline justify-content-center">
-            <input class="form-control mr-sm-2" type="text" placeholder="Search" aria-label="Search">
-            <div class="navbar_serach_button_spacing"></div>
-            <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
-          </form>
-          -->
-
           <form class="form-inline justify-content-center" method=POST action="{% url 'search_results' %}">
             {% csrf_token %}
             <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search" name="search_query"
@@ -50,6 +43,8 @@
           </form>
 
         </ul>
+        <a class="btn btn-primary icon-play" href="{% url 'notifications' %}" role="button">Notifications</a>
+
         <!-- 
         Check that a user is logged in.
         If they are, then display the dropdown with different options available.
