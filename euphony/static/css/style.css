@@ -15,9 +15,7 @@ body {
   margin-right: 10px;
 }
 
-.navbar_playlist_item{
-  font-weight: unset;
-  font-size: 20px;
+.navbar_added_item{
   margin-left: 10px;
 }
 
@@ -721,7 +719,6 @@ body {
 }
 
 .profile_body {
-  background-color: #b4b4bc;
   overflow-x: hidden;
   /* Hide horizontal scrollbar */
 }
