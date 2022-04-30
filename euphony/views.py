@@ -358,9 +358,9 @@ def get_users_friend_rating_activity(user_friends):
                 date__range=[week_ago, today])
 
             for rating in friend_song_ratings:
-                rating_color = 'danger'
+                rating_color = 'rgb(231, 121, 121)'
                 if rating.rating_type:
-                    rating_color = 'success'
+                    rating_color = '#76d478'
                 profile_pic = Profile.objects.get(user=friend).profile_pic.url
                 new_dict = {
                     'post_type' : "friend_rating",
@@ -378,9 +378,9 @@ def get_users_friend_rating_activity(user_friends):
                 ratings_dict.append(new_dict)
 
             for rating in friend_album_ratings:
-                rating_color = 'danger'
+                rating_color = 'rgb(231, 121, 121)'
                 if rating.rating_type:
-                    rating_color = 'success'
+                    rating_color = '#76d478'
                 profile_pic = Profile.objects.get(user=friend).profile_pic.url
                 new_dict = {
                     'post_type' : "friend_rating",
@@ -399,9 +399,9 @@ def get_users_friend_rating_activity(user_friends):
                 ratings_dict.append(new_dict)
 
             for rating in friend_playlist_ratings:
-                rating_color = 'danger'
+                rating_color = 'rgb(231, 121, 121)'
                 if rating.rating_type:
-                    rating_color = 'success'
+                    rating_color = '#76d478'
                 profile_pic = Profile.objects.get(user=friend).profile_pic.url
                 playlist_ref = Playlist.objects.get(id=rating.playlist_id.id)
                 playlist_pic = Profile.objects.get(user=playlist_ref.user_id).profile_pic.url

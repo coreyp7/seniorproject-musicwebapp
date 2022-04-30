@@ -9,13 +9,13 @@ body {
   padding-right: 4%;
 }
 
-.icon-play{
+.icon-play {
   background-size: cover;
   display: inline-block;
   margin-right: 10px;
 }
 
-.navbar_added_item{
+.navbar_added_item {
   margin-left: 10px;
 }
 
@@ -752,6 +752,7 @@ body {
 
 #rating_card:hover {
   transform: scale(1.05);
+  width: 17.8rem;
 }
 
 .upvote_card {
@@ -862,11 +863,11 @@ body {
 
 .dash_card_name {
   text-decoration: none;
-  color: rgb(232, 232, 232);
+  color: rgb(0, 0, 0);
 }
 
 .dash_card_name:hover {
-  color: white;
+  color: rgb(0, 0, 0);
   text-decoration: underline;
 }
 
@@ -907,6 +908,25 @@ body {
   font-size: 12px;
 }
 
-.navbar{
+.navbar {
   outline: 3px solid #CC94F2;
+}
+
+.dash_card_body {
+  background-color: rgb(227, 227, 227);
+  color: black;
+  width: 17.7rem;
+}
+
+.dash_card_border {
+  outline: 2px solid rgb(26, 26, 26);
+}
+
+.profile_rating_card {
+  outline: 1px solid black;
+}
+
+.bella {
+  color: #76d478;
+  color: rgb(231, 121, 121);
 }
