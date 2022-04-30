@@ -699,32 +699,35 @@ body {
   color: white;
   background-color: #B589D6;
   width: 90px;
-  margin-top: 20px;
   font-weight: bold;
   border-radius: 10px;
+  margin-right: auto;
+  position: relative;
 }
 
 .song_play_card {
   margin: 0 auto;
-  width: 1000px;
-  height: 90px;
-  padding-bottom: -20px;
+  width: 1100px;
+  height: 150px;
 }
 
 .song_play_image {
   width: 80px;
   height: 70px;
+  text-align: left;
+  position: relative;
 }
 
 .play_album_name {
-  padding-left: 10px;
-  margin-left: 90px;
+  top: -35px;
   position: relative;
-  top: -25px;
+  left: 90px;
 }
 
 .play_song_name {
-  margin-left: 2px;
+  left: 20px;
+  top: -10px;
+  position: relative;
 }
 
 .play_user_image {
@@ -733,38 +736,67 @@ body {
   border-radius: 50px;
   justify-content: center;
   display: block;
-  margin-right: 80px;
+  margin-right: 290px;
+  top: 10px;
+  position: relative;
 }
 
 .play_name {
-  margin-left: 120px;
+  margin-left: 50px;
   margin-bottom: -30px;
   top: -80px;
   position: relative;
 }
 
 .play_creator_name {
-  margin-bottom: -30px;
+  margin-left: 25px;
   top: -40px;
   position: relative;
 }
 
 .play_plus_btn {
-  margin-left: 1200px;
+  margin-left: 950px;
   background-color: #b9a6cc;
   outline: 2px solid #2f1a3f;
+  top: -80px;
+  position: relative;
 }
 
 .play_downvote_btn {
-  top: -40px;
+  top: -80px;
+  margin-left: 20px;
   position: relative;
 }
 
-.play_upvote_btn {}
+.play_upvote_btn {
+  top: -80px;
+  margin-left: 30px;
+  position: relative;
+}
+
+.play_upvote_words {
+  top:-40px;
+  margin-right: 120px;
+  position: relative;
+}
+
+.play_downvote_words {
+  top:-80px;
+  margin-left: 148px;
+  position: relative;
+}
 
 .play_save_btn {
-
+  top: -40px;
   position: relative;
+  background-color: #28232d;
+  outline: 2px solid #28232d;
+  color: #b9a6cc;
+  margin-left: 25px;
+}
+
+.play_save_btn:hover {
+  color: white
 }
 
 .playlist_header_container {
@@ -782,4 +814,13 @@ body {
   display: flex;
   flex-direction: row;
   justify-content: center;
+}
+
+.space {
+  padding-left: 25px;
+}
+
+.no_space {
+  margin-top: -95px;
+  position: relative;
 }
