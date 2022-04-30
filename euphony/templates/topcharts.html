@@ -16,10 +16,11 @@
     
   </head>
   <body>
-
+  <center>
+    <h3>Top Charts</h3>
     <div class="dropdown">
   <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-    Dropdown button
+    Select Charts
   </button>
   <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
     <li><a href="Global">Global</a></li>
@@ -96,18 +97,35 @@
     <li><a href="Vietnam">Vietnam</a></li>
   </div>
 </div>
+    </center>
 
 <br>
+<div class="container">
+        <div class="row">
+      {% if songs %}
+      {% for song in songs %}
+          <br>
+            <div class="card border-dark mb-3" style="max-width: 25rem;">
+              <h3 class="card-header">{{ forloop.counter }}. {{song.name}}</h3>
+              <img src="{{ song.album_cover_big }}" alt="missing" >
+          <div class="card-body text-dark">
+            <h5 class="card-title">Release Date:</h5>
+            <p>{{song.album_release_date}}</p>
+            <h5 class="card-title">Featured Artists:</h5>
+            <p>{{song.artists}}</p>
+            <h5 class="card-title">Song:</h5>
+            <a href="{% url 'songinfo' song.id%}">{{song.name}}</a>,
+            <h5 class="card-title">Album:</h5>
+            <a href="{% url 'album_info' song.album_id %}">{{song.album_name}}</a>
+          </div>
+        </div>
+          &nbsp;&nbsp;&nbsp;
 
-  {% if songs %}
-  {% for song in songs %}
-  {{forloop.counter}}.<br>
-  <img src="{{song.album_cover}}"><br>
-  Song: <a href="{% url 'songinfo' song.id%}">{{song.name}}</a>,
-  Album: <a href="{% url 'album_info' song.album_id %}">{{song.album_name}}</a>
-  <br>
-  {% endfor %}
-  {% endif %}
+
+      {% endfor %}
+      {% endif %}
+          </div>
+            </div>
 
   </body>
 </html>

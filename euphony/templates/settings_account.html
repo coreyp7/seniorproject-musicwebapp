@@ -19,7 +19,7 @@
 	<script type="text/javascript" src="https://code.jquery.com/jquery-1.7.1.min.js"></script>
 
 	<link rel="stylesheet" href="{% static 'css/settings.css' %}">
-  <link rel="stylesheet" href="{% static 'css/style.css' %}">
+	<link rel="stylesheet" href="{% static 'css/style.css' %}">
 
 </head>
 
@@ -41,7 +41,7 @@
 				<div class="username_spacing"></div>
 
 				<div>
-				<img class="profile-pic" src="{{request.user.profile.profile_pic.url}}" >
+					<img class="profile-pic" src="{{request.user.profile.profile_pic.url}}">
 					&nbsp;&nbsp;
 					<a href="{% url 'change_profile_picture' %}">Change Profile Picture </a>
 				</div>
@@ -66,6 +66,23 @@
 					<input class="settingsInput" id="email" name="email" type="email" placeholder="Email"
 						value="{{ user.email }}" autofocus />
 				</div>
+				<div>
+					<style>
+						.profile-pic {
+							max-width: 100px;
+							max-height: 100px;
+							margin: 0 auto;
+							border-radius: 50%;
+						}
+					</style>
+					{% if user.profile.profile_pic %}
+					<img src="{{ user.profile.profile_pic.url }}" id="imagesize" class="rounded-circle">
+					{% else %}
+					<img src="{% static 'images/Default_Pic.png' %}" id="imagesize" class="rounded-circle">
+					{% endif %}
+					<a href="{% url 'change_profile_picture' %}">Change Profile Picture </a>
+				</div>
+				<br>
 				<div>
 					<!-- TODO: Need to check if they already have connected their account. -->
 					<a href="{% url 'link_account' %}"> Connect Spotify Account </a>

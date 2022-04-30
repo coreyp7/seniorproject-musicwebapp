@@ -120,6 +120,13 @@
             {% endif %}
         </div>
 
+        <style>
+        #imagesize {
+            width:40px;
+            height:40px;
+        }
+        </style>
+
 
         <h class="search_category">Users</h>
         <div class="search_results_users">
@@ -132,13 +139,19 @@
                     <a class="search_result_text_info" href="{% url 'show_user' user.id %}">
                         <div class="search_result_playlist_container">
                             <div class="search_result_info_user_playlist">
+                                {% if user.profile.profile_pic %}
+                                    <img src="{{ user.profile.profile_pic.url }}"  id="imagesize" class="rounded-circle">
+                                {% else %}
+                                 <img src="{% static 'images/Default_Pic.png' %}"  id="imagesize" class="rounded-circle">
+                                {% endif %}
                                 <h class="search_result_title">User: </h>
                                 <h class="search_result_text_result">{{ user }}</h>
                                 <br>
                             </div>
-                        </div>                
+                        </div>
                     </a>
                 </div>
+            <br>
                 {% endfor %}
             {% else %}
                 <h5>No user found :(</h5>
