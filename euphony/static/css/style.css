@@ -141,6 +141,7 @@ body{
 .addsong_button{
   float: right;
   color: white;
+  margin-right: 50px;
 }
 
 .addsong_iframe{
@@ -677,3 +678,94 @@ body{
    color: white;
  }
 
+ .playlist_button {
+   outline: 2px solid rgba(83, 12, 142, 0.408);
+   color: rgb(65, 20, 98);
+ }
+
+ .create_playlist_btn {
+   background-color: rgb(128, 134, 141);
+   outline: 2px solid #2f1a3f;
+   color: rgb(224, 194, 247);
+ }
+
+ .p_comment_size {
+  margin: 0 auto;
+  width: 900px;
+ }
+
+ .song_delete_btn {
+  color: white;
+  background-color: #B589D6;
+  width: 90px;
+  margin-top: 20px;
+  font-weight: bold;
+  border-radius: 10px;
+ }
+
+ .song_play_card {
+  margin: 0 auto;
+  width: 1000px;
+  height: 90px;
+  padding-bottom: -20px;
+ }
+
+ .song_play_image {
+  width: 80px;
+  height: 70px;
+ }
+
+ .play_album_name {
+  padding-left: 10px;
+  margin-left: 90px;
+  position: relative;
+  top: -25px;
+ }
+
+ .play_song_name {
+  margin-left: 2px;
+ }
+
+ .play_user_image {
+  width: 100px;
+  height: 90px;
+  border-radius: 50px;
+  justify-content: center;
+  margin-left: 600px;
+  display: block;
+ }
+
+ .play_name {
+  margin-left: 730px;
+  margin-bottom: -30px;
+  top: -80px;
+  position: relative;
+ }
+
+ .play_creator_name {
+  margin-left: 730px;
+  margin-bottom: -30px;
+  top: -40px;
+  position: relative;
+ }
+
+ .play_plus_btn {
+  margin-left: 1200px;
+  background-color: #b9a6cc;
+  outline:2px solid #2f1a3f;
+ }
+
+ .play_downvote_btn {
+   margin-left: 840px;
+   top: -40px;
+   position: relative;
+ }
+
+ .play_upvote_btn {
+   margin-left: 720px;
+ }
+
+ .play_save_btn {
+   top: 200px;
+   position: relative;
+ }

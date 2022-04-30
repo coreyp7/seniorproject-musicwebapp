@@ -660,10 +660,9 @@ def allplaylists_view(request):
             has_cover = False
             cover = "Default_Pic.png"
             for song in playlist.songs.all():
-                if cover == None:
-                    cover = song.album_id.cover
-                    has_cover = True
-                    break
+                cover = song.album_id.cover
+                has_cover = True
+                break
 
             new_playlist_dict = {
                 "cover": cover,

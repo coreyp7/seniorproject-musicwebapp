@@ -10,48 +10,41 @@
 {% block content %}
 
 <br>
-{% if messages %}
-{% for message in messages %}
-<div class="alert alert-secondary alert-dismissable" role="alert">
-  <span type="button" class="close float-end" data-bs-dismiss="alert">
-    <sup>X</sup>
-  </span>
-  {{ message }}
-</div>
-{% endfor%}
-{% endif %}
-
 <body></body>
-<br>
-<h1>{{playlist.name}}</h1>
+<img class="play_user_image" src="{{ playlist.user_id.profile.profile_pic.url }}"> 
+<h1 class="play_name">{{playlist.name}}</h1>
+
+
+
+
 {% if user.is_authenticated %}
 {% if users_playlist %}
 
 {% elif already_saved %}
-<h1> <a class="btn btn-secondary" href="{% url 'unsave_playlist' playlist.id %}" role="button">Unsave
+<h1> <a class="btn btn-secondary play_save_btn" href="{% url 'unsave_playlist' playlist.id %}" role="button">Unsave
     This Playlist</a></h1>
 {% else %}
-<h1><a class="btn btn-secondary" href="{% url 'save_playlist' playlist.id %}" role="button">Save This
+<h1><a class="btn btn-secondary play_save_btn" href="{% url 'save_playlist' playlist.id %}" role="button">Save This
     Playlist</a></h1>
 {% endif %}
-<h5>Created by: <a href="{% url 'show_user' playlist.user_id.id %}">{{playlist.user_id}}</a></h5>
+<h5 class="play_creator_name">Created by: <a href="{% url 'show_user' playlist.user_id.id %}">{{playlist.user_id}}</a></h5>
 
 {% if request.user.id != playlist.user_id.id %}
 <form method="post" action="{% url 'playlist_upvote' playlist.id %}">
   {% csrf_token %}
   {% if user_upvoted %}
-  <button type="submit" class="btn btn-success">Upvote</button>
+  <button type="submit" class="btn btn-success play_upvote_btn">Upvote</button>
   {% else %}
-  <button type="submit" class="btn btn-outline-success">Upvote</button>
+  <button type="submit" class="btn btn-outline-success play_upvote_btn">Upvote</button>
   {% endif %}
   {{upvotes}}
 </form>
 <form method="post" action="{% url 'playlist_downvote' playlist.id %}">
   {% csrf_token %}
   {% if user_downvoted %}
-  <button type="submit" class="btn btn-danger" data-mdb-ripple-color="dark">Downvote</button>
+  <button type="submit" class="btn btn-danger play_downvote_btn" data-mdb-ripple-color="dark">Downvote</button>
   {% else %}
-  <button type="submit" class="btn btn-outline-danger" data-mdb-ripple-color="dark">Downvote</button>
+  <button type="submit" class="btn btn-outline-danger play_downvote_btn" data-mdb-ripple-color="dark">Downvote</button>
   {% endif %}
   {{downvotes}}
 </form>
@@ -60,35 +53,26 @@
 
 
 <br>
-<a class="btn btn-secondary addsong_button" href="{% url 'playlist_song' playlist.id %}"
+<a class="btn play_plus_btn" href="{% url 'playlist_song' playlist.id %}"
   role="button"><strong>+</strong></a>
 <br>
-<table class="table addsong_table">
-  <br>
-  <thead>
-    <tr>
-      <th scope="col">#</th>
-      <th scope="col">Song</th>
-      <th scope="col">Delete Song</th>
-    </tr>
-  </thead>
-  <tbody>
-    {% for song in songs%}
-    <tr>
-      <th>{{forloop.counter}}</th>
-      <td><iframe class="addsongs_iframe" src="https://open.spotify.com/embed/track/{{song.id}}" width="100%"
-          height="80" frameBorder="0" allowfullscreen="" allow="autoplay; 
-                clipboard-write; 
-                encrypted-media; fullscreen; picture-in-picture"></iframe>
-        <a href="{% url 'songinfo' song.id %}">{{song.name}}</a><br>
-        <a href="{% url 'album_info' song.album_id.id %}">{{song.album_id.name}}</a><br>
-      </td>
-      <td><a href="{% url 'delete_song' playlist.id song.id %}">Delete</a></td>
+<br>
 
-    </tr>
-    {% endfor %}
-  </tbody>
-</table>
+{% for song in songs %}
+<ol class="list-group">
+  <li class="list-group-item d-flex justify-content-between align-items-start song_play_card">
+    <div class="ms-2 me-auto">
+      <div class="fw-bold" class="">
+        {{forloop.counter}}.
+        <img src="{{song.album_id.cover}}" class="song_play_image"><a class="play_song_name" href="{% url 'songinfo' song.id %}">{{song.name}}</a>
+        <br>
+      </div class="">
+      <a class="play_album_name" href="{% url 'album_info' song.album_id.id %}">{{song.album_id.name}}</a>
+    </div>
+    <span><a class="btn song_delete_btn" role="button" href="{% url 'delete_song' playlist.id song.id %}">Delete</a></span>
+  </li>
+  </ol>
+  {% endfor %}
 
 {% get_comment_count for playlist as comment_count %}
 <div class="py-4 text-center">
@@ -107,8 +91,10 @@
 {% if playlist.allow_comments %}
 <div class="comment mt-3 mb-5">
   <h4 class="text-center mb-4">Post a Comment</h4>
-  <div class="card pt-4">
+  <div class="card pt-4 p_comment_size">
     {% render_comment_form for playlist %}
   </div>
-  {% endif %}
+{% endif %}
+</div>
+
   {% endblock %}

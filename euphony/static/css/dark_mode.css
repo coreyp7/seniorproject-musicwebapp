@@ -4,10 +4,24 @@ body {
 }
 
 .playlist_card {
-	background-color: rgb(165, 186, 208);
+	background-color: rgb(201, 192, 212);
 	outline: 3px solid black;
 }
 
 .custom_playlist {
 	outline: 3px solid black;
+}
+
+.playlist_title {
+	color: black;
+}
+
+.modal_title {
+	color: black;
+}
+
+.create_playlist_btn {
+	background-color: rgb(161, 161, 161);
+	outline: 2px solid rgb(205, 160, 222);
+	font-weight: bold;
 }

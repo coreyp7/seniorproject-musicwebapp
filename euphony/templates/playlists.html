@@ -12,7 +12,7 @@
 <body>
     <div id="playlistMod">
     <h1 class="display-6 playlist_name"><strong>Playlists</strong>
-        <button type="button" class="btn btn-secondary" data-toggle="modal" 
+        <button type="button" class="btn create_playlist_btn" data-toggle="modal" 
         data-get="{% url 'create_playlist' %}" data-target="#playlistModal"
         id="submit">
         + Create new playlist...</button>
@@ -26,13 +26,13 @@
             <form id="playlistModalForm" method="POST" action="{% url 'create_playlist' %}" autocomplete="off">
                 {% csrf_token %}
             <div class="modal-header">
-              <h5 class="modal-title">New Playlist</h5>
+              <h5 class="modal-title modal_title">New Playlist</h5>
               <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                 <span aria-hidden="true">&times;</span>
               </button>
             </div>
             <div class="modal-body" id="modal-body">
-                        <label for="name">Playlist Name:</label>
+                        <label for="name" class="modal_title">Playlist Name:</label>
                         <input type="text" id="name" name="name">
                         <div class="modal-footer">
                             <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
@@ -60,7 +60,7 @@
             </a>
                 <div class="card-body">
                     <div>
-                    <h5 class="card-title">{{p.playlist_name}} <a class="btn btn-secondary" href="{% url 'delete_playlist' p.playlist_id %}" role="button">Delete</a></h5>
+                    <h5 class="card-title playlist_title">{{p.playlist_name}} <a class="btn playlist_button" href="{% url 'delete_playlist' p.playlist_id %}" role="button">Delete</a></h5>
                     </div>
                 </div>
         </div>
