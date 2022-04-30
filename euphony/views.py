@@ -114,7 +114,7 @@ def get_song_rating_numbers(song_list):
 
     return ratings_list
 
-def prepare_post_dicts(song_list, user_friends):
+def prepare_post_dicts(song_list, user_friends, number_of_posts=10):
 
     '''
     puts together a list of post dictioies, sorts them by weight, and list a friend that liked it. (not 100% tested)
@@ -135,7 +135,7 @@ def prepare_post_dicts(song_list, user_friends):
         post['weight'] = post['upvotes'] - post["downvotes"] + 2*friend_ratings
 
     shuffle(posts)
-    posts = posts[:50]
+    posts = posts[:number_of_posts]
     posts.sort(key = lambda item : item['weight'], reverse=True )
 
     return posts
@@ -184,7 +184,7 @@ def dash(request):
             # as it turns out the recommendation end point doesn't user permissions
             # so gen_recomendation has been modifed to accept spotipy clients with out permissions\
             # - nico
-            album_list = gen_recomendations(sp, scope)
+            album_list = gen_recomendations(sp, scope, user)
             song_list = get_song_list(sp, album_list)
             posts = prepare_post_dicts(song_list, user_friends)
 
@@ -198,11 +198,11 @@ def dash(request):
     else: # anonymous user
         try:
             songs = Song.objects.all()
-            indexs = rng.choice(range(len(songs)), size=50, replace=False)
+            indexs = rng.choice(range(len(songs)), size=10, replace=False)
             song_list = np.array(list(songs))[indexs]
             posts = prepare_post_dicts(song_list,[])
         except:
-            return HttpResponse(":( please sir/madam may I have some songs (for anonymous browings the database needs 50 songs. run the dash with a linked account one or twice for anon browsing to work right) ")
+            return HttpResponse("(⌣̩̩́_⌣̩̩̀) please sir/madam may I have some songs (for anonymous browings the database needs atleast 10 songs. run the dash with a linked account one or twice for anon browsing to work right) ")
 
     all_dashboard_feed = list(itertools.chain(
         friends_ratings,
@@ -1361,7 +1361,7 @@ def show_user(request, user_id):
                     "comment_message": comment.comment
                 })
                 break
-        
+
         for album in albums:
             if comment.object_pk == album.id:
                 all_comments.append({
@@ -1371,7 +1371,7 @@ def show_user(request, user_id):
                     "comment_message": comment.comment
                 })
                 break
-        
+
         for playlist in playlists_all:
             if str(comment.object_pk) == str(playlist.id):
                 profile = Profile.objects.get(user=playlist.user_id)
@@ -1402,15 +1402,15 @@ def show_user(request, user_id):
         request_information["request_to_them"] = True
     except:
         pass
-    
 
-    
+
+
     return render(request, 'events/show_user.html', {'user_to_show': user, 'userid': user_id, 'allfriends':allfriends,
                                                      'not_same_user':not_same_user, 'self':self,
                                                      'already_friends':already_friends, 'saved_playlists': saved_playlists,
                                                      'playlists': playlists, 'song_ratings': song_ratings, 'album_ratings': album_ratings,
-                                                     'playlist_ratings': playlist_ratings, 
-                                                     'comments': comments, 
+                                                     'playlist_ratings': playlist_ratings,
+                                                     'comments': comments,
                                                      'request_info': request_information,
                                                      'already_blocked':already_blocked,
                                                      'all_ratings': all_ratings,
@@ -1420,7 +1420,7 @@ def profile_friends(request, user_to_show):
     user = User.objects.get(id=user_to_show)
     all_friends = Friend.objects.friends(user=user)
     all_friends_formatted = []
-    
+
     for friend in all_friends:
         profile = Profile.objects.get(user=friend)
         friend_query = Friend.objects.get(to_user=friend, from_user=user).created
@@ -1531,7 +1531,7 @@ def addFriend(request, user_id):
                     "comment_message": comment.comment
                 })
                 break
-        
+
         for album in albums:
             if comment.object_pk == album.id:
                 all_comments.append({
@@ -1541,7 +1541,7 @@ def addFriend(request, user_id):
                     "comment_message": comment.comment
                 })
                 break
-        
+
         for playlist in playlists_all:
             if comment.object_pk == playlist.id:
                 profile = Profile.objects.get(user=playlist.user_id)
@@ -1577,8 +1577,8 @@ def addFriend(request, user_id):
                                                      'not_same_user':not_same_user, 'self':self,
                                                      'already_friends':already_friends, 'saved_playlists': saved_playlists,
                                                      'playlists': playlists, 'song_ratings': song_ratings, 'album_ratings': album_ratings,
-                                                     'playlist_ratings': playlist_ratings, 
-                                                     'comments': comments, 
+                                                     'playlist_ratings': playlist_ratings,
+                                                     'comments': comments,
                                                      'request_info': request_information,
                                                      'already_blocked':already_blocked,
                                                      'all_ratings': all_ratings,
@@ -1656,7 +1656,7 @@ def accept_friend_request_profile(request, user_id):
                     "comment_message": comment.comment
                 })
                 break
-        
+
         for album in albums:
             if comment.object_pk == album.id:
                 all_comments.append({
@@ -1666,7 +1666,7 @@ def accept_friend_request_profile(request, user_id):
                     "comment_message": comment.comment
                 })
                 break
-        
+
         for playlist in playlists_all:
             if comment.object_pk == playlist.id:
                 profile = Profile.objects.get(user=playlist.user_id)
@@ -1702,8 +1702,8 @@ def accept_friend_request_profile(request, user_id):
                                                      'not_same_user':not_same_user, 'self':self,
                                                      'already_friends':already_friends, 'saved_playlists': saved_playlists,
                                                      'playlists': playlists, 'song_ratings': song_ratings, 'album_ratings': album_ratings,
-                                                     'playlist_ratings': playlist_ratings, 
-                                                     'comments': comments, 
+                                                     'playlist_ratings': playlist_ratings,
+                                                     'comments': comments,
                                                      'request_info': request_information,
                                                      'already_blocked':already_blocked,
                                                      'all_ratings': all_ratings,
@@ -1795,7 +1795,7 @@ def deleteFriend(request, user_id):
                     "comment_message": comment.comment
                 })
                 break
-        
+
         for album in albums:
             if comment.object_pk == album.id:
                 all_comments.append({
@@ -1805,7 +1805,7 @@ def deleteFriend(request, user_id):
                     "comment_message": comment.comment
                 })
                 break
-        
+
         for playlist in playlists_all:
             if comment.object_pk == playlist.id:
                 profile = Profile.objects.get(user=playlist.user_id)
@@ -1846,8 +1846,8 @@ def deleteFriend(request, user_id):
                                                      'not_same_user':not_same_user, 'self':self,
                                                      'already_friends':already_friends, 'saved_playlists': saved_playlists,
                                                      'playlists': playlists, 'song_ratings': song_ratings, 'album_ratings': album_ratings,
-                                                     'playlist_ratings': playlist_ratings, 
-                                                     'comments': comments, 
+                                                     'playlist_ratings': playlist_ratings,
+                                                     'comments': comments,
                                                      'request_info': request_information,
                                                      'already_blocked':already_blocked,
                                                      'all_ratings': all_ratings,

@@ -2,7 +2,7 @@ import spotipy
 from spotipy.oauth2 import SpotifyClientCredentials, SpotifyOAuth
 from .cashe_handler import DatabaseTokenHandler
 from numpy.random import default_rng
-from .models import Song, Album, UserToken, Song_rating
+from .models import Song, Album, UserToken, Song_rating, User_Setting_Ext
 import json
 
 sp = spotipy.Spotify(client_credentials_manager=SpotifyClientCredentials())
@@ -66,7 +66,7 @@ def get_ids_from_activity(user):
 
 def get_upvoted_tracks(user):
     out_list = []
-    upvotes = Song_rating.object.filter(user_id=user, rating_type=True)
+    upvotes = Song_rating.objects.filter(user_id=user, rating_type=True)
     for vote in upvotes:
         out_list.append(vote.song_id)
 
@@ -83,10 +83,14 @@ def gen_seed(client, scope, user=None):
     '''
 
     seeds = [[],[],[]]
+    music_prefs = []
     upvoted_tracks = []
 
     if user != None:
         upvoted_tracks = get_upvoted_tracks(user)
+        music_prefs = list(User_Setting_Ext.objects.filter(user=user))[0].music_prefs
+        music_prefs = music_prefs.split(',')
+
 
     my_tracks = []
     if isinstance(client.auth_manager,spotipy.oauth2.SpotifyOAuth):
@@ -106,7 +110,14 @@ def gen_seed(client, scope, user=None):
 
     # if you have no liked songs use a genere seed
     else:
-        seeds[1] = ['anime', 'rap', 'blues']
+
+        if music_prefs[0] != '':
+            seeds[1] = music_prefs
+        else:
+            seeds[1] = ['alt-rock', 'alternative', 'ambient', 'blues', 'country']
+
+        rng.shuffle(seeds[1])
+        seeds[1] = seeds[1][:3]
 
     rng.shuffle(upvoted_tracks)
     seeds[2].extend(upvoted_tracks[:2])
@@ -135,6 +146,7 @@ def gen_recomendations(client, scope, user=None):
     seeds = gen_seed(client, scope, user)
 
     album_list = []
+    print(seeds[1])
     for item in client.recommendations(seed_artists=seeds[0], seed_genres=seeds[1], seed_tracks=seeds[2])['tracks']:
 
         '''
