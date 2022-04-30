@@ -1928,19 +1928,15 @@ def delete(request, comment_id, next=None):
     # Render a form on GET
     else:
         return render(request, 'comments/delete.html', {'comment': comment, "next": next})
-def accountSettings(request):
-    user = request.user
-    user_profile = Profile.objects.get(user=user)
 
+def accountSettings(request):
+    user = request.user.profile
     form = ProfileUpdateForm(instance=user)
-    pic_url = request.user.profile.profile_pic.url
-    print(pic_url)
 
     if request.method == "POST":
-        form = ProfileUpdateForm(request.POST, request.FILES, instance=user_profile)
+        form = ProfileUpdateForm(request.POST, request.FILES, instance=user)
         if form.is_valid():
             form.save()
-            print("saved")
 
-    context = {'form':form, 'curr_pic_url': user_profile.profile_pic.url}
+    context = {'form':form}
     return render(request, 'events/account_settings.html', context)
