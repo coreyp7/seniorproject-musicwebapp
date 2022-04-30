@@ -68,7 +68,7 @@ def get_upvoted_tracks(user):
     out_list = []
     upvotes = Song_rating.objects.filter(user_id=user, rating_type=True)
     for vote in upvotes:
-        out_list.append(vote.song_id)
+        out_list.append(vote.song_id.id)
 
     return out_list
 
@@ -85,7 +85,6 @@ def gen_seed(client, scope, user=None):
     seeds = [[],[],[]]
     music_prefs = []
     upvoted_tracks = []
-
     if user != None:
         upvoted_tracks = get_upvoted_tracks(user)
         music_prefs = list(User_Setting_Ext.objects.filter(user=user))[0].music_prefs
