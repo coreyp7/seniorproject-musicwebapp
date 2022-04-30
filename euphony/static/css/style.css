@@ -397,6 +397,9 @@ body {
   display: flex;
   justify-content: space-between;
   margin: 0 auto;
+  border-radius: 15px;
+  padding-left: 6px;
+  padding-right: 6px;
 }
 
 .track_list_song_div_number {

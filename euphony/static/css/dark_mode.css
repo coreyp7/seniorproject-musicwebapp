@@ -18,3 +18,8 @@ body {
 .comments_section {
   outline: 3px solid lightgrey;
 }
+
+.track_list_song_div {
+  color: whitesmoke;
+  background-color: grey;
+}
