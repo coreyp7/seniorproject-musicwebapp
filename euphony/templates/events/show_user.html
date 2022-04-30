@@ -87,9 +87,11 @@
             {% for rating in all_ratings %}
             <div class="col-auto mb-3">
                 {% if rating.object.rating_type %}
-                <div class="card text-white bg-success" id="rating_card" style="width: 20rem;">
+                <div class="card text-white profile_rating_card" id="rating_card"
+                    style="width: 20rem; background-color: #76d478;">
                     {% else %}
-                    <div class="card text-white bg-danger" id="rating_card" style="width: 20rem">
+                    <div class="card text-white profile_rating_card" id="rating_card"
+                        style="width: 20rem; background-color: rgb(231, 121, 121);">
                         {% endif %}
                         <!-- Second, find out the type of item this rating is on and provide appropriate link and info.-->
                         <div class="card_container">

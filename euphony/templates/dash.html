@@ -37,7 +37,7 @@
 
 </script>
 
-
+<br>
 
 <body class="dash_body">
   {% if feed %}
@@ -47,8 +47,8 @@
       {% for item in feed %}
       <div class="col-auto mb-3">
         {% if item.post_type == "friend_rating" %}
-        <div class="card text-white bg-{{item.rating_color}} mb-3" id="feed_card" style="width: 17.7rem;">
-          <div class="card-header dash_card_header">
+        <div class="card text-white mb-3 dash_card_border" id="feed_card" style="width: 17.7rem;">
+          <div class="card-header dash_card_header" style="background-color: {{item.rating_color}}">
             <img src="{{item.friend_pic}}" class="dash_header_profile_pic">
             <a href="{% url 'show_user' item.friend_id %}" class="dash_card_user">{{item.friend_name}}</a>
             {% if item.rating_type %}
@@ -59,7 +59,7 @@
             this
             {{item.item_type}}.
           </div>
-          <div class="card-body">
+          <div class="card-body dash_card_body">
             {% if item.item_type == "song" %}
             <a href="{% url 'songinfo' item.item_id %}" class="dash_card_name">
               <img src="{{item.cover}}" class="feed_card_image">
@@ -77,18 +77,18 @@
             </a>
             {% endif %}
           </div>
-          <div class="card-footer dash_card_footer">
+          <div class="card-footer dash_card_footer" style="background-color: {{item.rating_color}}">
             {{item.date}}
           </div>
         </div>
         {% elif item.post_type == "friend_comment" %}
-        <div class="card text-white bg-secondary mb-3" id="feed_card" style="width: 17.7rem;">
+        <div class="card text-white bg-secondary mb-3 dash_card_border" id="feed_card" style="width: 17.7rem;">
           <div class="card-header dash_card_header">
             <img src="{{item.friend_pic}}" class="dash_header_profile_pic">
             <a href="{% url 'show_user' item.friend_id %}" class="dash_card_user">{{item.friend_name}}</a>
             commented on this {{item.item_type}}.
           </div>
-          <div class="card-body">
+          <div class="card-body dash_card_body">
             {% if item.item_type == "song" %}
             <a href="{% url 'songinfo' item.item_id %}" class="card-title dash_card_name">
               <img src="{{item.cover}}" class="feed_card_image">
@@ -116,7 +116,7 @@
         </div>
 
         {% elif item.post_type == "friend_playlist" %}
-        <div class="card text-white bg-light mb-3" id="feed_card" style="width: 17.7rem;">
+        <div class="card text-white bg-light mb-3 dash_card_border" id="feed_card" style="width: 17.7rem;">
           <div class="card-header dash_card_header" style="color: black;">
             <img src="{{item.friend_pic}}" class="dash_header_profile_pic">
             <a href="{% url 'show_user' item.friend_id %}" class="dash_card_user" style="color: black;">
@@ -124,7 +124,7 @@
             created a new playlist.
           </div>
 
-          <div class="card-body">
+          <div class="card-body dash_card_body">
             <a href="{% url 'addsongs_view' item.playlist_id %}" class="playlist_dash_card_name">
               <img src="{{item.friend_pic}}" class="feed_card_image_user">
               <h5 class="card-body dash_card_name" style="color: black;">{{item.item_name}}</h5>
@@ -137,12 +137,12 @@
         </div>
 
         {% elif item.post_type == "recommendation" %}
-        <div class="card text-white bg-light mb-3" id="feed_card" style="width: 17.7rem;">
+        <div class="card text-white bg-light mb-3 dash_card_border" id="feed_card" style="width: 17.7rem;">
           <div class="card-header dash_card_header" style="color: black;">
             A song recommendation.
           </div>
 
-          <div class="card-body">
+          <div class="card-body dash_card_body">
             <a href="{% url 'songinfo' item.song_id %}" class="playlist_dash_card_name">
               <img src="{{item.song_cover}}" class="feed_card_image">
               <h5 class="card-body dash_card_name" style="color: black;">{{item.song_name}}</h5>
