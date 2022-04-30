@@ -2,6 +2,10 @@ body {
   background-color: #b4b4bc;
 }
 
+.dropdown-menu {
+  min-width: 50px !important;
+}
+
 .music {
   padding-top: 3%;
   height: 25%;
