@@ -46,6 +46,18 @@
           <br>
           Downvotes: {{downvotes}}
         </form>
+
+        {% else %}
+
+        <div class="album_like_dislike_buttons">
+      <div class="like_button">
+          <div class="no_like"></div>
+          <div class="no_dislike"></div>
+      </div>
+      <div class="dislike_button">
+        <div class="no_like"></div>
+          <div class="no_dislike"></div>
+
         {% endif %}
       </div>
     </div>

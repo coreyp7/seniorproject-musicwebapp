@@ -2,3 +2,19 @@ body {
 	background-color: #343a40;
 	color: white;
 }
+
+.album_no_comments_section {
+  outline: 3px solid lightgrey;
+}
+
+.song_no_comments_section {
+  outline: 3px solid lightgrey;
+}
+
+.album_comments_section {
+  outline: 3px solid lightgrey;
+}
+
+.comments_section {
+  outline: 3px solid lightgrey;
+}
