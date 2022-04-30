@@ -66,22 +66,7 @@
 					<input class="settingsInput" id="email" name="email" type="email" placeholder="Email"
 						value="{{ user.email }}" autofocus />
 				</div>
-				<div>
-					<style>
-						.profile-pic {
-							max-width: 100px;
-							max-height: 100px;
-							margin: 0 auto;
-							border-radius: 50%;
-						}
-					</style>
-					{% if user.profile.profile_pic %}
-					<img src="{{ user.profile.profile_pic.url }}" id="imagesize" class="rounded-circle">
-					{% else %}
-					<img src="{% static 'images/Default_Pic.png' %}" id="imagesize" class="rounded-circle">
-					{% endif %}
-					<a href="{% url 'change_profile_picture' %}">Change Profile Picture </a>
-				</div>
+
 				<br>
 				<div>
 					<!-- TODO: Need to check if they already have connected their account. -->
@@ -101,7 +86,7 @@
 				<script type="text/javascript">
 
 					if ("{{ user.userExt.dark_mode }}" == "True") {
-						document.write('<link rel="stylesheet" type="text/css" href="{% static 'css/dark_mode.css' %}">');
+						document.write('<link rel="stylesheet" type="text/css" href="{% static 'css / dark_mode.css' %}">');
 					}
 				</script>
 
