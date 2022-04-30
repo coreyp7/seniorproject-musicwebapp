@@ -12,12 +12,12 @@
 <br>
 
 
-<img class="play_user_image" src="{{ playlist.user_id.profile.profile_pic.url }}">
-<h1 class="play_name">{{playlist.name}}</h1>
 
 
 <body>
   <center>
+    <img class="play_user_image" src="{{ playlist.user_id.profile.profile_pic.url }}">
+    <h1 class="play_name">{{playlist.name}}</h1>
     {% if user.is_authenticated %}
     {% if users_playlist %}
     <div>
