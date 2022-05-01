@@ -668,7 +668,8 @@ def allplaylists_view(request):
                 "cover": cover,
                 "playlist_id": playlist.id,
                 "playlist_name": playlist.name,
-                "has_cover": has_cover
+                "has_cover": has_cover,
+                "date_created": playlist.date_created
             }
 
             playlist_dicts.append(new_playlist_dict)

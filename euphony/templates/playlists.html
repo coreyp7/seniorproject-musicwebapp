@@ -50,7 +50,6 @@
         {% for p in playlist %}
 
         <div class="card playlist_card">
-
             <a href="{% url 'addsongs_view' p.playlist_id %}">
                 {% if p.has_cover %}
                     <img src="{{p.cover}}" class="custom_playlist">
@@ -61,6 +60,9 @@
                 <div class="card-body">
                     <div>
                     <h5 class="card-title playlist_title">{{p.playlist_name}} <a class="btn playlist_button" href="{% url 'delete_playlist' p.playlist_id %}" role="button">Delete</a></h5>
+                    </div>
+                    <div class="play_card_body">
+                        {{p.date_created}}
                     </div>
                 </div>
         </div>
