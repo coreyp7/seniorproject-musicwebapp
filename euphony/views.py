@@ -20,6 +20,7 @@ from django.contrib.contenttypes.models import ContentType
 import itertools
 from datetime import datetime, timedelta
 import os
+import time
 
 import django_comments
 from django_comments_xtd.models import XtdComment
@@ -141,7 +142,7 @@ def prepare_post_dicts(song_list, user_friends, number_of_posts=10):
     return posts
 
 def dash(request):
-
+    time.sleep(0.01)
     '''
     returns a webapge of recommendations, or if an account is unlinked it returns "account not linked with spotify"
 

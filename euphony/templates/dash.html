@@ -38,14 +38,13 @@
 </script>
 
 <br>
-
 <body class="dash_body">
   {% if feed %}
   <h1></h1>
   <div class="feed_container">
     <div class="row modify_row">
       {% for item in feed %}
-      <div class="col-auto mb-3">
+      <div class="col-auto mb-3 dash_div">
         {% if item.post_type == "friend_rating" %}
         <div class="card text-white mb-3 dash_card_border" id="feed_card" style="width: 17.7rem;">
           <div class="card-header dash_card_header" style="background-color: {{item.rating_color}}">
@@ -155,7 +154,7 @@
     </div>
   </div>
   {% else %}
-  <h1>You have no activity to show. </h1>
+  <center><h1 class="no_friends">You have no activity to show. </h1></center>
   {% endif %}
 </body>
 

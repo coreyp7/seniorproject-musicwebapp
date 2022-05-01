@@ -17,6 +17,7 @@
   </head>
   <body>
   <center>
+    <br>
     <h3>Top Charts</h3>
     <div class="dropdown">
   <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -100,14 +101,15 @@
     </center>
 
 <br>
+
 <div class="container">
         <div class="row">
       {% if songs %}
       {% for song in songs %}
           <br>
-            <div class="card border-dark mb-3" style="max-width: 25rem;">
+            <div class="card mb-3 top_center" style="max-width: 22rem; outline: 2px solid black;">
               <h3 class="card-header">{{ forloop.counter }}. {{song.name}}</h3>
-              <img src="{{ song.album_cover_big }}" alt="missing" >
+              <img src="{{ song.album_cover_big }}" alt="missing" style="outline: 2px solid black; border-radius: 5px;" >
           <div class="card-body text-dark">
             <h5 class="card-title">Release Date:</h5>
             <p>{{song.album_release_date}}</p>
@@ -126,7 +128,6 @@
       {% endif %}
           </div>
             </div>
-
   </body>
 </html>
 
