@@ -1177,10 +1177,13 @@ def registerPage(request):
     if request.method == "POST":
         form = CreateUserForm(request.POST)
         if form.is_valid():
-            form.save()
+            new_user = form.save(commit=False)
+            new_user.email = "email@test.com"
+            new_user.save()
             username = form.cleaned_data.get('username')
             raw_password = form.cleaned_data.get('password1')
             user = authenticate(username=username, password=raw_password)
+
             login(request, user)
             messages.success(request, 'Account was created for ' + username)
 
@@ -1189,7 +1192,7 @@ def registerPage(request):
             Profile.objects.create(
                 user=user,
                 bio="",
-                profile_pic="Default_Pic.png"
+                profile_pic="Default_Pic.png",
             )
 
             return redirect('home')
