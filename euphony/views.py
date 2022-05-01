@@ -1879,8 +1879,7 @@ def notifications(request):
 
     incoming_requests = Friend.objects.unread_requests(user=request.user)
 
-    return render(request, 'notifications.html', {"current_user": request.user,
-    "incoming_requests": incoming_requests})
+    return render(request, 'notifications.html', {"current_user": request.user, "incoming_requests": incoming_requests})
 
 def accept_friend_request_notifications(request, user_id):
     user = User.objects.get(pk=user_id)

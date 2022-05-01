@@ -43,23 +43,54 @@ body {
   font-size: larger;
 }
 
-.dflex {
+.btn_style {
   align-items: center !important;
   display: flex !important;  
   justify-content: center !important; 
-  width:89px;
 }
 
-.divider{
-  width:290px;
-  height:auto;
-  display:inline-block;
+.noti_row{
+  padding-top: 20px;
+  padding-left: 40px;
+  margin-right: 10px;
+}
+
+.card_user{
+  position: absolute;
+  bottom: 130px;
+  left: 110px;
+}
+
+.btn-toolbar{
+  padding-left: 55px;
+}
+
+.card-img-top{
+  max-width: 300px;
+  height: 200px;
+  margin: 0 auto;
+  border-radius: 3%;
+  padding-top: 3%;
 }
 
 .notifs{
   padding-top: 30px;
   text-align: center;
   font-size: 20px;
+}
+
+.noti_card{
+  margin-right: 10px;
+  width: 18rem;
+  height: 25rem;
+  margin-bottom: 30px;
+  margin-left: 40px;
+  border-radius: 5%;
+}
+
+.length{
+  height: 5rem;
+  padding-bottom: 30px;
 }
 
 .info {
