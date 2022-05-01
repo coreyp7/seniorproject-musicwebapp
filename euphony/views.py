@@ -196,6 +196,8 @@ def dash(request):
         friends_new_playlists = get_users_friend_playlist_activity(user_friends)
 
     else: # anonymous user
+        return redirect('home')
+        '''
         try:
             songs = Song.objects.all()
             indexs = rng.choice(range(len(songs)), size=10, replace=False)
@@ -203,6 +205,7 @@ def dash(request):
             posts = prepare_post_dicts(song_list,[])
         except:
             return HttpResponse("(⌣̩̩́_⌣̩̩̀) please sir/madam may I have some songs (for anonymous browings the database needs atleast 10 songs. run the dash with a linked account one or twice for anon browsing to work right) ")
+        '''
 
     all_dashboard_feed = list(itertools.chain(
         friends_ratings,
