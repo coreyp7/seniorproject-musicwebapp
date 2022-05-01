@@ -2,6 +2,17 @@ from unicodedata import name
 from django.urls import include, path
 from . import views  # get views.py from current directory
 
+
+from django.conf.urls import include, re_path
+from django.conf import settings
+from django.conf.urls.static import static
+from django.contrib import admin
+
+import spirit.urls
+
+from django.contrib.auth.decorators import login_required
+admin.site.login = login_required(admin.site.login)
+
 urlpatterns = [
     # Top section are the pages which the user can "officially click on" to access.
     path("", views.home, name="home"),
@@ -58,4 +69,9 @@ urlpatterns = [
     path('accept_friend_request_notifications/<user_id>', views.accept_friend_request_notifications, name='accept_friend_request_notifications'),
     path('reject_friend_request_notifications/<user_id>', views.reject_friend_request_notifications, name='reject_friend_request_notifications')
     
+    re_path(r'^', include(spirit.urls)),
+
 ]
+
+if settings.DEBUG:
+    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

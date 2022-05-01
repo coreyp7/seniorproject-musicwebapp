@@ -4,3 +4,4 @@ Django
 django-contrib-comments
 django-comments-xtd
 django-friendship
+django-spirit
