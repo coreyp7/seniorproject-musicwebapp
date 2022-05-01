@@ -1,6 +1,7 @@
 from unicodedata import name
 from django.urls import include, path
 from . import views  # get views.py from current directory
+from machina import urls as machina_urls
 
 urlpatterns = [
     # Top section are the pages which the user can "officially click on" to access.
@@ -57,5 +58,5 @@ urlpatterns = [
     path('notifications', views.notifications, name='notifications'),
     path('accept_friend_request_notifications/<user_id>', views.accept_friend_request_notifications, name='accept_friend_request_notifications'),
     path('reject_friend_request_notifications/<user_id>', views.reject_friend_request_notifications, name='reject_friend_request_notifications')
-    
+    path('forum/', include(machina_urls)),
 ]
