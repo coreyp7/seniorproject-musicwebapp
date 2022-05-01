@@ -3,22 +3,43 @@
 
 {% block content %}
 
-{% if not incoming_requests %}
-No notifications.
-{% endif %}
+<div class="notifs">
+    
+    <h3>Friend Requests:</h3>
 
-{% for request in incoming_requests %}
-Request from: <a href="{% url 'show_user' request.from_user.id %}"><b>{{request.from_user}}</b></a> at
-{{request.created}}<br>
-<form class="d-flex" method=POST action="{% url 'accept_friend_request_notifications' request.from_user.id %}">
-    {% csrf_token %}
-    <button class="btn btn-primary" type="submit">Accept</button>
-</form>
-<form class="d-flex" method=POST action="{% url 'reject_friend_request_notifications' request.from_user.id %}">
-    {% csrf_token %}
-    <button class="btn btn-primary" type="submit">Reject</button>
-</form>
-<br>
+    {% if not incoming_requests %}
+        No notifications.
+    {% endif %}
+   
+    <div class="row">
+    {% for request in incoming_requests %}
+        <div class="col-sm-6">
+            <div class="card" style="width: 18rem;">
+                <img class="card-img-top" src="{{ user.profile.profile_pic.url }}" alt="Card image cap">
+                <div class="card-body">
+                    <h5 class="card-title"><a href="{% url 'show_user' request.from_user.id %}"><b>{{request.from_user}}</b></a></h5>
+                        <p class="card-text"></p>
+                </div>
+                <ul class="list-group list-group-flush">
+                    <li class="list-group-item">Wants to be Friends</li>
+                </ul>
+                <div class="card-body">
+                    <form class="dflex" method=POST action="{% url 'accept_friend_request_notifications' request.from_user.id %}">
+                    {% csrf_token %}
+                    <button class="btn btn_accept btn-primary" type="submit">Accept</button>
+                    </form>
+                    
+                    <form class="dflex" method=POST action="{% url 'reject_friend_request_notifications' request.from_user.id %}">
+                    {% csrf_token %}
+                    <button class="btn btn-primary" type="submit">Reject</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</br>
 {% endfor %}
 
 {% endblock %}
+

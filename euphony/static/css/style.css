@@ -43,6 +43,25 @@ body {
   font-size: larger;
 }
 
+.dflex {
+  align-items: center !important;
+  display: flex !important;  
+  justify-content: center !important; 
+  width:89px;
+}
+
+.divider{
+  width:290px;
+  height:auto;
+  display:inline-block;
+}
+
+.notifs{
+  padding-top: 30px;
+  text-align: center;
+  font-size: 20px;
+}
+
 .info {
   color: white;
   padding-top: 2%;

@@ -1862,7 +1862,7 @@ def blockFriend(request, user_id):
     already_friends = Friend.objects.are_friends(request.user, user)
     if (already_friends):
         removed = Friend.objects.remove_friend(user, self)
-    deleteFriend(request, user_id);
+    deleteFriend(request, user_id)
     return render(request, 'events/block_user.html', {'user':user, 'self':self, 'blocked':blocked, 'removed':removed})
 
 def unblockFriend(request, user_id):
