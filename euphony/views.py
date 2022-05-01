@@ -59,6 +59,7 @@ scope = "user-library-read user-top-read"
 sp = spotipy.Spotify(client_credentials_manager=SpotifyClientCredentials())
 
 def home(request):
+    time.sleep(0.01)
     #print(User_Setting_Ext.objects.filter(user=request.user).count())
 
     if request.user.is_authenticated:
@@ -68,10 +69,12 @@ def home(request):
     return render(request, "home.html", {})
 
 def homepage(request):
+    time.sleep(0.01)
     return render(request, "homepage.html", {})
 
 
 def link_account(request):
+    time.sleep(0.01)
 
     if str(request.user) != "AnonymousUser" and (
         user := User.objects.get(pk=int(request.user.id))
@@ -95,6 +98,7 @@ def link_account(request):
     return redirect("/")
 
 def get_song_rating_numbers(song_list):
+    time.sleep(0.01)
 
     '''
     takes in a list of song ids, and returns a list containing the number of votes for each song
@@ -116,6 +120,7 @@ def get_song_rating_numbers(song_list):
     return ratings_list
 
 def prepare_post_dicts(song_list, user_friends, number_of_posts=10):
+    time.sleep(0.01)
 
     '''
     puts together a list of post dictioies, sorts them by weight, and list a friend that liked it. (not 100% tested)
@@ -255,6 +260,7 @@ def dash(request):
     # Then created an organized list based on date.
 
 def get_users_friend_playlist_activity(user_friends):
+    time.sleep(0.01)
     today = datetime.now().utcnow().date() # today's date
     week_ago = today - timedelta(7) # a week in the past
     playlists_dict = []
@@ -277,6 +283,7 @@ def get_users_friend_playlist_activity(user_friends):
     return playlists_dict
 
 def get_users_friend_comment_activity(user_friends):
+    time.sleep(0.01)
     today = datetime.now().utcnow().date() # today's date
     week_ago = today - timedelta(7) # a week in the past
     comments_dict = []
@@ -344,6 +351,7 @@ def get_users_friend_comment_activity(user_friends):
     return comments_dict
 
 def get_users_friend_rating_activity(user_friends):
+    time.sleep(0.01)
     today = datetime.now().utcnow().date() # today's date
     week_ago = today - timedelta(7) # a week in the past
     ratings_dict = [] # Our ratings list, containing formatted dicts.
@@ -425,6 +433,7 @@ def get_users_friend_rating_activity(user_friends):
 
 
 def proccess_vote(request):
+    time.sleep(0.01)
 
     '''
     works with the js vote function I wrote to take in a song id
@@ -467,6 +476,7 @@ def proccess_vote(request):
 
 @require_GET
 def search(request):
+    time.sleep(0.01)
     form = SongForm()
     return render(request, "search.html", {"form": form})
 
@@ -475,6 +485,7 @@ def search(request):
 # 2. Query for albums on spotify and create a list of dictionaries with information we need to display.
 # Also put a boolean named 'results' in our render dictionary to tell the front end the form was submitted.
 def search_results(request):
+    time.sleep(0.01)
     #form = SongForm(request.POST)
     if request.method == "POST":
         search_query = request.POST['search_query']
@@ -578,12 +589,14 @@ def search_results(request):
 # Playlist Page functions
 @require_GET
 def playlist_song(request, list_id):
+    time.sleep(0.01)
     form = SongForm()
     playlist = Playlist.objects.get(pk=list_id)
     return render(request, "addsongs_playlist.html", {"form": form, 'playlist': playlist})
 
 @require_POST
 def playlist_song_results(request, list_id):
+    time.sleep(0.01)
     form = SongForm(request.POST)
 
     if form.is_valid():
@@ -628,6 +641,7 @@ def playlist_song_results(request, list_id):
 
 
 def add_song(request, list_id, song_id):
+    time.sleep(0.01)
     # First, all of the shit related to adding the song to our db if
     # it doesn't exist yet.
     track = sp.track(f"spotify:track:"+song_id)
@@ -669,6 +683,7 @@ def add_song(request, list_id, song_id):
 
 # Playlist Page functions
 def allplaylists_view(request):
+    time.sleep(0.01)
     if request.user.is_authenticated:
         playlists = Playlist.objects.filter(user_id=request.user)
         return render(request,'playlists.html',{'playlists': playlists})
@@ -676,6 +691,7 @@ def allplaylists_view(request):
         return redirect('login')
 
 def create_playlist(request):
+    time.sleep(0.01)
     submitted = False
     if request.method == "POST":
         form = PlaylistForm(request.POST)
@@ -694,18 +710,21 @@ def create_playlist(request):
         return render(request,'createplaylist.html',{'form': form, 'submitted': submitted})
 
 def delete_playlist(request, list_id):
+    time.sleep(0.01)
     item = Playlist.objects.get(pk=list_id)
     item.delete()
     messages.success(request, ('Playlist Has Been Deleted!'))
     return redirect('playlists')
 
 def delete_song(request, list_id, song_id):
+    time.sleep(0.01)
     playlist = Playlist.objects.get(pk=list_id)
     song = playlist.songs.remove(song_id)
     messages.success(request, ('Song Has Been Deleted!'))
     return redirect('addsongs_view', list_id=playlist.id)
 
 def addsongs_view(request, list_id):
+    time.sleep(0.01)
     playlist = Playlist.objects.get(pk=list_id)
 
     users_playlist = False
@@ -754,6 +773,7 @@ def addsongs_view(request, list_id):
     "users_playlist":users_playlist})
 
 def save_playlist(request, list_id):
+    time.sleep(0.01)
     user = request.user
     playlist = Playlist.objects.get(pk=list_id)
     saved_playlist = User_Profile.objects.create(user=user, saved_playlist=playlist)
@@ -761,6 +781,7 @@ def save_playlist(request, list_id):
     return redirect('addsongs_view', playlist.id)
 
 def unsave_playlist(request, list_id):
+    time.sleep(0.01)
     user = request.user
     playlist = Playlist.objects.get(pk=list_id)
     saved_playlist = User_Profile.objects.get(user=user, saved_playlist=playlist)
@@ -769,6 +790,7 @@ def unsave_playlist(request, list_id):
 
 #Displays Album - and hopefully the tracks of the album uhh
 def album_info(request, id):
+    time.sleep(0.01)
     # id = '2r6OAV3WsYtXuXjvJ1lIDi' test value
 
     # Get the json for this album id
@@ -858,6 +880,7 @@ def album_info(request, id):
     "user_voted": user_upvoted, "user_downvoted": user_downvoted})
 
 def album_info_upvote(request, albumid):
+    time.sleep(0.01)
     album_instance = Album.objects.get(pk=albumid)
 
     object, created = Album_rating.objects.get_or_create(
@@ -877,6 +900,7 @@ def album_info_upvote(request, albumid):
     return redirect('album_info', albumid, permanent=True)
 
 def album_info_downvote(request, albumid):
+    time.sleep(0.01)
     album_instance = Album.objects.get(pk=albumid)
 
     object, created = Album_rating.objects.get_or_create(
@@ -900,6 +924,7 @@ def album_info_downvote(request, albumid):
 # doesn't then add the album and all of its songs.
 # 2. Return render of songinfo.html with the song id.
 def songinfo(request, music_id):
+    time.sleep(0.01)
     # Get the json object for this specific track.
     track = sp.track(f"spotify:track:"+music_id)
 
@@ -969,6 +994,7 @@ def songinfo(request, music_id):
     "user_upvoted": user_upvoted, "user_downvoted": user_downvoted})
 
 def songinfo_upvote(request, songid):
+    time.sleep(0.01)
     song_instance = Song.objects.get(pk=songid)
 
     object, created = Song_rating.objects.get_or_create(
@@ -988,6 +1014,7 @@ def songinfo_upvote(request, songid):
     return redirect('songinfo', songid, permanent=True)
 
 def songinfo_downvote(request, songid):
+    time.sleep(0.01)
     song_instance = Song.objects.get(pk=songid)
 
     object, created = Song_rating.objects.get_or_create(
@@ -1007,6 +1034,7 @@ def songinfo_downvote(request, songid):
     return redirect('songinfo', songid, permanent=True)
 
 def playlist_upvote(request, playlistid):
+    time.sleep(0.01)
     playlist_instance = Playlist.objects.get(pk=playlistid)
 
     object, created = Playlist_rating.objects.get_or_create(
@@ -1026,6 +1054,7 @@ def playlist_upvote(request, playlistid):
     return redirect('addsongs_view', playlistid, permanent=True)
 
 def playlist_downvote(request, playlistid):
+    time.sleep(0.01)
     playlist_instance = Playlist.objects.get(pk=playlistid)
 
     object, created = Playlist_rating.objects.get_or_create(
@@ -1046,6 +1075,7 @@ def playlist_downvote(request, playlistid):
 
 
 def settings_general(request):
+    time.sleep(0.01)
     # Do not allow anonymous users to go to settings. Redirect to login.
     if not request.user.is_authenticated:
         return redirect('login', permanent=True)
@@ -1068,12 +1098,14 @@ def settings_general(request):
     return render(request, 'settings_general.html', {})
 
 def settings_security(request):
+    time.sleep(0.01)
     # Do not allow anonymous users to go to settings. Redirect to login.
     if not request.user.is_authenticated:
         return redirect('login', permanent=True)
     return render(request, 'settings_security.html')
 
 def settings_reset_password(request):
+    time.sleep(0.01)
     # Do not allow anonymous users to go to settings. Redirect to login.
     if not request.user.is_authenticated:
         return redirect('login', permanent=True)
@@ -1095,6 +1127,7 @@ def settings_reset_password(request):
         return render(request, 'settings_reset_password.html', args)
 
 def settings_account(request):
+    time.sleep(0.01)
     # Do not allow anonymous users to go to settings. Redirect to login.
     if not request.user.is_authenticated:
         return redirect('login', permanent=True)
@@ -1113,10 +1146,12 @@ def settings_account(request):
         return render(request, 'settings_account.html', args)
 
 def profile(request):
+    time.sleep(0.01)
     p_form = ProfileUpdateForm()
     return render(request, 'profile.html', {'p_form': p_form})
 
 def my_view(request):
+    time.sleep(0.01)
     # List of this user's friends
     all_friends = Friend.objects.friends(request.user)
 
@@ -1170,6 +1205,7 @@ def my_view(request):
 
 # Register Page and Login/Logout relevant functions.
 def registerPage(request):
+    time.sleep(0.01)
     form = CreateUserForm()
 
     if request.method == "POST":
@@ -1197,6 +1233,7 @@ def registerPage(request):
     return render(request, 'register.html', context)
 
 def loginPage(request):
+    time.sleep(0.01)
     if request.method == 'POST':
         username = request.POST.get('username')
         password = request.POST.get('password')
@@ -1213,11 +1250,13 @@ def loginPage(request):
     return render(request, 'login.html', context)
 
 def logoutUser(request):
+    time.sleep(0.01)
     logout(request)
     return redirect('login')
 
 
 def handel_prefrences(request):
+    time.sleep(0.01)
 
     settings_objects = User_Setting_Ext.objects.filter( # defaults
         user=request.user,
@@ -1237,9 +1276,11 @@ def handel_prefrences(request):
     return HttpResponse(1)
 
 def topChart(request):
+    time.sleep(0.01)
     return render(request, 'topcharts.html')
 
 def topChart_post(request, region_name):
+    time.sleep(0.01)
     region_id = region_codes[region_name] # from dictionary in file region_codes.py
 
     songs_json = sp.playlist(region_id)
@@ -1281,6 +1322,7 @@ def topChart_post(request, region_name):
     return render(request, 'topcharts.html', context)
 
 def search_users(request):
+    time.sleep(0.01)
     if request.method == "POST":
         searched2 = request.POST['searched2']
         users = User.objects.filter(username__contains=searched2)
@@ -1292,10 +1334,12 @@ def search_users(request):
         return render(request, 'events/search_users.html', {})
 
 def list_users(request):
+    time.sleep(0.01)
     user_list = User.objects.all()
     return render(request, 'events/users.html', {'user_list': user_list})
 
 def show_user(request, user_id):
+    time.sleep(0.01)
     user = User.objects.get(pk=user_id)
     not_same_user = False
     already_friends = False
@@ -1418,6 +1462,7 @@ def show_user(request, user_id):
                                                      "all_comments": all_comments})
 
 def profile_friends(request, user_to_show):
+    time.sleep(0.01)
     user = User.objects.get(id=user_to_show)
     all_friends = Friend.objects.friends(user=user)
     all_friends_formatted = []
@@ -1440,6 +1485,7 @@ def profile_friends(request, user_to_show):
     })
 
 def saved_playlists(request, user_to_show):
+    time.sleep(0.01)
     user = User.objects.get(id=user_to_show)
     saved_playlists = User_Profile.objects.filter(user_id=user)
     all_saved_playlists = []
@@ -1460,6 +1506,7 @@ def saved_playlists(request, user_to_show):
 
 
 def addFriend(request, user_id):
+    time.sleep(0.01)
     user = User.objects.get(pk=user_id)
     self = User.objects.get(pk=request.user.id)
     added = Friend.objects.add_friend(self,user)
@@ -1586,6 +1633,7 @@ def addFriend(request, user_id):
                                                      "all_comments": all_comments})
 
 def accept_friend_request_profile(request, user_id):
+    time.sleep(0.01)
     user = User.objects.get(pk=user_id)
     self = User.objects.get(pk=request.user.id)
     friend_request = FriendshipRequest.objects.get(from_user=user, to_user=self)
@@ -1712,6 +1760,7 @@ def accept_friend_request_profile(request, user_id):
 
 
 def deleteFriend(request, user_id):
+    time.sleep(0.01)
     user = User.objects.get(pk=user_id)
     self = User.objects.get(pk=request.user.id)
     removed = Friend.objects.remove_friend(user, self)
@@ -1855,6 +1904,7 @@ def deleteFriend(request, user_id):
                                                      "all_comments": all_comments})
 
 def blockFriend(request, user_id):
+    time.sleep(0.01)
     user = User.objects.get(pk=user_id)
     self = User.objects.get(pk=request.user.id)
     blocked = Block.objects.add_block(self, user)
@@ -1863,10 +1913,11 @@ def blockFriend(request, user_id):
     already_friends = Friend.objects.are_friends(request.user, user)
     if (already_friends):
         removed = Friend.objects.remove_friend(user, self)
-    deleteFriend(request, user_id);
+    deleteFriend(request, user_id)
     return render(request, 'events/block_user.html', {'user':user, 'self':self, 'blocked':blocked, 'removed':removed})
 
 def unblockFriend(request, user_id):
+    time.sleep(0.01)
     user = User.objects.get(pk=user_id)
     self = User.objects.get(pk=request.user.id)
     unblocked = Block.objects.remove_block(self, user)
@@ -1874,6 +1925,7 @@ def unblockFriend(request, user_id):
     return render(request, 'events/unblock_user.html', {'user':user, 'self':self, 'unblocked':unblocked})
 
 def notifications(request):
+    time.sleep(0.01)
     # Do not allow anonymous users to go to settings. Redirect to login.
     if not request.user.is_authenticated:
         return redirect('login', permanent=True)
@@ -1884,6 +1936,7 @@ def notifications(request):
     "incoming_requests": incoming_requests})
 
 def accept_friend_request_notifications(request, user_id):
+    time.sleep(0.01)
     user = User.objects.get(pk=user_id)
     self = User.objects.get(pk=request.user.id)
     friend_request = FriendshipRequest.objects.get(from_user=user, to_user=self)
@@ -1895,6 +1948,7 @@ def accept_friend_request_notifications(request, user_id):
     "incoming_requests": incoming_requests})
 
 def reject_friend_request_notifications(request, user_id):
+    time.sleep(0.01)
     user = User.objects.get(pk=user_id)
     self = User.objects.get(pk=request.user.id)
     friend_request = FriendshipRequest.objects.get(from_user=user, to_user=self)
@@ -1906,6 +1960,7 @@ def reject_friend_request_notifications(request, user_id):
     "incoming_requests": incoming_requests})
 
 def delete(request, comment_id, next=None):
+    time.sleep(0.01)
     """
     Deletes a comment. Confirmation on GET, action on POST. Requires the "can
     moderate comments" permission.
@@ -1931,6 +1986,7 @@ def delete(request, comment_id, next=None):
         return render(request, 'comments/delete.html', {'comment': comment, "next": next})
 
 def accountSettings(request):
+    time.sleep(0.01)
     user = request.user.profile
     form = ProfileUpdateForm(instance=user)
 
