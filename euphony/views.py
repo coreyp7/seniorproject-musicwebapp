@@ -701,6 +701,7 @@ def playlist_song_results(request, list_id):
                 "album_name" : album_json["name"],
                 "album_release_date" : album_artists_str,
                 "album_artists" : album_artists_str,
+                "album_cover": json_obj["album"]["images"][1]["url"]
             }
             #print(f"Track info: {json.dumps(track_info, indent=4)}")
             final_songs_list.append(track_info)
