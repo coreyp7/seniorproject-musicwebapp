@@ -24,8 +24,8 @@ body {
 }
 
 .e_logo {
-  width: 300%;  
-  height: 300%; 
+  width: 300%;
+  height: 300%;
   top: -180px;
   margin-left: 18%;
   position: relative;
@@ -48,46 +48,54 @@ body {
 
 .btn_style {
   align-items: center !important;
-  display: flex !important;  
-  justify-content: center !important; 
+  display: flex !important;
+  justify-content: center !important;
   color: rgb(65, 20, 98) !important;
 }
 
-.noti_row{
+.noti_row {
   padding-top: 20px;
   padding-left: 40px;
   margin-right: 10px;
 }
 
-.from_user_text{
-  color:white;
+.from_user_text {
+  color: white;
   margin-left: 3px;
 }
 
 
-a:link { text-decoration: none; }
+a:link {
+  text-decoration: none;
+}
 
 
-a:visited { text-decoration: none; }
+a:visited {
+  text-decoration: none;
+}
 
 
-a:hover { text-decoration: none; }
+a:hover {
+  text-decoration: none;
+}
 
 
-.from_user_text:hover { color: white !important; }
+.from_user_text:hover {
+  color: white !important;
+}
 
-.card_user{
+.card_user {
   position: absolute;
   bottom: 130px;
   left: 110px;
 }
 
-.btn-toolbar{
+.btn-toolbar {
   padding-left: 55px;
   padding-top: 18px;
 }
 
-.friend_card{
+.friend_card {
   color: white;
   background-color: rgb(201, 192, 212);
 }
@@ -100,7 +108,7 @@ a:hover { text-decoration: none; }
 }
 
 
-.card-img-top{
+.card-img-top {
   max-width: 300px;
   height: 200px;
   margin: 0 auto;
@@ -109,13 +117,13 @@ a:hover { text-decoration: none; }
   outline: 2px solid black;
 }
 
-.notifs{
+.notifs {
   padding-top: 30px;
   text-align: center;
   font-size: 20px;
 }
 
-.noti_card{
+.noti_card {
   margin-right: 10px;
   width: 18rem;
   height: 25rem;
@@ -127,7 +135,7 @@ a:hover { text-decoration: none; }
 
 }
 
-.length{
+.length {
   height: 5rem;
   padding-bottom: 30px;
 }
@@ -157,7 +165,7 @@ a:hover { text-decoration: none; }
 
 .homepage_searchbar {
   top: -400px;
-  
+
 }
 
 .search_btn {
@@ -374,7 +382,7 @@ a:hover { text-decoration: none; }
 }
 
 .song_info_album a {
-  color: red;
+  color: #B65CF2;
   text-decoration: none;
   font-weight: bold;
 }
@@ -382,7 +390,7 @@ a:hover { text-decoration: none; }
 
 .song_infos {
   font-size: 20px;
-  font-family: Comic Sans MS, Comic Sans, cursive;
+  font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
 }
 
 .songinfo_container {
@@ -437,7 +445,7 @@ a:hover { text-decoration: none; }
 }
 
 .album_info_album a {
-  color: red;
+  color: #B65CF2;
   text-decoration: none;
   font-weight: bold;
 }
@@ -445,7 +453,7 @@ a:hover { text-decoration: none; }
 
 .album_infos {
   font-size: 20px;
-  font-family: Comic Sans MS, Comic Sans, cursive;
+  font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
 }
 
 
@@ -1386,47 +1394,68 @@ a {
   text-decoration: none;
 }
 
-.bouncy{
-  animation:bouncy 5s infinite linear;
-  position:relative;
-}
-@keyframes bouncy {
-  0%{top:0em}
-  40%{top:0em}
-  43%{top:-0.9em}
-  46%{top:0em}
-  48%{top:-0.4em}
-  50%{top:0em}
-  100%{top:0em;}
+.bouncy {
+  animation: bouncy 5s infinite linear;
+  position: relative;
 }
 
-a.button1{
-  display:inline-block;
-  padding:0.35em 1.2em;
-  border:0.1em solid #FFFFFF;
-  margin:0 0.3em 0.3em 0;
-  border-radius:0.12em;
-  box-sizing: border-box;
-  text-decoration:none;
-  font-family:'Roboto',sans-serif;
-  font-weight:300;
-  color:#FFFFFF;
-  text-align:center;
-  transition: all 0.2s;
-}
-a.button1:hover{
-  color:#000000;
-  background-color:#FFFFFF;
-}
-@media all and (max-width:30em){
-  a.button1{
-    display:block;
-    margin:0.4em auto;
+@keyframes bouncy {
+  0% {
+    top: 0em
+  }
+
+  40% {
+    top: 0em
+  }
+
+  43% {
+    top: -0.9em
+  }
+
+  46% {
+    top: 0em
+  }
+
+  48% {
+    top: -0.4em
+  }
+
+  50% {
+    top: 0em
+  }
+
+  100% {
+    top: 0em;
   }
 }
 
-.bouncy-btns{
-  margin-top: 38%;
+a.button1 {
+  display: inline-block;
+  padding: 0.35em 1.2em;
+  border: 0.1em solid #FFFFFF;
+  margin: 0 0.3em 0.3em 0;
+  border-radius: 0.12em;
+  box-sizing: border-box;
+  text-decoration: none;
+  font-family: 'Roboto', sans-serif;
+  font-weight: 300;
+  color: #FFFFFF;
+  text-align: center;
+  transition: all 0.2s;
 }
 
+a.button1:hover {
+  color: #000000;
+  background-color: #FFFFFF;
+}
 
+@media all and (max-width:30em) {
+  a.button1 {
+    display: block;
+    margin: 0.4em auto;
+  }
+}
+
+.bouncy-btns {
+  margin-top: 38%;
+}
