@@ -54,6 +54,11 @@
           {% endif %}
         </form>
 
+        {% else %}
+        <br>
+        <a class="btn play_plus_btn" href="{% url 'playlist_song' playlist.id %}" role="button"><strong>+</strong></a>
+        <br>
+
         {% endif %}
         {% endif %}
       </div>
@@ -61,7 +66,7 @@
   </center>
 
   <br>
-  <a class="btn play_plus_btn" href="{% url 'playlist_song' playlist.id %}" role="button"><strong>+</strong></a>
+  <br>
   <br>
   <br>
   <p class="no_space"></p>
@@ -78,8 +83,10 @@
             <a class="" style="color: black;" href="{% url 'album_info' song.album_id.id %}">{{song.album_id.name}}</a>
           </div>
         </div>
+        {% if request.user.id == playlist.user_id.id %}
         <span class=""><a class="btn song_delete_btn" role="button"
             href="{% url 'delete_song' playlist.id song.id %}">Delete</a></span>
+        {% endif %}
       </li>
     </ol>
     {% endfor %}

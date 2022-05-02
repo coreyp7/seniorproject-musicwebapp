@@ -135,6 +135,10 @@ def home(request):
     if request.user.is_authenticated:
         if User_Setting_Ext.objects.filter(user=request.user).count() == 0:
             return render(request, "register2.html", {})
+        else:
+            return render(request, "dash.html", {})
+    
+    return render(request, "homepage.html", {})
 
     return render(request, "home.html", {})
 
