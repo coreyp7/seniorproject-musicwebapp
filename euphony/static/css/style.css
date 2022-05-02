@@ -345,14 +345,14 @@ body {
   padding-bottom: 20px;
 }
 
-.no_like{
+.no_like {
   display: inline-block;
   width: 105px;
   height: 54px;
   padding-right: 30px;
 }
 
-.no_dislike{
+.no_dislike {
   display: inline-block;
   width: 95px;
   height: 54px;
@@ -772,6 +772,7 @@ body {
 .card_album_cover_2 {
   border-radius: 50%;
 }
+
 .card_container {
   display: flex;
   flex-direction: row;
@@ -983,4 +984,22 @@ body {
 
 .dash_div {
   margin: 0 auto;
+}
+
+.topcharts_song_title {
+  color: black;
+}
+
+a {
+  text-decoration: none;
+}
+
+.topchart_link {
+  color: #ac43f1;
+}
+
+
+.topchart_link:hover {
+  color: #980af7;
+  text-decoration: none;
 }

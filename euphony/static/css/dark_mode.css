@@ -1,6 +1,6 @@
 body {
-	background-color: #343a40;
-	color: white;
+  background-color: #343a40;
+  color: white;
 }
 
 .album_no_comments_section {
@@ -22,4 +22,8 @@ body {
 .track_list_song_div {
   color: whitesmoke;
   background-color: grey;
+}
+
+.topcharts_song_title {
+  color: rgb(0, 0, 0);
 }
