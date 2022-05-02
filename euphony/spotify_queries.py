@@ -2,7 +2,7 @@ import spotipy
 from spotipy.oauth2 import SpotifyClientCredentials, SpotifyOAuth
 from .cashe_handler import DatabaseTokenHandler
 from numpy.random import default_rng
-from .models import Song, Album, UserToken
+from .models import Song, Album, UserToken, Song_rating, User_Setting_Ext
 import json
 
 sp = spotipy.Spotify(client_credentials_manager=SpotifyClientCredentials())
@@ -47,8 +47,32 @@ def get_friend_saved_tracks(freinds, scope):
 
     return songs
 
+def get_ids_from_activity(user):
+    '''
+    takes in a user object, and returns a list of spotify urls from a users comments, and upvotes
+    '''
+    out_list = []
 
-def gen_seed(client, friends, scope):
+    comments = Comment.objects.filter(user=user_id)
+    ratings = Song_rating.objects.filter(user_id=user, rating_type=True)
+    for rating in ratings:
+        out_list.append(ratings.song_id)
+
+    for comment in comments:
+        print(comment.song_id)
+        out_list.append(comment.song_id)
+
+    return out_list
+
+def get_upvoted_tracks(user):
+    out_list = []
+    upvotes = Song_rating.objects.filter(user_id=user, rating_type=True)
+    for vote in upvotes:
+        out_list.append(vote.song_id.id)
+
+    return out_list
+
+def gen_seed(client, scope, user=None):
     '''
     takes in a client object with user account permissions
     gets a users top tracks, or top artist to make a recommendation seed
@@ -59,24 +83,24 @@ def gen_seed(client, friends, scope):
     '''
 
     seeds = [[],[],[]]
-
-    print(isinstance(client.auth_manager,spotipy.oauth2.SpotifyOAuth))
+    music_prefs = []
+    upvoted_tracks = []
+    if user != None:
+        upvoted_tracks = get_upvoted_tracks(user)
+        music_prefs = list(User_Setting_Ext.objects.filter(user=user))[0].music_prefs
+        music_prefs = music_prefs.split(',')
 
 
     my_tracks = []
     if isinstance(client.auth_manager,spotipy.oauth2.SpotifyOAuth):
         my_tracks = client.current_user_saved_tracks()['items']
 
-    friends_tracks = get_friend_saved_tracks(friends, scope)
+    #friends_tracks = get_friend_saved_tracks(friends, scope)
 
     # if you have any liked songs use a song seed
     if len(my_tracks) > 0:
         rng.shuffle(list(my_tracks))
-        rng.shuffle(list(friends_tracks))
-
         seed_tracks = my_tracks[:3]
-        seed_tracks.extend(friends_tracks[:2])
-
         track_urls = []
         for track in seed_tracks:
             track_urls.append(track['track']['href'])
@@ -85,15 +109,17 @@ def gen_seed(client, friends, scope):
 
     # if you have no liked songs use a genere seed
     else:
-        # todo extend genric generes
-        seeds[1] = ['anime', 'rap', 'blues']
 
-        seed_tracks = friends_tracks[:2]
-        track_urls = []
-        for track in seed_tracks:
-            track_urls.append(track['track']['href'])
+        if music_prefs[0] != '':
+            seeds[1] = music_prefs
+        else:
+            seeds[1] = ['alt-rock', 'alternative', 'ambient', 'blues', 'country']
 
-        seeds[2] = track_urls
+        rng.shuffle(seeds[1])
+        seeds[1] = seeds[1][:3]
+
+    rng.shuffle(upvoted_tracks)
+    seeds[2].extend(upvoted_tracks[:2])
 
     return seeds
 
@@ -105,33 +131,24 @@ def get_song_list(client, album_list):
     songs_list = []
 
     for album in album_list:
-        for track in client.album_tracks(album.id)['items']:
+        for track in client.album_tracks(album['id'])['items']:
 
-
-            object, created = Song.objects.get_or_create(id=track['id'],
-                                                               album_id=album,
-                                                               name=track['name'],
-                                                               artists=track['artists'][0],
-                                                               duration_ms=track['duration_ms'],
-                                                               explicit = track['explicit'],
-                                                               release_date = album.release_date,
-                                                               track_number = track['track_number'],
-                                                               disc = track['disc_number'],
-                                                               allow_comments=True)
-
-            songs_list.append(object)
+            songs_list.append({"id" : track["id"], "name" : track["name"], "cover" : album["cover"]})
 
     return songs_list
 
-def gen_recomendations(client, friends, scope):
+def gen_recomendations(client, scope, user=None):
     '''
     returns a list of recommended playlists, also puts the albums into database objects
     '''
 
-    seeds = gen_seed(client, friends, scope)
+    seeds = gen_seed(client, scope, user)
 
     album_list = []
+    print(seeds[1])
     for item in client.recommendations(seed_artists=seeds[0], seed_genres=seeds[1], seed_tracks=seeds[2])['tracks']:
+
+        '''
         object, created = Album.objects.get_or_create(
                                                     id=item['album']["id"],
                                                     defaults = {
@@ -142,9 +159,9 @@ def gen_recomendations(client, friends, scope):
                                                     "cover" : item["album"]["images"][1]["url"]
                                                     }
                                                     )
+        '''
 
-        album_list.append(object)
-
+        album_list.append({"id" : item['album']["id"], "cover" : item["album"]["images"][1]["url"]})
     return album_list
 
 # Function for adding all of the songs of a specified album to our db.

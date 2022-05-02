@@ -10,97 +10,127 @@
 {% block content %}
 
 <br>
-{% if messages %}
-{% for message in messages %}
-<div class="alert alert-secondary alert-dismissable" role="alert">
-  <span type="button" class="close float-end" data-bs-dismiss="alert">
-    <sup>X</sup>
-  </span>
-  {{ message }}
-</div>
-{% endfor%}
-{% endif %}
 
-<body></body>
-<br>
-<h1>{{playlist.name}}</h1>
-{% if user.is_authenticated %}
-{% if users_playlist %}
+<body class="play_body">
+  <center>
+    <img class="play_user_image" src="{{ playlist.user_id.profile.profile_pic.url }}">
+    <h1 class="play_name">{{playlist.name}}</h1>
+    <h5 class="play_creator_name">Created by: <a style="color: #B65CF2;"
+        href="{% url 'show_user' playlist.user_id.id %}">{{playlist.user_id}}</a>
+    </h5>
+    {% if user.is_authenticated %}
+    {% if users_playlist %}
+    <div>
+      {% elif already_saved %}
+      <h1> <a class="btn play_save_btn" href="{% url 'unsave_playlist' playlist.id %}" role="button">Unsave
+          This Playlist</a></h1>
+      {% else %}
+      <h1><a class="btn play_save_btn" href="{% url 'save_playlist' playlist.id %}" role="button">Save
+          This
+          Playlist</a></h1>
+      {% endif %}
 
-{% elif already_saved %}
-<h1> <a class="btn btn-secondary" href="{% url 'unsave_playlist' playlist.id %}" role="button">Unsave
-    This Playlist</a></h1>
-{% else %}
-<h1><a class="btn btn-secondary" href="{% url 'save_playlist' playlist.id %}" role="button">Save This
-    Playlist</a></h1>
-{% endif %}
-<h5>Created by: <a href="{% url 'show_user' playlist.user_id.id %}">{{playlist.user_id}}</a></h5>
+      <p class="play_upvote_words">Upvotes: {{upvotes}}</p>
+      <p class="play_downvote_words">Downvotes: {{downvotes}}</p>
 
+      {% if request.user.id != playlist.user_id.id %}
+      <div class="playlist_rating_container">
+        <form method="post" action="{% url 'playlist_upvote' playlist.id %}">
+          {% csrf_token %}
+          {% if user_upvoted %}
+          <button type="submit" class="btn btn-success play_upvote_btn">Upvote</button>
+          {% else %}
+          <button type="submit" class="btn btn-outline-success play_upvote_btn">Upvote</button>
+          {% endif %}
+        </form>
+        <p class="space"></p>
+        <form method="post" action="{% url 'playlist_downvote' playlist.id %}">
+          {% csrf_token %}
+          {% if user_downvoted %}
+          <button type="submit" class="btn btn-danger play_downvote_btn" data-mdb-ripple-color="dark">Downvote</button>
+          {% else %}
+          <button type="submit" class="btn btn-outline-danger play_downvote_btn"
+            data-mdb-ripple-color="dark">Downvote</button>
+          {% endif %}
+        </form>
 
+        {% else %}
+        <br>
+        <a class="btn play_plus_btn" href="{% url 'playlist_song' playlist.id %}" role="button"><strong>+</strong></a>
+        <br>
 
-<form method="post" action="{% url 'playlist_upvote' playlist.id %}">
-  {% csrf_token %}
-  <button type="submit">Upvote</button>
-</form>
-<form method="post" action="{% url 'playlist_downvote' playlist.id %}">
-  {% csrf_token %}
-  <button type="submit">Downvote</button>
-</form>
-{% endif %}
+        {% endif %}
+        {% endif %}
+      </div>
+    </div>
+  </center>
 
-Upvotes: {{upvotes}}<br>
-Downvotes: {{downvotes}}<br>
-
-<br>
-<a class="btn btn-secondary addsong_button" href="{% url 'playlist_song' playlist.id %}"
-  role="button"><strong>+</strong></a>
-<br>
-<table class="table addsong_table">
   <br>
-  <thead>
-    <tr>
-      <th scope="col">#</th>
-      <th scope="col">Song</th>
-      <th scope="col">Delete Song</th>
-    </tr>
-  </thead>
-  <tbody>
-    {% for song in songs%}
-    <tr>
-      <th>{{forloop.counter}}</th>
-      <td><iframe class="addsongs_iframe" src="https://open.spotify.com/embed/track/{{song.id}}" width="100%"
-          height="80" frameBorder="0" allowfullscreen="" allow="autoplay; 
-                clipboard-write; 
-                encrypted-media; fullscreen; picture-in-picture"></iframe>
-        <a href="{% url 'songinfo' song.id %}">{{song.name}}</a><br>
-        <a href="{% url 'album_info' song.album_id.id %}">{{song.album_id.name}}</a><br>
-      </td>
-      <td><a href="{% url 'delete_song' playlist.id song.id %}">Delete</a></td>
-
-    </tr>
+  <br>
+  <br>
+  <br>
+  <p class="no_space"></p>
+  <div class="">
+    {% for song in songs %}
+    <ol class="list-group play_group">
+      <li class="list-group-item d-flex justify-content-between align-items-start song_play_card">
+        <div class="ms-2 me-auto">
+          <strong>{{forloop.counter}}.</strong>
+          <img src="{{song.album_id.cover}}" class="song_play_image">
+          <div class="song_album_name">
+            <a class="fw-bold" style="color: black;" href="{% url 'songinfo' song.id %}">{{song.name}}</a>
+            <br>
+            <a class="" style="color: black;" href="{% url 'album_info' song.album_id.id %}">{{song.album_id.name}}</a>
+          </div>
+        </div>
+        {% if request.user.id == playlist.user_id.id %}
+        <span class=""><a class="btn song_delete_btn" role="button"
+            href="{% url 'delete_song' playlist.id song.id %}">Delete</a></span>
+        {% endif %}
+      </li>
+    </ol>
     {% endfor %}
-  </tbody>
-</table>
-
-{% get_comment_count for playlist as comment_count %}
-<div class="py-4 text-center">
-  <a href="{% url 'playlists' %}">Back to playlists</a>
-  &nbsp;&sdot;&nbsp;
-  {{ comment_count }} comment{{ comment_count|pluralize }}
-  ha{{ comment_count|pluralize:"s,ve"}} been posted.
-</div>
-
-{% if comment_count %}
-<ul class="media-list">
-  {% render_xtdcomment_tree for playlist allow_flagging allow_feedback show_feedback %}
-</ul>
-{% endif %}
-
-{% if playlist.allow_comments %}
-<div class="comment mt-3 mb-5">
-  <h4 class="text-center mb-4">Post a Comment</h4>
-  <div class="card pt-4">
-    {% render_comment_form for playlist %}
   </div>
-  {% endif %}
-  {% endblock %}
+
+  <div class="accordion play_main_accordion" id="accordionExample">
+    <div class="accordion-item play_body_accordion">
+      <h2 class="accordion-header" id="headingOne">
+        <button class="accordion-button collapsed play_comment_background" type="button" data-bs-toggle="collapse"
+          data-bs-target="#collapseOne" aria-expanded="false" aria-controls="collapseOne">
+          Comments
+        </button>
+      </h2>
+      <div id="collapseOne" class="accordion-collapse collapse" aria-labelledby="headingOne">
+        <div class="accordion-body">
+          {% get_comment_count for playlist as comment_count %}
+          <div class="py-4 text-center">
+            <a href="{% url 'playlists' %}">Back to playlists</a>
+            &nbsp;&sdot;&nbsp;
+            {{ comment_count }} comment{{ comment_count|pluralize }}
+            ha{{ comment_count|pluralize:"s,ve"}} been posted.
+          </div>
+
+          {% if comment_count %}
+          <ul class="media-list comments_section">
+            {% render_xtdcomment_tree for playlist allow_flagging allow_feedback show_feedback %}
+          </ul>
+          {% else %}
+          <ul class="song_no_comments_section">
+            <h5 class="song_no_comments play_no_comments">No Comments</h5>
+          </ul>
+          {% endif %}
+
+          {% if playlist.allow_comments %}
+          <div class="comment mt-3 mb-5">
+            <h4 class="text-center mb-4">Post a Comment</h4>
+            <div class="card pt-4 p_comment_size comments play_comments">
+              {% render_comment_form for playlist %}
+            </div>
+            {% endif %}
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</body>
+{% endblock %}

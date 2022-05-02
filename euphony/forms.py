@@ -3,6 +3,7 @@ from .models import Playlist
 from django.contrib.auth.models import User
 from django.contrib.auth.forms import UserCreationForm
 from .models import User_Setting_Ext
+from .models import Profile
 
 class SongForm(forms.Form):
     song_name = forms.CharField(widget=forms.TextInput(attrs={"size": "50"}))
@@ -57,3 +58,10 @@ class SearchByUserID(forms.ModelForm):
 
 class ProfileForm(forms.Form):
     user_name = forms.CharField(widget=forms.TextInput(attrs={"size": "50"}))
+
+class ProfileUpdateForm(forms.ModelForm):
+    class Meta:
+        model = Profile
+        fields = ['profile_pic', 'bio']
+
+

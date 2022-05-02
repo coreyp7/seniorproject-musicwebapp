@@ -44,7 +44,6 @@ urlpatterns = [
     path('deleteFriend/<user_id>', views.deleteFriend, name="delete_friend"),
     path('blockFriend/<user_id>', views.blockFriend, name="block_friend"),
     path('unblockFriend/<user_id>', views.unblockFriend, name="unblock_friend"),
-    #path('show_user/<user_id>', views.deleteFriend, name="delete_friend"),
     path('save_playlist/<list_id>', views.save_playlist, name='save_playlist'),
     path('unsave_playlist/<list_id>', views.unsave_playlist, name='unsave_playlist'),
     path('songinfo/upvote/<songid>', views.songinfo_upvote, name='songinfo_upvote'),
@@ -58,6 +57,9 @@ urlpatterns = [
     path('accept_friend_request_profile/<user_id>', views.accept_friend_request_profile, name='accept_friend_request_profile'),
     path('notifications', views.notifications, name='notifications'),
     path('accept_friend_request_notifications/<user_id>', views.accept_friend_request_notifications, name='accept_friend_request_notifications'),
-    path('reject_friend_request_notifications/<user_id>', views.reject_friend_request_notifications, name='reject_friend_request_notifications')
-
+    path('reject_friend_request_notifications/<user_id>', views.reject_friend_request_notifications, name='reject_friend_request_notifications'),
+    path('change_profile_picture', views.accountSettings, name="change_profile_picture"),
+    path('profile_friends/<user_to_show>', views.profile_friends, name="profile_friends"),
+    path('profile_saved_playlists/<user_to_show>', views.saved_playlists, name="profile_saved_playlists"),
+    path('random_song', views.random_song, name="random_song")
 ]

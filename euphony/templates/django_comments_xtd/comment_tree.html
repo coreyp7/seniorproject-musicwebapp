@@ -6,8 +6,8 @@
 {% for item in comments %}
 <div class="media">
     <a name="c{{ item.comment.id }}"></a>
-    {% if item.comment.user.photo %}
-        <img alt="" src="{{ item.comment.user.photo.url }}" class="profile-image-thumbnail">
+    {% if item.comment.user.profile.profile_pic %}
+        <img alt="" src="{{ item.comment.user.profile.profile_pic.url }}" class="profile-image-thumbnail">
     {% else %}
     {{ item.comment.user_name |xtd_comment_gravatar }}
     {% endif %}

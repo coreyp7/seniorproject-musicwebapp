@@ -1,0 +1,32 @@
+{% include 'base.html' %}
+{% load static %}
+
+
+{% block content %}
+
+<body>
+    {% if saved_playlists %}
+    {% for playlist in saved_playlists %}
+    <br>
+    <ul class="list-group saved_play_group">
+        <a href="{% url 'addsongs_view' playlist.playlist_id %}"
+            class="list-group-item list-group-item-action flex-row saved_play_group">
+            <img src="{{playlist.profile_pic}}" style="width: 105px;
+            height: 105px; border-radius: 50%; margin-top: 10px; outline: 2px solid rgb(189, 50, 189);">
+            <div>
+                <div class="d-flex w-100 justify-content-between">
+                    <h5 class="mb-1 saved_play_name">{{playlist.name}}</h5>
+                    <small class="text-muted saved_play_creator">Created by {{playlist.username}}</small>
+                </div>
+                <p class="mb-1">{{friend.bio}}</p>
+            </div>
+        </a>
+    </ul>
+    {% endfor %}
+    {% else %}
+    <br>
+    <center><h1 class="no_friends">No Saved Playlists</h1></center>
+    {% endif %}
+</body>
+
+{% endblock %}

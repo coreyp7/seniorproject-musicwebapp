@@ -1,183 +1,197 @@
 {% extends 'profile.html' %}
+{% load static %}
 
 {% block content %}
-<div>
+
+<link rel="stylesheet" href="{% static 'css/style.css' %}">
+
+<br><br>
+
+<body class="profile_body">
     <center>
-        <h1>
-            User: {{ user_to_show }}
-            {% if not_same_user %}
-            {% if already_friends %}
-            <form class="d-flex" method=POST action="{% url 'delete_friend' user_to_show.id %}">
-                {% csrf_token %}
-                <button class="btn btn-danger" type="submit">Remove Friend</button>
-            </form>
-            <form class="d-flex" method=POST action="{% url 'block_friend' user_to_show.id %}">
-                {% csrf_token %}
-                <button class="btn btn-danger" type="submit">Block Friend</button>
-            </form>
-            <form class="d-flex" method=POST action="{% url 'unblock_friend' user_to_show.id %}">
-                {% csrf_token %}
-                <button class="btn btn-danger" type="submit">Unblock Friend</button>
-            </form>
-            {% elif request_info.request_from_them %}
-            <form class="d-flex" method=POST action="{% url 'accept_friend_request_profile' user_to_show.id %}">
-                {% csrf_token %}
-                <button class="btn btn-primary" type="submit">Accept Friend Request</button>
-            </form>
-            {% elif request_info.request_to_them %}
-            <br> Friend request pending.. <br>
-            {% else %}
-            <form class="d-flex" method=POST action="{% url 'add_friend' user_to_show.id %}">
-                {% csrf_token %}
-                <button class="btn btn-primary" type="submit">Add Friend</button>
-            </form>
-            {% endif %}
-            {% endif %}
-        </h1>
-        UserID: {{ user_to_show.id }} <br>
-        {% load friendshiptags %}
-        Friends:<br>
-        {% for friends in allfriends %}
-        <li>
-            <a href="{% url 'show_user' friends.id %}">{{ friends.username }}</a><br>
-        </li>
-        {% endfor %}<br>
+        <div class="intro">
+            <div class="profile_header_container">
+                {% if user_to_show.profile.profile_pic %}
+                    <img src="{{ user_to_show.profile.profile_pic.url }}" alt="missing" class="profile_pic">
+                {% else %}
+                    <img src="{% static 'images/Default_Pic.png' %}" height="175" width="100" alt="missing" class="profile_pic">
+                {% endif %}
+                <div class="profile_information">
+                    <h1 class="profile_name">{{ user_to_show }} </h1>
+                    <h2 class="profile_bio">{{ user_to_show.profile.bio }}</h2>
+                    <div class="profile_links_container">
+                        <a class="profile_link" href="{% url 'profile_friends' userid %}">Friends</a>
+                        <a class="profile_link" href="{% url 'profile_saved_playlists' userid %}">
+                            Saved Playlists</a>
+                    </div>
+                    {% if not_same_user %}
+                    <div class="btn-group">
+                        {% if already_friends %}
+                        <form class="d-flex" method=POST action="{% url 'delete_friend' user_to_show.id %}">
+                            {% csrf_token %}
+                            <button class="btn mr-3 btn-danger" type="submit">Remove Friend</button>
+                        </form>
+                        {% elif request_info.request_from_them %}
+                        <form class="d-flex" method=POST
+                            action="{% url 'accept_friend_request_profile' user_to_show.id %}">
+                            {% csrf_token %}
+                            <button class="btn mr-3 btn-success" type="submit">Accept Friend Request</button>
+                        </form>
+                        {% elif request_info.request_to_them %}
+                        <button type="button" class="btn mr-3 btn-success" disabled>Request Pending</button>
+                        {% else %}
+                        <form class="d-flex" method=POST action="{% url 'add_friend' user_to_show.id %}">
+                            {% csrf_token %}
+                            <button class="btn mr-3 btn-success" type="submit">Add Friend</button>
+                        </form>
+                        {% endif %}
+
+                        {% if already_blocked %}
+                        <form class="d-flex" method=POST action="{% url 'unblock_friend' user_to_show.id %}">
+                            {% csrf_token %}
+                            <button class="btn mr-3 btn-danger" type="submit">Unblock User</button>
+                        </form>
+                        {% else %}
+                        <form class="d-flex" method=POST action="{% url 'block_friend' user_to_show.id %}">
+                            {% csrf_token %}
+                            <button class="btn mr-3 btn-danger" type="submit">Block User</button>
+                        </form>
+                        {% endif %}
+                    </div>
+                    {% else %}
+                        <a class="btn btn-secondary" href="{% url 'change_profile_picture' %}">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" fill="currentColor" class="bi bi-gear" viewBox="0 0 16 16">
+                              <path d="M8 4.754a3.246 3.246 0 1 0 0 6.492 3.246 3.246 0 0 0 0-6.492zM5.754 8a2.246 2.246 0 1 1 4.492 0 2.246 2.246 0 0 1-4.492 0z"/>
+                              <path d="M9.796 1.343c-.527-1.79-3.065-1.79-3.592 0l-.094.319a.873.873 0 0 1-1.255.52l-.292-.16c-1.64-.892-3.433.902-2.54 2.541l.159.292a.873.873 0 0 1-.52 1.255l-.319.094c-1.79.527-1.79 3.065 0 3.592l.319.094a.873.873 0 0 1 .52 1.255l-.16.292c-.892 1.64.901 3.434 2.541 2.54l.292-.159a.873.873 0 0 1 1.255.52l.094.319c.527 1.79 3.065 1.79 3.592 0l.094-.319a.873.873 0 0 1 1.255-.52l.292.16c1.64.893 3.434-.902 2.54-2.541l-.159-.292a.873.873 0 0 1 .52-1.255l.319-.094c1.79-.527 1.79-3.065 0-3.592l-.319-.094a.873.873 0 0 1-.52-1.255l.16-.292c.893-1.64-.902-3.433-2.541-2.54l-.292.159a.873.873 0 0 1-1.255-.52l-.094-.319zm-2.633.283c.246-.835 1.428-.835 1.674 0l.094.319a1.873 1.873 0 0 0 2.693 1.115l.291-.16c.764-.415 1.6.42 1.184 1.185l-.159.292a1.873 1.873 0 0 0 1.116 2.692l.318.094c.835.246.835 1.428 0 1.674l-.319.094a1.873 1.873 0 0 0-1.115 2.693l.16.291c.415.764-.42 1.6-1.185 1.184l-.291-.159a1.873 1.873 0 0 0-2.693 1.116l-.094.318c-.246.835-1.428.835-1.674 0l-.094-.319a1.873 1.873 0 0 0-2.692-1.115l-.292.16c-.764.415-1.6-.42-1.184-1.185l.159-.291A1.873 1.873 0 0 0 1.945 8.93l-.319-.094c-.835-.246-.835-1.428 0-1.674l.319-.094A1.873 1.873 0 0 0 3.06 4.377l-.16-.292c-.415-.764.42-1.6 1.185-1.184l.292.159a1.873 1.873 0 0 0 2.692-1.115l.094-.319z"/>
+                            </svg>
+                        </a>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
     </center>
-    <h1>My Playlists:</h1>
-    <table class="table table-bordered">
-        <thead>
-            <tr>
-                <th scope="col">#</th>
-                <th scope="col">Playlist Name</th>
-            </tr>
-        </thead>
-        <tbody>
+    {% if playlists %}
+    <h2 class="playlists_header">Playlists:</h2>
+    <div class="playlists_container">
+
+        <div class="row">
             {% for playlist in playlists %}
-            <tr>
-                <th scope="row">{{forloop.counter}}</th>
-                <td><a href="{% url 'addsongs_view' playlist.id %}"> {{ playlist.name }}</a></td>
-            </tr>
+            <div class="col-auto mb-3">
+                <div class="card" id="rating_card" style="width: 20rem">
+                    <div class="card-body">
+                        <a class="stretched-link" href="{% url 'addsongs_view' playlist.id %}" id="playlist_link">
+                            <h5 class="card-title">{{ playlist.name }}</h5>
+                        </a>
+                        <h6 class="card-subtitle mb-2 text-muted">Created on {{playlist.date_created}}</h6>
+                    </div>
+                </div>
+            </div>
             {% endfor %}
-        </tbody>
-    </table>
-    <br>
-    <h1>Saved Playlists:</h1>
-    <table class="table table-bordered">
-        <thead>
-            <tr>
-                <th scope="col">#</th>
-                <th scope="col">Playlist Name</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for playlist in saved_playlists %}
-            <tr>
-                <th scope="row">{{forloop.counter}}</th>
-                <td><a href="{% url 'addsongs_view' playlist.saved_playlist.id %}"> {{ playlist.saved_playlist }}</a>
-                </td>
-            </tr>
-            {% endfor %}
-        </tbody>
-    </table>
-    <br>
-    <h1>Ratings:</h1>
-    <table class="table table-bordered">
-        <thead>
-            <tr>
-                <th scope="col">Rating Type</th>
-                <th scope="col">Ratings</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for rating in song_ratings %}
-            {% if rating.rating_type %}
-            <tr>
-                <td>Upvote</td>
-                <td><a href="{% url 'songinfo' rating.song_id.id %}">Song: {{ rating.song_id }}</a></td>
-            </tr>
-            {% else %}
-            <tr>
-                <td>Downvote</td>
-                <td><a href="{% url 'songinfo' rating.song_id.id %}">Song: {{ rating.song_id }}</a></td>
-            </tr>
-            {% endif %}
-            {% endfor %}
-            {% for rating in album_ratings %}
-            {% if rating.rating_type %}
-            <tr>
-                <td>Upvote</td>
-                <td><a href="{% url 'album_info' rating.album_id.id %}">Album: {{ rating.album_id }}</a></td>
-            </tr>
-            {% else %}
-            <tr>
-                <td>Downvote</td>
-                <td><a href="{% url 'album_info' rating.album_id.id %}">Album: {{ rating.album_id }}</a></td>
-            </tr>
-            {% endif %}
-            {% endfor %}
-            {% for rating in playlist_ratings %}
-            {% if rating.rating_type %}
-            <tr>
-                <td>Upvote</td>
-                <td><a href="{% url 'addsongs_view' rating.playlist_id.id %}">Playlist: {{ rating.playlist_id }}</a></td>
-            </tr>
-            {% else %}
-            <tr>
-                <td>Downvote</td>
-                <td><a href="{% url 'addsongs_view' rating.playlist_id.id %}">Playlist: {{ rating.playlist_id }}</a></td>
-            </tr>
-            {% endif %}
-            {% endfor %}
-        </tbody>
-    </table>
-    <br>
-    <h1>Comments:</h1>
-    <table class="table table-bordered">
-        <thead>
-            <tr>
-                <th scope="col">Content</th>
-                <th scope="col">Comment</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for comment in comments %}
-            {% if comment.content_type.name == 'song' %}
-            {% for song in song %}
-            {% if song.id == comment.object_pk %}
-            <tr>   
-                <td><a href="{% url 'songinfo' comment.object_pk %}">{{ song.name }}</a></td>
-                <td><a>{{ comment.comment }}</a></td>
-            </tr>
-            {% endif %}
-            {% endfor %}
-            {% endif %}
-            {% if comment.content_type.name == 'album' %}
-            {% for album in album %}
-            {% if album.id == comment.object_pk %}
-            <tr>   
-                <td><a href="{% url 'album_info' comment.object_pk %}">{{ album.name }}</a></td>
-                <td><a>{{ comment.comment }}</a></td>
-            </tr>
-            {% endif %}
-            {% endfor %}
-            {% endif %}
-            {% if comment.content_type.name == 'playlist' %}
-            {% for playlist in playlist %}
-            {% if playlist.id == comment.object_pk %}
-            <tr>   
-                <td><a href="{% url 'addsongs_view' comment.object_pk %}">{{ playlist.name }}</a></td>
-                <td><a>{{ comment.comment }}</a></td>
-            </tr>
-            {% endif %}
-            {% endfor %}
-            {% endif %}
-            {% endfor %}
+        </div>
+    </div>
+    {% endif %}
 
-             
-        </tbody>
-    </table>
-</div>
+    {% if all_ratings %}
+    <h2 class="ratings_header">Recent Ratings:</h2>
+    <div class="ratings_container">
+        <div class="row modify_row">
+            {% for rating in all_ratings %}
+            <div class="col-auto mb-3">
+                {% if rating.object.rating_type %}
+                <div class="card text-white profile_rating_card" id="rating_card"
+                    style="width: 20rem; background-color: #76d478;">
+                    {% else %}
+                    <div class="card text-white profile_rating_card" id="rating_card"
+                        style="width: 20rem; background-color: rgb(231, 121, 121);">
+                        {% endif %}
+                        <!-- Second, find out the type of item this rating is on and provide appropriate link and info.-->
+                        <div class="card_container">
+                            {% if rating.type == "song" %}
+                            <img src="{{rating.object.song_id.album_id.cover}}" class="card_album_cover">
+                            <div class="card_info_container text-truncate">
+                                <a href="{% url 'songinfo' rating.object.song_id.id %}" id="rating_card_link"
+                                    class="stretched-link">
+                                    {{rating.object.song_id.name }}
+                                </a>
+                                {{rating.date}} <i>(song)</i>
+                            </div>
+                            {% elif rating.type == "album" %}
+                            <img src="{{rating.object.album_id.cover}}" class="card_album_cover">
+                            <div class="card_info_container">
+                                <a href="{% url 'album_info' rating.object.album_id.id %}" id="rating_card_link"
+                                    class="stretched-link">
+                                    {{rating.object.album_id.name }}
+                                </a>
+                                {{rating.date}} <i>(album)</i>
+                            </div>
+                            {% elif rating.type == "playlist" %}
+                            <img src="{{rating.profile.profile_pic.url}}" class="card_playlist_user_image">
+                            <div class="card_info_container">
+                                <a href="{% url 'addsongs_view' rating.object.playlist_id.id %}" id="rating_card_link"
+                                    class="stretched-link">
+                                    '{{rating.object.playlist_id.name }}'
+                                </a>
+                                User: {{rating.object.playlist_id.user_id.username}}<br><i>(playlist)</i>
+                            </div>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+            {% endif %}
+        </div>
 
 
+        {% if all_comments %}
+        <h2 class="comment_header">Recent Comments:</h2>
+        <div class="comment_card_container">
+            <div class="row">
+                {% for comment in all_comments %}
+                <div class="col-auto mb-3">
+                    <div class="card text-white bg-secondary" id="rating_card" style="width: 20rem;">
+                        <!-- Second, find out the type of item this rating is on and provide appropriate link and info.-->
+                        <div class="card_container">
+                            {% if comment.type == "song" %} 
+                            <img src="{{comment.object.album_id.cover}}" class="card_album_cover">
+                            <div class="card_info_container text-truncate">
+                                <p class="comment_message">'{{comment.comment_message}}'</p>
+                                <a href="{% url 'songinfo' comment.object.id %}" id="rating_card_link"
+                                    class="stretched-link">
+                                    {{comment.object.song_id.name }}
+                                </a>
+                                {{comment.date}} <i>(song)</i>
+                            </div>
+                            {% elif comment.type == "album" %}
+                            <img src="{{comment.object.cover}}" class="card_album_cover text-truncate">
+                            <div class="card_info_container text-truncate">
+                                <p class="comment_message">'{{comment.comment_message}}'</p>
+                                <a href="{% url 'album_info' comment.object.id %}" id="rating_card_link"
+                                    class="stretched-link">
+                                    {{comment.object.album_id.name }}
+                                </a>
+                                {{comment.date}} <i>(album)</i>
+                            </div>
+                            {% elif comment.type == "playlist" %}
+                            <img src="{{comment.profile.profile_pic.url}}" class="card_album_cover card_album_cover_2 text-truncate">
+                            <div class="card_info_container text-truncate">
+                                <p class="comment_message">'{{comment.comment_message}}'</p>
+                                <a href="{% url 'addsongs_view' comment.object.id %}" id="rating_card_link"
+                                    class="stretched-link">
+                                    '{{comment.object.playlist_id.name}}'
+                                </a>
+                                User: {{comment.object.playlist_id.user_id.username}}<i>(playlist)</i>
+                            </div>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+        {% endif %}
+
+
+</body>
 
 {% endblock %}

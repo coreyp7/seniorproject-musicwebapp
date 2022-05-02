@@ -2,3 +2,51 @@ body {
 	background-color: #343a40;
 	color: white;
 }
+
+
+.album_no_comments_section {
+	outline: 3px solid lightgrey;
+}
+
+.song_no_comments_section {
+	outline: 3px solid lightgrey;
+}
+
+.album_comments_section {
+	outline: 3px solid lightgrey;
+}
+
+.comments_section {
+	outline: 3px solid lightgrey;
+}
+
+.track_list_song_div {
+	color: whitesmoke;
+	background-color: grey;
+}
+
+.playlist_card {
+	background-color: rgb(201, 192, 212);
+	outline: 3px solid black;
+}
+
+.custom_playlist {
+	outline: 3px solid black;
+}
+
+.playlist_title {
+	color: black;
+}
+
+.modal_title {
+	color: black;
+}
+
+.create_playlist_btn {
+	background-color: rgb(161, 161, 161);
+	outline: 2px solid rgb(205, 160, 222);
+	font-weight: bold;
+
+	color: whitesmoke;
+	background-color: grey;
+}

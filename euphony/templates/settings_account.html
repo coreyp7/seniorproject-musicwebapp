@@ -19,7 +19,7 @@
 	<script type="text/javascript" src="https://code.jquery.com/jquery-1.7.1.min.js"></script>
 
 	<link rel="stylesheet" href="{% static 'css/settings.css' %}">
-  <link rel="stylesheet" href="{% static 'css/style.css' %}">
+	<link rel="stylesheet" href="{% static 'css/style.css' %}">
 
 </head>
 
@@ -37,8 +37,14 @@
 		<form method="post" enctype="multipart/form-data">
 			{% csrf_token %}
 
-			<div class="info">
+			<div class="settings_account_info">
 
+				<div>
+					<img class="profile-pic" src="{{request.user.profile.profile_pic.url}}">
+					&nbsp;&nbsp;
+					<a href="{% url 'change_profile_picture' %}">Change Profile Picture </a>
+				</div>
+				<br>
 				<div>
 					<label class="settingsInfo" for="Uname">UserName:</label>
 					<input class="settingsInput" id="Uname" name="username" type="text" placeholder="UserName"
@@ -59,11 +65,12 @@
 					<input class="settingsInput" id="email" name="email" type="email" placeholder="Email"
 						value="{{ user.email }}" autofocus />
 				</div>
+
+				<br>
 				<div>
 					<!-- TODO: Need to check if they already have connected their account. -->
 					<a href="{% url 'link_account' %}"> Connect Spotify Account </a>
 					<br>
-					<i>NOTE: Add check if their account is already connected.</i>
 				</div>
 				<br>
 
