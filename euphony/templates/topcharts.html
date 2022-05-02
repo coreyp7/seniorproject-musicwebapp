@@ -25,6 +25,7 @@
 
 <body>
   <center>
+    <br>
     <h3>Top Charts</h3>
     <div class="dropdown">
       <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown"
@@ -114,18 +115,18 @@
       {% if songs %}
       {% for song in songs %}
       <br>
-      <div class="card border-dark mb-3" style="max-width: 25rem;">
-        <h3 class="card-header">{{ forloop.counter }}. {{song.name}}</h3>
-        <img src="{{ song.album_cover_big }}" alt="missing">
+      <div class="card mb-3 top_center" style="max-width: 22rem; outline: 2px solid black;">
+        <h3 class="card-header topcharts_song_title">{{ forloop.counter }}. {{song.name}}</h3>
+        <img src="{{ song.album_cover_big }}" alt="missing" style="outline: 2px solid black; border-radius: 5px;">
         <div class="card-body text-dark">
           <h5 class="card-title">Release Date:</h5>
           <p>{{song.album_release_date}}</p>
           <h5 class="card-title">Featured Artists:</h5>
           <p>{{song.artists}}</p>
           <h5 class="card-title">Song:</h5>
-          <a href="{% url 'songinfo' song.id%}">{{song.name}}</a>,
+          <a href="{% url 'songinfo' song.id%}" class="topchart_link">{{song.name}}</a>
           <h5 class="card-title">Album:</h5>
-          <a href="{% url 'album_info' song.album_id %}">{{song.album_name}}</a>
+          <a href="{% url 'album_info' song.album_id %}" class="topchart_link">{{song.album_name}}</a>
         </div>
       </div>
       &nbsp;&nbsp;&nbsp;
@@ -135,7 +136,6 @@
       {% endif %}
     </div>
   </div>
-
 </body>
 
 </html>

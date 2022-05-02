@@ -775,6 +775,10 @@ body {
   padding: 5px;
 }
 
+.card_album_cover_2 {
+  border-radius: 50%;
+}
+
 .card_container {
   display: flex;
   flex-direction: row;
@@ -940,6 +944,7 @@ body {
   color: #76d478;
   color: rgb(231, 121, 121);
 }
+
 
 .playlist_card {
   margin: 0 auto;
@@ -1165,6 +1170,44 @@ body {
   margin-left: 0;
 }
 
+.no_friends {
+  padding-left: 20px;
+}
+
+.saved_play_group {
+  width: 1100px;
+  height: 140px;
+  margin: 0 auto;
+  outline: 2px solid rgb(189, 50, 189);
+  background-color: rgb(241, 238, 238);
+}
+
+.saved_play_group:hover {
+  background-color: rgb(241, 238, 238);
+}
+
+.saved_play_name {
+  height: 100px;
+  vertical-align: middle;
+  padding-left: 110px;
+  margin-top: -60px;
+  margin-left: 0;
+}
+
+.saved_play_creator {
+  top: -10px;
+  position: relative;
+}
+
+.saved_play_bio {
+  height: 100px;
+  vertical-align: middle;
+  padding-left: 110px;
+  margin-top: -60px;
+  margin-left: 0;
+
+}
+
 .play_no_comments {
   padding-top: 90px;
 }
@@ -1202,6 +1245,30 @@ a {
   text-decoration: none;
 }
 
-a:hover {
+
+.top_center {
+  margin: 0 auto;
+  background-color: rgb(241, 238, 238)
+}
+
+.dash_div {
+  margin: 0 auto;
+}
+
+.topcharts_song_title {
+  color: black;
+}
+
+a {
+  text-decoration: none;
+}
+
+.topchart_link {
+  color: #ac43f1;
+}
+
+
+.topchart_link:hover {
+  color: #980af7;
   text-decoration: none;
 }

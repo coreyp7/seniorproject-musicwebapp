@@ -152,7 +152,7 @@
                     <div class="card text-white bg-secondary" id="rating_card" style="width: 20rem;">
                         <!-- Second, find out the type of item this rating is on and provide appropriate link and info.-->
                         <div class="card_container">
-                            {% if comment.type == "song" %}
+                            {% if comment.type == "song" %} 
                             <img src="{{comment.object.album_id.cover}}" class="card_album_cover">
                             <div class="card_info_container text-truncate">
                                 <p class="comment_message">'{{comment.comment_message}}'</p>
@@ -173,7 +173,7 @@
                                 {{comment.date}} <i>(album)</i>
                             </div>
                             {% elif comment.type == "playlist" %}
-                            <img src="{{comment.profile.profile_pic.url}}" class="card_album_cover text-truncate">
+                            <img src="{{comment.profile.profile_pic.url}}" class="card_album_cover card_album_cover_2 text-truncate">
                             <div class="card_info_container text-truncate">
                                 <p class="comment_message">'{{comment.comment_message}}'</p>
                                 <a href="{% url 'addsongs_view' comment.object.id %}" id="rating_card_link"
