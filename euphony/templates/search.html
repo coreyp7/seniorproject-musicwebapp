@@ -22,37 +22,37 @@
 
 {% else %}
 
-<h1 class="search_results_text">Search Results For: </h1>
+<h1 class="search_results_text">Search Results: </h1>
 
 <div class="search_results">
     <div class="search_results_container">
         <h class="search_category">Songs</h>
         <div class="search_results_songs">
             {% if songs %}
-                {% for song in songs %}
-                <!-- Loop through each of our song dictionaries.
+            {% for song in songs %}
+            <!-- Loop through each of our song dictionaries.
                 You can see all the fields acessible in the track_info dicionary
                 in search_results in views.py.-->
-                <div class="search_result_song">
-                    <a class="search_result_text_info" href="{% url 'songinfo' song.id%}">
-                        <div class="search_result_song_container">
-                            <div class="search_result_info">
-                                <h class="search_result_title">Song: </h>
-                                <h class="search_result_text_result">{{song.name}}</h>
-                                <br>
-                                <h class="search_result_title">Album: </h>
-                                <h class="search_result_text_result">{{song.album_name}}</h>
-                                <br>
-                                <h class="search_result_title"> Artist(s): </h>
-                                <h class="search_result_text_result">{{song.artists}}</h>
-                                <br>
-                            </div>
-                            <img class="search_result_song_img" src="{{song.album_cover}}">
-                        </div>                
-                    </a>
-                </div>
-                {% endfor %}
-        {% else %}
+            <div class="search_result_song">
+                <a class="search_result_text_info" href="{% url 'songinfo' song.id%}">
+                    <div class="search_result_song_container">
+                        <div class="search_result_info">
+                            <h class="search_result_title">Song: </h>
+                            <h class="search_result_text_result">{{song.name}}</h>
+                            <br>
+                            <h class="search_result_title">Album: </h>
+                            <h class="search_result_text_result">{{song.album_name}}</h>
+                            <br>
+                            <h class="search_result_title"> Artist(s): </h>
+                            <h class="search_result_text_result">{{song.artists}}</h>
+                            <br>
+                        </div>
+                        <img class="search_result_song_img" src="{{song.album_cover}}">
+                    </div>
+                </a>
+            </div>
+            {% endfor %}
+            {% else %}
             <h5>No song results were found.</h5>
             {% endif %}
         </div>
@@ -62,29 +62,29 @@
         <h class="search_category">Albums</h>
         <div class="search_results_albums">
             {% if albums %}
-                {% for album in albums %}
-                <!-- Loop through each of our album dictionaries.
+            {% for album in albums %}
+            <!-- Loop through each of our album dictionaries.
                 You can see all the fields acessible in the album_info dicionary
                 in search_results in views.py.-->
-                <div class="search_result_album">
-                    <a class="search_result_text_info" href="{% url 'album_info' album.id %}">
-                        <div class="search_result_album_container">
-                            <div class="search_result_info">
-                                <h class="search_result_title">Album: </h>
-                                <h class="search_result_text_result">{{album.name}}</h>
-                                <br>
-                                <h class="search_result_title">Artist(s): </h>
-                                <h class="search_result_text_result">{{album.artists}}</h>
-                                <br>
-                                <h class="search_result_title"> Release Date: </h>
-                                <h class="search_result_text_result">{{album.release_date}}</h>
-                                <br>
-                            </div>
-                            <img class="search_result_album_img" src="{{album.cover}}">
-                        </div>                
-                    </a>
-                </div>
-                {% endfor %}
+            <div class="search_result_album">
+                <a class="search_result_text_info" href="{% url 'album_info' album.id %}">
+                    <div class="search_result_album_container">
+                        <div class="search_result_info">
+                            <h class="search_result_title">Album: </h>
+                            <h class="search_result_text_result">{{album.name}}</h>
+                            <br>
+                            <h class="search_result_title">Artist(s): </h>
+                            <h class="search_result_text_result">{{album.artists}}</h>
+                            <br>
+                            <h class="search_result_title"> Release Date: </h>
+                            <h class="search_result_text_result">{{album.release_date}}</h>
+                            <br>
+                        </div>
+                        <img class="search_result_album_img" src="{{album.cover}}">
+                    </div>
+                </a>
+            </div>
+            {% endfor %}
             {% else %}
             <h5>No album results were found.</h5>
             {% endif %}
@@ -96,65 +96,65 @@
         <h class="search_category">Playlists</h>
         <div class="search_results_playlists">
             {% if playlists %}
-                {% for playlist in playlists %}
-                <!-- Loop through each of our album dictionaries.
+            {% for playlist in playlists %}
+            <!-- Loop through each of our album dictionaries.
                 You can see all the fields acessible in the album_info dicionary
                 in search_results in views.py.-->
-                <div class="search_result_playlist">
-                    <a class="search_result_text_info" href="{% url 'addsongs_view' playlist.id %}">
-                        <div class="search_result_playlist_container">
-                            <div class="search_result_info_user_playlist">
-                                <h class="search_result_title">Playlist: </h>
-                                <h class="search_result_text_result">{{ playlist.name }}</h>
-                                <br>
-                                <h class="search_result_title">User: </h>
-                                <h class="search_result_text_result">{{playlist.user_id.username}}</h>
-                                <br>
-                            </div>
-                        </div>                
-                    </a>
-                </div>
-                {% endfor %}
+            <div class="search_result_playlist">
+                <a class="search_result_text_info" href="{% url 'addsongs_view' playlist.id %}">
+                    <div class="search_result_playlist_container">
+                        <div class="search_result_info_user_playlist">
+                            <h class="search_result_title">Playlist: </h>
+                            <h class="search_result_text_result">{{ playlist.name }}</h>
+                            <br>
+                            <h class="search_result_title">User: </h>
+                            <h class="search_result_text_result">{{playlist.user_id.username}}</h>
+                            <br>
+                        </div>
+                    </div>
+                </a>
+            </div>
+            {% endfor %}
             {% else %}
             <h5>No playlists found :(</h5>
             {% endif %}
         </div>
 
         <style>
-        #imagesize {
-            width:40px;
-            height:40px;
-        }
+            #imagesize {
+                width: 40px;
+                height: 40px;
+            }
         </style>
 
 
         <h class="search_category">Users</h>
         <div class="search_results_users">
             {% if users %}
-                {% for user in users %}
-                <!-- Loop through each of our album dictionaries.
+            {% for user in users %}
+            <!-- Loop through each of our album dictionaries.
                 You can see all the fields acessible in the album_info dicionary
                 in search_results in views.py.-->
-                <div class="search_result_user">
-                    <a class="search_result_text_info" href="{% url 'show_user' user.id %}">
-                        <div class="search_result_playlist_container">
-                            <div class="search_result_info_user_playlist">
-                                {% if user.profile.profile_pic %}
-                                    <img src="{{ user.profile.profile_pic.url }}"  id="imagesize" class="rounded-circle">
-                                {% else %}
-                                 <img src="{% static 'images/Default_Pic.png' %}"  id="imagesize" class="rounded-circle">
-                                {% endif %}
-                                <h class="search_result_title">User: </h>
-                                <h class="search_result_text_result">{{ user }}</h>
-                                <br>
-                            </div>
+            <div class="search_result_user">
+                <a class="search_result_text_info" href="{% url 'show_user' user.id %}">
+                    <div class="search_result_playlist_container">
+                        <div class="search_result_info_user_playlist">
+                            {% if user.profile.profile_pic %}
+                            <img src="{{ user.profile.profile_pic.url }}" id="imagesize" class="rounded-circle">
+                            {% else %}
+                            <img src="{% static 'images/Default_Pic.png' %}" id="imagesize" class="rounded-circle">
+                            {% endif %}
+                            <h class="search_result_title">User: </h>
+                            <h class="search_result_text_result">{{ user }}</h>
+                            <br>
                         </div>
-                    </a>
-                </div>
+                    </div>
+                </a>
+            </div>
             <br>
-                {% endfor %}
+            {% endfor %}
             {% else %}
-                <h5>No user found :(</h5>
+            <h5>No user found :(</h5>
             {% endif %}
         </div>
     </div>
