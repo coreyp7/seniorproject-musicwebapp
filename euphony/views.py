@@ -132,12 +132,11 @@ def random_song(request):
 
 def home(request):
     time.sleep(0.01)
-    #print(User_Setting_Ext.objects.filter(user=request.user).count())
-
     if request.user.is_authenticated:
-        return render(request, "dash.html", {})
+        if User_Setting_Ext.objects.filter(user=request.user).count() == 0:
+            return render(request, "register2.html", {})
 
-    return render(request, "homepage.html", {})
+    return render(request, "home.html", {})
 
 def homepage(request):
     time.sleep(0.01)
