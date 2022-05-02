@@ -1,0 +1,36 @@
+{% extends 'base.html' %}
+
+<title>{% block title %} {{playlist.name}} {% endblock %}</title>
+
+{% block content %}
+
+<body style="background-color: white;"></body>
+<br>
+<h1>{{playlist.name}}</h1>
+<br>
+<button type="submit" style="float: right;" class="btn btn-secondary"><a href="{% url 'playlist_song' playlist.id %}"
+        style="color: white;">+</a></button>
+<br>
+<table style="background-color: whitesmoke;" class="table">
+    <br>
+    <thead>
+        <tr>
+            <th scope="col">#</th>
+            <th scope="col">Song</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for song in listsong %}
+        <tr>
+            {% for s in song %}
+            <th>{{forloop.parentloop.counter}}</th>
+            <td><iframe style="border-radius:12px" src="https://open.spotify.com/embed/track/{{s.id}}" width="100%"
+                    height="80" frameBorder="0" allowfullscreen="" allow="autoplay; 
+                clipboard-write; 
+                encrypted-media; fullscreen; picture-in-picture"></iframe></td>
+            {% endfor %}
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endblock %}

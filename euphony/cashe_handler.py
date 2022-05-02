@@ -1,9 +1,9 @@
 import spotipy
-from account_link.models import UserToken
+from .models import UserToken
 import json
 
-class DatabaseTokenHandler(spotipy.cache_handler.CacheHandler):
 
+class DatabaseTokenHandler(spotipy.cache_handler.CacheHandler):
     def __init__(self, user):
         self.user = user
 
@@ -12,7 +12,7 @@ class DatabaseTokenHandler(spotipy.cache_handler.CacheHandler):
         try:
 
             token_object = UserToken.objects.get(user=self.user)
-            token_object = json.loads(token_object.token.replace("'",'"'))
+            token_object = json.loads(token_object.token.replace("'", '"'))
 
         except:
 
