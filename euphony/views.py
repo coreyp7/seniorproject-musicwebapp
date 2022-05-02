@@ -20,6 +20,8 @@ from django.contrib.contenttypes.models import ContentType
 import itertools
 from datetime import datetime, timedelta
 import os
+import time
+
 
 import django_comments
 from django_comments_xtd.models import XtdComment
@@ -52,6 +54,7 @@ from .forms import ProfileUpdateForm
 
 from django.contrib.auth.forms import PasswordChangeForm
 from django.contrib.auth import update_session_auth_hash
+from PIL import Image
 
 scope = "user-library-read user-top-read"
 #sp = spotipy.Spotify(auth_manager=SpotifyOAuth(scope=scope))
@@ -141,7 +144,7 @@ def prepare_post_dicts(song_list, user_friends, number_of_posts=10):
     return posts
 
 def dash(request):
-
+    time.sleep(0.01)
     '''
     returns a webapge of recommendations, or if an account is unlinked it returns "account not linked with spotify"
 
@@ -673,12 +676,43 @@ def add_song(request, list_id, song_id):
 def allplaylists_view(request):
     if request.user.is_authenticated:
         playlists = Playlist.objects.filter(user_id=request.user)
-        return render(request,'playlists.html',{'playlists': playlists})
+        playlist_dicts = []
+        output_list = []
+        temp_list = []
+        count = 0
+        for playlist in playlists:
+            cover = None
+            has_cover = False
+            cover = "Default_Pic.png"
+            for song in playlist.songs.all():
+                cover = song.album_id.cover
+                has_cover = True
+                break
+
+            new_playlist_dict = {
+                "cover": cover,
+                "playlist_id": playlist.id,
+                "playlist_name": playlist.name,
+                "has_cover": has_cover,
+                "date_created": playlist.date_created
+            }
+
+            playlist_dicts.append(new_playlist_dict)
+
+            temp_list.append(new_playlist_dict)
+            if (count % 4) == 3:
+                output_list.append(temp_list)
+                temp_list = []
+      
+            count += 1
+        if len(temp_list) != 0:
+              output_list.append(temp_list)
+
+        return render(request,'playlists.html',{'playlists': playlists, 'playlist_dicts': playlist_dicts, 'output_list': output_list})
     else:
         return redirect('login')
 
 def create_playlist(request):
-    submitted = False
     if request.method == "POST":
         form = PlaylistForm(request.POST)
         if form.is_valid():
@@ -687,18 +721,14 @@ def create_playlist(request):
             playlist.date_created = datetime.now().utcnow().date()
             playlist.save()
 
-            messages.success(request, ('New Playlist Created!'))
             return redirect('playlists')
     else:
         form = PlaylistForm
-        if 'submitted' in request.GET:
-            submitted = True
-        return render(request,'createplaylist.html',{'form': form, 'submitted': submitted})
+    return render(request,'playlists.html',{'form': form})
 
 def delete_playlist(request, list_id):
     item = Playlist.objects.get(pk=list_id)
     item.delete()
-    messages.success(request, ('Playlist Has Been Deleted!'))
     return redirect('playlists')
 
 def delete_song(request, list_id, song_id):
