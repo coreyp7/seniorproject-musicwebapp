@@ -1,0 +1,27 @@
+{% extends 'profile.html' %}
+
+{% block content %}
+    {% if searched2 %}
+<div>
+
+        <h1>You Searched For {{ searched2 }}</h1>
+        <h4>Select a user to view their profile page</h4>
+        <br/>
+            ______________________________________<br><br>
+        {% for user in users %}
+            - {{ user.id }} | <a href="{% url 'show_user' user.id %}">{{ user }}</a>
+            <br/>
+            {% load friendshiptags %}
+            Friends: {% friends user %}
+            ______________________________________<br><br>
+
+        <br/>
+        {% endfor %}
+
+    {% else %}
+            <h1>Hey! You Forgot To Search For A User :(</h1>
+        {% endif %}
+    </div>
+
+
+{% endblock %}

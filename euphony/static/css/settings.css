@@ -8,8 +8,29 @@
   text-decoration: none;
 }
 
-body{
-   background-color: #f3f5f9;
+ #logo {  
+  text-align: center;  
+  }  
+
+.hero{
+  position: fixed; 
+  top: 0; 
+  left: 0; 
+
+  min-width: 100%;
+  min-height: 100%;
+  background-image: linear-gradient(to bottom right, #552586, #B589D6);
+}
+
+.title{
+  color: white;
+  padding-top: 0%;
+  font-size: large;
+}
+
+.info{
+  color: white;
+  padding-top: 2%;
 }
 
 .wrapper{
@@ -25,34 +46,34 @@ body{
   position: fixed;
 }
 
-.wrapper .sidebar h2{
+.wrapper .sidebar .base_setting_h2{
   color: #fff;
   text-transform: uppercase;
   text-align: center;
   margin-bottom: 30px;
 }
 
-.wrapper .sidebar ul li{
-  padding: 15px;
+.wrapper .sidebar .base_setting_ul .base_setting_li{
+  padding: 8%;
   border-bottom: 1px solid #bdb8d7;
   border-bottom: 1px solid rgba(0,0,0,0.05);
   border-top: 1px solid rgba(255,255,255,0.05);
 }    
 
-.wrapper .sidebar ul li a{
+.wrapper .sidebar .base_setting_ul .base_setting_li .base_setting_a{
   color: #bdb8d7;
   display: block;
 }
 
-.wrapper .sidebar ul li a .fas{
+.wrapper .sidebar .base_setting_ul .base_setting_li .base_setting_a .fas{
   width: 25px;
 }
 
-.wrapper .sidebar ul li:hover{
+.wrapper .sidebar .base_setting_ul .base_setting_li:hover{
   background-color: #212529;
 }
     
-.wrapper .sidebar ul li:hover a{
+.wrapper .sidebar .base_setting_ul .base_setting_li:hover .base_setting_a{
   color: #fff;
 }
  
@@ -64,40 +85,19 @@ body{
   display: flex;
 }
 
-.general_settings_name{
-    position: absolute;
-    right: 47%;
-    text-align: center;
-    /* border: 3px solid green; */
-    font-weight: bold;
-    font-size: 40px;
+.username_spacing{
+  padding-top: 50px;
 }
 
-.account_settings_name{
+.settings_name{
+    padding-top: 10px;
     position: absolute;
-    right: 47%;
+    right: 37%;
     text-align: center;
     /* border: 3px solid green; */
     font-weight: bold;
     font-size: 40px;
-}
-
-.security_settings_name{
-    position: absolute;
-    right: 47%;
-    text-align: center;
-    /* border: 3px solid green; */
-    font-weight: bold;
-    font-size: 40px;
-}
-
-.account_reset_password{
-    position: absolute;
-    right: 47%;
-    text-align: center;
-    /* border: 3px solid green; */
-    font-weight: bold;
-    font-size: 40px;
+    padding-bottom: 10px;
 }
 
 .settings_reset_password{
@@ -107,25 +107,24 @@ body{
     left: 500px;
 }
 
-.info{
+.settings_account_info{
     padding-top: 80px;
     margin-bottom: 10px;
     position: absolute;
-    right: 49%;
+    right: 39%;
     text-align: center;
 }
 
 .info-general{
-    padding-top: 60px;
+    padding-top: 80px;
     position: absolute;
-    right: 54%;
+    right: 44%;
     text-align: center;
 }
 
 .main_content {
   position: relative;
-  left: 200px;
-  /* border: 3px solid #73AD21; */
+  height: 100%;
 }
 
 .form-control{
@@ -134,7 +133,7 @@ body{
 
 .account_settings_save{
   position: absolute;
-  right: 37%;
+  right: 26%;
 }
 
 .password_reset_save{
@@ -188,3 +187,38 @@ body{
 .general_settings_switch {
   padding-bottom: 20px;
 }
+
+.profile-pic{
+  max-width: 100px;
+  max-height:100px;
+  margin: 0 auto;
+  border-radius: 50%;
+}
+
+@media only screen and (max-width: 880px) {
+
+  .base_setting_h2{
+  font-size: 10px;
+  }
+
+  .sidebar{
+    max-width: 70px;
+  }  
+
+  .base_setting_ul{
+    margin: 0 auto;
+    padding-left: 1px;
+  }
+
+  .info{
+    left: 120px;
+  }
+
+  .settings_name{
+    left: 35%;
+  }
+
+  .info-general{
+    padding-top: 130px;
+    right: 35%;
+  }

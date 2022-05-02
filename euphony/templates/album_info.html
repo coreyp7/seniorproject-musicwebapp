@@ -1,27 +1,141 @@
 {% extends 'base.html' %}
-
-{% block title %}Album Results{% endblock %}
+{% load static %}
+{% load comments %}
+{% load comments_xtd %}
+{% load i18n %}
 
 {% block content %}
 
-<h1> Album Results </h1>
 
-<div class="card" style="width: 40rem;">
-  <div class="card-body">
-    <iframe style="border-radius:12px" src="https://open.spotify.com/embed/album/{{id}}" width="100%" height="380"
-      frameBorder="0" allowfullscreen=""
-      allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture">
-    </iframe>
+<div class="albuminfo_container">
+  <div class="albuminfo_card">
+
+    {{object.name}}
+    <h5 class="album_info_tags">Album Name:</h5>
+    <h5 class="album_infos">{{album.name}}</h5>
+    <h5 class="album_info_tags">Released:</h5>
+    <h5 class="album_infos">{{album.release_date}}</h5>
+    <h5 class="album_info_tags">Artist(s):</h5>
+    <h5 class="album_infos">{{album.artists}}</h5>
+
+
+    <img class="album_image" src="{{album.cover}}">
+
+    {% if user.is_authenticated %}
+    <div class="album_like_dislike_buttons">
+      <div class="like_button">
+        <form method="post" action="upvote/{{album.id}}">
+          {% csrf_token %}
+          {% if user_voted %}
+          <button type="submit" class="btn btn-success">Upvote</button>
+          {% else %}
+          <button type="submit" class="btn btn-outline-success">Upvote</button>
+          {% endif %}
+          <br>
+          Upvotes: {{upvotes}}
+        </form>
+      </div>
+      <div class="dislike_button">
+        <form method="post" action="downvote/{{album.id}}">
+          {% csrf_token %}
+          {% if user_downvoted %}
+          <button type="submit" class="btn btn-danger" data-mdb-ripple-color="dark">Downvote</button>
+          {% else %}
+          <button type="submit" class="btn btn-outline-danger" data-mdb-ripple-color="dark">Downvote</button>
+          {% endif %}
+          <br>
+          Downvotes: {{downvotes}}
+        </form>
+
+        {% else %}
+
+        <div class="album_like_dislike_buttons">
+      <div class="like_button">
+          <div class="no_like"></div>
+          <div class="no_dislike"></div>
+      </div>
+      <div class="dislike_button">
+        <div class="no_like"></div>
+          <div class="no_dislike"></div>
+
+        {% endif %}
+      </div>
+    </div>
+  </div>
+
+
+
+  <div class="track_list">
+    <h5 class="album_info_tags">Track List: </h5>
+    <h5 class="album_infos">{{album.total_tracks}} Songs Total</h5>
+    {% if songs %}
+    {%for song in songs %}
+    {% if song.explicit %}
+
+    <a id="track_list_song" href="{% url 'songinfo' song.id %}">
+      <div class="track_list_song_div">
+        <div class="track_list_song_div_number">
+          {{forloop.counter}}
+        </div>
+        <div class="track_list_song_div_name">
+          {{song.name}} (Explicit)
+        </div>
+        <div class="track_list_song_div_time">
+          {{song.duration}}
+        </div>
+      </div>
+    </a>
+
+
+
+    {% else %}
+    <a id="track_list_song" href="{% url 'songinfo' song.id %}">
+      <div class="track_list_song_div">
+        <div class="track_list_song_div_number">
+          {{forloop.counter}}
+        </div>
+        <div class="track_list_song_div_name">
+          {{song.name}}
+        </div>
+        <div class="track_list_song_div_time">
+          {{song.duration}}
+        </div>
+      </div>
+    </a>
+    {% endif %}
+    <div class="tracklist_spacing"></div>
+    {% endfor %}
+    {% endif %}
   </div>
 </div>
+</form>
 
-<div>
-  {% if songs %}
-  {%for song in songs %}
-  <a href="{% url 'songinfo' song.id %}">{{song.name}}</a>
-  <br>
-  {% endfor %}
+<div class="comments_div">
+  <h4 class="text-center comments_text">Comments</h4>
+  {% get_comment_count for albumid as comment_count %}
+  <div class="text-center comments_total">
+    {{ comment_count }} comment{{ comment_count|pluralize }}
+    ha{{ comment_count|pluralize:"s,ve"}} been posted.
+  </div>
+
+  {% if comment_count %}
+  <ul class="media-list album_comments_section">
+    {% render_xtdcomment_tree for albumid allow_flagging allow_feedback show_feedback %}
+  </ul>
+
+  {% else %}
+  <ul class=" album_no_comments_section">
+    <h5 class="album_no_comments">No Comments</h5>
+  </ul>
   {% endif %}
-</div>
 
-{% endblock %}
+  {% if albumid.allow_comments %}
+  <div class="comment comment_form_section">
+    <div class="card comments">
+      {% render_comment_form for albumid %}
+    </div>
+  </div>
+  {% endif %}
+
+  {% endblock %}
+</div>

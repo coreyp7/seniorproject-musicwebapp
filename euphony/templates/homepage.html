@@ -1,0 +1,28 @@
+{%include 'base.html'%}
+{% load static %}
+
+<head>
+    <title>Euphony</title>
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+
+</head>
+
+<body>
+    <div class="hero">
+        <div class="e_logo">
+            <img src="{% static 'images/logo_euphony.png' %}" alt="logo" class="music" />
+        </div>
+        <div class="info">
+            <center>
+                <h3>Discover Numerous Tracks in a Matter of <a href="{% url 'random_song' %}" class="click_homepage"
+                        style="text-decoration: underline;">Clicks</a></h3>
+            </center>
+        </div>
+    </div>
+    <center>
+        <div class="bouncy-btns">
+            <a href="{% url 'register' %}" class="button1 bouncy" style="animation-delay:0.07s">Register</a>
+            <a href="{% url 'login' %}" class="button1 bouncy" style="animation-delay:0.14s">Login</a>
+    </center>
+    </div>
+</body>

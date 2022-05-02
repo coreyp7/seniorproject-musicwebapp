@@ -1,24 +1,27 @@
 {% extends 'base.html' %}
-
-{% block title %}Search Song{% endblock %}
+{% load static %}
 
 {% block content %}
 
 
 {% if not songs %}
-<h1> Search for a Song </h1>
 
-<form method='post' action="playlist_song_results/{{playlist.id}}">
-    {% csrf_token %}
-    <br>
-    <div>
-        Search: {{ form.song_name }}
-    </div>
-    <br>
+<link rel="stylesheet" href="{% static 'css/style.css' %}">
 
-    <button class="btn btn-primary btn-lg" type="submit">Submit</button>
+<center>
+    <h1> Search for a Song to add </h1>
+    <form method='post' action="playlist_song_results/{{playlist.id}}">
+        {% csrf_token %}
+        <br>
+        <div>
+            {{ form.song_name }}
+        </div>
+        <br>
 
-</form>
+        <button class="btn btn-primary btn-lg" type="submit">Submit</button>
+
+    </form>
+</center>
 {% endif %}
 
 {% if none %}
@@ -28,26 +31,31 @@
 {% endif %}
 
 {% if songs %}
-<h1> Search Results </h1>
+<center>
+    <h1> Song Search Results </h1>
+</center>
+
 
 <!-- For each key/value pair in this track's dictionary.-->
 {% for song in songs %}
-id: {{song.id}}
 <br>
-<a href="{% url 'songinfo' song.id%}">Song: {{song.name}}</a>
-<br>
-Album id: {{song.album_id}}
-<br>
-Album: {{song.album_name}}
-<br>
-Artist(s): {{song.artists}}
-<br><br>
-<td>
-    <form method="POST" action="add_song/{{playlist.id}}/{{song.id}}">
-        {% csrf_token %}
-        <button class="btn btn-outline-secondary" type="submit">Add Song</button>
-    </form>
-</td>
+
+<center>
+
+    <div class="card" style="width: 18rem;">
+        <img class="" src="{{song.album_cover}}" alt="Card image cap">
+        <div class="card-body ">
+            <h5 class="card-title"><a href="{% url 'songinfo' song.id%}" style="color: #9966bf;">Song: {{song.name}}</a>
+            </h5>
+            <a class="card-text" href="{% url 'album_info' song.album_id%}" style="color: #9966bf;">Album:
+                {{song.album_name}}</a>
+            <form method="POST" action="add_song/{{playlist.id}}/{{song.id}}">
+                {% csrf_token %}
+                <button class="btn btn-primary" type="submit" style="background: #9966bf;">Add Song</button>
+            </form>
+        </div>
+    </div>
+</center>
 {% endfor %}
 
 {% endif %}

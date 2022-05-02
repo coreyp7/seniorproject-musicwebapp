@@ -1,48 +1,87 @@
 {% extends 'base.html' %}
+{% load static %}
 {% load comments %}
-{% load comments_xtd %}
+{% load i18n comments_xtd %}
 
 {% block title %} Song Info {% endblock %}
 
 
 {% block content %}
 
+<link rel="stylesheet" href="{% static 'css/style.css' %}">
 
-<div class="container">
-	<form method="POST">
+<div class="songinfo_container">
+  {{object.name}}
+  <h5 class="song_info_tags">Song Name:</h5>
+  <h5 class="song_infos">{{songid.name}}</h5>
+  <h5 class="song_info_tags">Album Name:</h5>
+  <h5 class="song_infos song_info_album"><a href="{% url 'album_info' album.id %}">{{album.name}}</a></h5>
+  <h5 class="song_info_tags">Artist(s):</h5>
+  <h5 class="song_infos">{{song_artists}}</h5>
+
+
+  <div class="spotify_container2">
+    <iframe loading="lazy" class="spotify_embeded" src="https://open.spotify.com/embed/track/{{songid.id}}">
+    </iframe>
+  </div>
+
+
+
+  {% if user.is_authenticated %}
+  <div class="like_dislike_buttons">
+    <div class="like_button">
+      <form method="post" action="upvote/{{songid.id}}">
         {% csrf_token %}
-        <center>
-          {{object.name}}
-       <h1>{{songid.name}}</h1>
-       <h1><a href="{% url 'album_info' album.id %}">{{album.name}}</a></h1>
-       <iframe style="border-radius:12px" 
-       src="https://open.spotify.com/embed/track/{{songid.id}}" 
-       width="100%" height="80" frameBorder="0" allowfullscreen="" allow="autoplay; 
-       clipboard-write; 
-       encrypted-media; fullscreen; picture-in-picture"></iframe>
-       </center>
-     </form>
-     {% get_comment_count for songid as comment_count %}
-     <div class="py-4 text-center">
-       <a href="{% url 'search_song' %}">Back to the song search</a>
-       &nbsp;&sdot;&nbsp;
-       {{ comment_count }} comment{{ comment_count|pluralize }}
-       ha{{ comment_count|pluralize:"s,ve"}} been posted.
-     </div>
-     
-     {% if comment_count %}
-     <ul class="media-list">
-       {% render_xtdcomment_tree for songid %}
-     </ul>
-     {% endif %}
+        {% if user_upvoted %}
+        <button type="submit" class="btn btn-success">Upvote</button>
+        {% else %}
+        <button type="submit" class="btn btn-outline-success">Upvote</button>
+        {% endif %}
+        <br>
+        Upvotes: {{upvotes}}
+      </form>
+    </div>
+    <div class="dislike_button">
+      <form method="post" action="downvote/{{songid.id}}">
+        {% csrf_token %}
+        {% if user_downvoted %}
+        <button type="submit" class="btn btn-danger" data-mdb-ripple-color="dark">Downvote</button>
+        {% else %}
+        <button type="submit" class="btn btn-outline-danger" data-mdb-ripple-color="dark">Downvote</button>
+        {% endif %}
+        <br>
+        Downvotes: {{downvotes}}
+      </form>
+      {% endif %}
+    </div>
+  </div>
+</div>
 
-     {% if songid.allow_comments %}
-     <div class="comment mt-3 mb-5">
-       <h4 class="text-center mb-4">Post a Comment</h4>
-       <div class="card pt-4">
-         {% render_comment_form for songid %}
-       </div>
-     </div>
-     {% endif %}
+<div class="comments_div">
+  <h4 class="text-center comments_text">Comments</h4>
+  {% get_comment_count for songid as comment_count %}
+  <div class="text-center comments_total">
+    {{ comment_count }} comment{{ comment_count|pluralize }}
+    ha{{ comment_count|pluralize:"s,ve"}} been posted.
+  </div>
 
-{% endblock %}
+  {% if comment_count %}
+  <ul class="media-list comments_section">
+    {% render_xtdcomment_tree for songid allow_flagging allow_feedback show_feedback %}
+  </ul>
+  {% else %}
+  <ul class=" song_no_comments_section">
+    <h5 class="song_no_comments">No Comments</h5>
+  </ul>
+  {% endif %}
+
+  {% if songid.allow_comments %}
+  <div class="comment comment_form_section">
+    <div class="card comments">
+      {% render_comment_form for songid %}
+    </div>
+  </div>
+  {% endif %}
+
+  {% endblock %}
+</div>

@@ -10,7 +10,13 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/4.0/ref/settings/
 """
 
+import os
+
 from pathlib import Path
+from django.urls import reverse_lazy
+from django.utils.translation import gettext_lazy as _
+
+import os
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -43,6 +49,7 @@ INSTALLED_APPS = [
     "django_comments_xtd",
     "django_comments",
     "friendship",
+    #"crispy_forms",
 ]
 
 # comments settings
@@ -53,6 +60,27 @@ COMMENTS_XTD_CONFIRM_EMAIL = False
 COMMENTS_XTD_MAX_THREAD_LEVEL = 3
 
 COMMENTS_XTD_LIST_ORDER = ("-thread_id", "order")
+
+COMMENTS_XTD_APP_MODEL_OPTIONS = {
+    'euphony.song' : {
+        'allow_flagging': True,
+        'allow_feedback': True,
+        'show_feedback': True,
+        'who_can_post': 'all'  # Valid values: 'all', users'
+    },
+    'euphony.album' : {
+        'allow_flagging': True,
+        'allow_feedback': True,
+        'show_feedback': True,
+        'who_can_post': 'all'  # Valid values: 'all', users'
+    },
+    'euphony.playlist' : {
+        'allow_flagging': True,
+        'allow_feedback': True,
+        'show_feedback': True,
+        'who_can_post': 'all'  # Valid values: 'all', users'
+    }
+}
 
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
@@ -114,7 +142,7 @@ AUTH_PASSWORD_VALIDATORS = [
 
 LANGUAGE_CODE = "en-us"
 
-TIME_ZONE = "UTC"
+TIME_ZONE = "America/New_York"
 
 USE_I18N = True
 
@@ -125,8 +153,20 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/4.0/howto/static-files/
 
 STATIC_URL = "static/"
+MEDIA_URL = '/media/'
+
+STATICFILES_DIRS = [
+    os.path.join(BASE_DIR, 'static')
+]
+
+MEDIA_ROOT = os.path.join(BASE_DIR, 'euphony_app/media')
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.0/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
+
+MEDIA_URL = "images/"
+
+
+MEDIA_ROOT = os.path.join(BASE_DIR, 'euphony/static/images')
