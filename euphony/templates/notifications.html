@@ -15,20 +15,20 @@
             <div class="card col-md-4 noti_card">
                 <img class="card-img-top" src="{{ request.from_user.profile.profile_pic.url }}" alt="Card image cap">
                 <div class="card-body">
-                    <h5 class="card-title card_user"><a href="{% url 'show_user' request.from_user.id %}"><b>{{request.from_user}}</b></a></h5>
+                    <h5 class="card-title card_user"><a class="from_user_text" href="{% url 'show_user' request.from_user.id %}"><b>{{request.from_user}}</b></a></h5>
                         <p class="card-text"></p>
                 </div>
-                <ul class="list-group list-group-flush">
-                    <li class="list-group-item">Wants to be Friends</li>
+                <ul class="list-group list-group-flush friend_card">
+                    <li class="list-group-item friend_card">Wants to be Friends</li>
                 </ul>
                 <div class="btn-toolbar length">
                     <form class="d-flex btn_style" method=POST action="{% url 'accept_friend_request_notifications' request.from_user.id %}">
                     {% csrf_token %}
-                    <button class="btn btn_accept btn-primary mr-2" type="submit">Accept</button>
+                    <button class="btn notif_btn btn_accept mr-2" type="submit">Accept</button>
                     </form>
                     <form class="d-flex btn_style" method=POST action="{% url 'reject_friend_request_notifications' request.from_user.id %}">
                     {% csrf_token %}
-                    <button class="btn btn-primary mr-2" type="submit">Reject</button>
+                    <button class="btn notif_btn mr-2" type="submit">Reject</button>
                     </form>
                 </div>
             </div>
