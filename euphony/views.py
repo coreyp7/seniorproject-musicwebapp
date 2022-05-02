@@ -60,6 +60,76 @@ scope = "user-library-read user-top-read"
 #sp = spotipy.Spotify(auth_manager=SpotifyOAuth(scope=scope))
 sp = spotipy.Spotify(client_credentials_manager=SpotifyClientCredentials())
 
+def random_song(request):
+    time.sleep(0.01)
+    music_id = Song.objects.order_by('?').first().id
+    track = sp.track(f"spotify:track:"+music_id)
+
+    track_artists = []
+    for artist_obj in track["artists"]:
+        track_artists.append(artist_obj['name'])
+    track_artists_str = ", ".join(track_artists)
+
+    # Get the album info of this song's album.
+    album_info = {
+        "id" : track["album"]["id"],
+        "name" : track["album"]["name"],
+        "release_date" : track["album"]["release_date"],
+        "type" : track["album"]["type"],
+        "total_tracks" : track["album"]["total_tracks"],
+        "artists" : track_artists_str,
+        "cover" : track["album"]["images"][1]["url"]
+    }
+
+    # Now check if this album already exists.
+    object, created = Album.objects.get_or_create(
+        id=album_info["id"],
+        defaults = {
+        "name" : album_info["name"],
+        "artists" : album_info["artists"],
+        "release_date" : album_info["release_date"],
+        "total_tracks" : album_info["total_tracks"],
+        "cover" : album_info["cover"]
+        }
+        )
+    if created: # if it was new, add all of its songs to our db
+        add_albums_songs(album_info, object)
+
+    songid = Song.objects.get(pk=music_id)
+
+    upvotes = 0
+    downvotes = 0
+    try:
+        song_ratings = Song_rating.objects.filter(song_id=songid.id)
+        for rating in song_ratings:
+            if rating.rating_type:
+                upvotes += 1
+            elif not rating.rating_type:
+                downvotes += 1
+    except:
+        print("Except gone through")
+
+    user_upvoted = False
+    user_downvoted = False
+
+    if request.user.is_authenticated:
+        try:
+            users_rating = Song_rating.objects.get(song_id=songid.id, user_id=request.user)
+            if users_rating.rating_type == True:
+                user_upvoted = True
+            elif users_rating.rating_type == False:
+                user_downvoted = True
+        except:
+            pass
+
+
+    return render(request, 'songinfo.html', {'songid': songid, "song_artists": track_artists_str,
+    "album": {
+        "name": album_info["name"],
+        "id": album_info["id"]},
+    "upvotes": upvotes, "downvotes": downvotes,
+    "user_upvoted": user_upvoted, "user_downvoted": user_downvoted})
+
 def home(request):
     time.sleep(0.01)
     #print(User_Setting_Ext.objects.filter(user=request.user).count())
@@ -1304,7 +1374,7 @@ def handel_prefrences(request):
     User_Setting_Ext.objects.create( # defaults
         user=request.user,
         dark_mode= dark_mode,
-        explicit=(request.POST['explicit'] == ''),
+        explicit=(True),
         music_prefs=request.POST['music_prefs']
     )
 

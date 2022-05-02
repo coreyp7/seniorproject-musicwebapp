@@ -60,6 +60,6 @@ urlpatterns = [
     path('reject_friend_request_notifications/<user_id>', views.reject_friend_request_notifications, name='reject_friend_request_notifications'),
     path('change_profile_picture', views.accountSettings, name="change_profile_picture"),
     path('profile_friends/<user_to_show>', views.profile_friends, name="profile_friends"),
-    path('profile_saved_playlists/<user_to_show>', views.saved_playlists, name="profile_saved_playlists")
-
+    path('profile_saved_playlists/<user_to_show>', views.saved_playlists, name="profile_saved_playlists"),
+    path('random_song', views.random_song, name="random_song")
 ]
